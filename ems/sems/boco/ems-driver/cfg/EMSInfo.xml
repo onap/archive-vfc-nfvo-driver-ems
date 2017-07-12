@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='GBK'?>
+<!--
+
+  Copyright 2017 BOCO Corporation.
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ 
+
+-->
+<collectSources>
+   <ems name="1234">
+      <collect type ="cm" crontab="0 0/1 * * * ?">
+         <ip>192.168.6.48</ip>
+         <port>21</port>
+         <user>gcp</user>
+         <password>gcp</password>
+         <remotepath>/opt/Gcp/data/</remotepath>
+         <match>*</match>
+         <passive>true</passive>
+         <ftptype>ftp</ftptype>
+         <granularity>15</granularity>
+      </collect>
+      <collect type ="pm" crontab="">
+         <ip>192.168.1.16</ip>
+         <port>21</port>
+         <user>gcp</user>
+         <password>gcp</password>
+         <remotepath>/var/vsftp/gcp/ftproot/GD/WX/HW/JS_OMC2/</remotepath>
+         <match>*</match>
+         <passive>true</passive>
+         <ftptype>ftp</ftptype>
+         <granularity>15</granularity>
+      </collect>
+      <collect type ="alarm" iscollect = "false">
+        <ip>127.0.0.1</ip>
+		<port>9997</port>
+		<user>yiyang</user>
+		<password>123456</password>
+		<readtimeout>6</readtimeout>;
+      </collect>
+   </ems>
+</collectSources>
