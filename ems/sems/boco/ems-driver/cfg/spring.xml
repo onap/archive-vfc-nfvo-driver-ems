@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="GBK"?>
 <!--
 
-  Copyright 2017 BOCO Corporation.
+  Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -22,26 +22,26 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
 	default-lazy-init="true">
  	
-    <bean id="configurationManager" class="org.openo.nfvo.emsdriver.configmgr.ConfigurationManager">
+    <bean id="configurationManager" class="org.onap.nfvo.emsdriver.configmgr.ConfigurationManager">
 		<property name="run" value="true" />
 		
     </bean>
-    <bean id="collectMsgReceiverThread" class="org.openo.nfvo.emsdriver.collector.CollectMsgReceiverThread">
+    <bean id="collectMsgReceiverThread" class="org.onap.nfvo.emsdriver.collector.CollectMsgReceiverThread">
 		<property name="run" value="true" />
 		<property name="thread_max_num" value="100" />
     </bean>
     
-    <bean id="configurationImp" class="org.openo.nfvo.emsdriver.configmgr.ConfigurationImp">
+    <bean id="configurationImp" class="org.onap.nfvo.emsdriver.configmgr.ConfigurationImp">
     </bean>
-    <bean id="alarmManager" class="org.openo.nfvo.emsdriver.collector.alarm.AlarmManager">
+    <bean id="alarmManager" class="org.onap.nfvo.emsdriver.collector.alarm.AlarmManager">
 		<property name="run" value="true" />
 		<property name="configurationInterface" ref="configurationImp" />
     </bean>
-    <bean id="collectManager" class="org.openo.nfvo.emsdriver.taskscheduler.CollectManager">
+    <bean id="collectManager" class="org.onap.nfvo.emsdriver.taskscheduler.CollectManager">
 		<property name="run" value="true" />
 		<property name="configurationInterface" ref="configurationImp" />
     </bean>
-     <bean id="northMessageMgr" class="org.openo.nfvo.emsdriver.northbound.client.NorthMessageMgr">
+     <bean id="northMessageMgr" class="org.onap.nfvo.emsdriver.northbound.client.NorthMessageMgr">
 		<property name="run" value="true" />
 		<property name="configurationInterface" ref="configurationImp" />
     </bean>
