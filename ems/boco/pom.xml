@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2017, BOCO.   CMCC Technologies Co., Ltd
+    Copyright (c) 2017, CMCC Technologies Co., Ltd.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,19 +17,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   
-  <parent>
-       <groupId>org.onap.nfvo</groupId>
-       <artifactId>nfvo-root</artifactId>
-       <version>1.1.0-SNAPSHOT</version>
-       <relativePath>../../../../..</relativePath>
-   </parent>
+    <parent>
+        <groupId>org.onap.oparent</groupId>
+        <artifactId>oparent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
  
    <modelVersion>4.0.0</modelVersion>
-   <groupId>org.onap.nfvo</groupId>
+   <groupId>org.onap.vfc.nfvo.driver.ems</groupId>
    <artifactId>ems-driver</artifactId>
    <version>1.1.0-SNAPSHOT</version>
    <packaging>pom</packaging>
-   <name>nfvo/drivers/ems/sems/boco/ems-driver</name>
+   <name>vfc/nfvo/driver/ems/</name>
    <description>nfvo ems-driver</description>
   <url>http://maven.apache.org</url>
   <properties>
