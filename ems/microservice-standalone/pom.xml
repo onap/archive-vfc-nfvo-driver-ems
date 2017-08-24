@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017, CMCC Technologies Co., Ltd.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.onap.vfc.nfvo.drivers.ems</groupId>
+        <artifactId>ems-driver-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>emsdriver-standalone</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+    <name>org/onap/vfc/nfvo/drivers/ems/emsdriver-standalone</name>
+    <packaging>pom</packaging>
+
+    <properties>
+        <packagename>onap-emsdriver</packagename>
+    </properties>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/assembly/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/assembly/</directory>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <id>copy-jar</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.onap.vfc.nfvo.drivers.ems</groupId>
+                                    <artifactId>boco-driver</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>target/assembly/</outputDirectory>
+                                    <destFileName>boco-driver.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>zip</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks name="${project.artifactId}">
+                                <zip destfile="target/${packagename}-${project.version}.zip" update="true">
+                                    <zipfileset dir="target/assembly" includes="**" />
+                                </zip>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <!--execution>
+                        <id>prapare repos env</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <taskdef resource="net/sf/antcontrib/antlib.xml">
+                                    <classpath>
+                                        <pathelement location="${ant-contrib:ant-contrib:jar}" />
+                                    </classpath>
+                                </taskdef>
+                                <if>
+                                    <contains string="${project.version}" substring="SNAPSHOT" />
+                                    <then>
+                                        <property name="repos.url" value="${project.distributionManagement.snapshotRepository.url}" />
+                                        <property name="repos.id" value="${project.distributionManagement.snapshotRepository.id}" />
+                                    </then>
+                                    <else>
+                                        <property name="repos.url" value="${project.distributionManagement.repository.url}" />
+                                        <property name="repos.id" value="${project.distributionManagement.repository.id}" />
+                                    </else>
+                                </if>
+                                <echo>set repos.url: ${repos.url}</echo>
+                                <echo>set repos.id: ${repos.id}</echo>
+                            </target>
+                            <exportAntProperties>true</exportAntProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>echo repos env</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo>[prepare deploy] repos.url: ${repos.url}</echo>
+                                <echo>[prepare deploy] repos.id: ${repos.id}</echo>
+                            </target>
+                        </configuration>
+                    </execution-->
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-artifacts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>target/${packagename}-${project.version}.zip</file>
+                                    <type>zip</type>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>deploy-zip-file</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>deploy-file</goal>
+                        </goals>
+                        <configuration>
+                            <url>${repos.url}</url>
+                            <repositoryId>${repos.id}</repositoryId>
+                            <groupId>${deploy.openo.groupid}</groupId>
+                            <artifactId>${packagename}</artifactId>
+                            <version>${project.version}</version>
+                            <packaging>zip</packaging>
+                            <file>target/${packagename}-${project.version}.zip</file>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin-->
+        </plugins>
+
+    </build>
+	<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>ant-contrib</groupId>
+            <artifactId>ant-contrib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.vfc.nfvo.drivers.ems</groupId>
+            <artifactId>boco-driver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+	</dependencyManagement>
+</project>
+
