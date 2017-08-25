@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ 																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																* Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 		registerVo.setNodes(nodeList);
 		
 		MsbRestServiceProxy.registerService(registerVo);
-		log.info("register monitor-umc service to msb finished.");
+		log.info("register ems-driver service to msb finished.");
 		
 	}
 }

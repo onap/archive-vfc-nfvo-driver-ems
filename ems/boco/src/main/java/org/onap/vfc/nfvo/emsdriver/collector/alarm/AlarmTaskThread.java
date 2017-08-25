@@ -50,6 +50,11 @@ public class AlarmTaskThread extends Thread{
 	
 	private MessageChannel alarmChannel;
 	
+	
+	public AlarmTaskThread() {
+		super();
+	}
+
 	public AlarmTaskThread(CollectVo collectVo) {
 
 		this.collectVo = collectVo;
@@ -84,7 +89,7 @@ public class AlarmTaskThread extends Thread{
 		}
 	}
 
-	private String  build120Alarm(String body) {
+	public String  build120Alarm(String body) {
 		StringBuilder content = new StringBuilder(
 		"<?xml version='1.0' encoding='iso-8859-1'?>\n")
 		.append("<WholeMsg MsgMark='120' Priority='2' FieldNum='5'><FM_ALARM_MSG>\n");
@@ -96,7 +101,7 @@ public class AlarmTaskThread extends Thread{
 		
 		for (String key : keys) {
 			
-			String value = (String)reagobj.get(key);
+			String value = reagobj.get(key).toString();
 			content.append("<").append(key).append(">");
 		    content.append(value);
 		    content.append("</").append(key).append(">\n");
@@ -135,7 +140,7 @@ public class AlarmTaskThread extends Thread{
 			}
 			
 			if("ackHeartBeat".equalsIgnoreCase(msg.getMsgType().name)){
-				log.debug("received heartBeat��"+msg.getBody());
+				log.debug("received heartBeat message:"+msg.getBody());
 				retString = null;
 			}
 			
