@@ -1,5 +1,5 @@
 
-# Copyright 2017 BOCO Corporation.   CMCC Technologies Co., Ltd
+# Copyright 2017 CMCC Technologies Co., Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,45 @@
 # limitations under the License.
 #
 
-msbAddress: 10.74.205.123:80
+
 defaultName: EmsDriver-Stranger
+
+#microservice Bus address
+msbAddress: 10.74.205.123:80
+
+server:
+  type: simple
+  rootPath: '/api/emsdriver/v1/*'
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: 8206
+
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: INFO
+
+  # Logger-specific levels.
+  loggers:
+
+    # Sets the level for 'org.openo.nfvo.monitor.dac' to INFO.
+    org.onap.vfc.nfvo.emsdriver.northbound.service.EmsDriverApplication: INFO
+
+  appenders:
+    - type: console
+      threshold: WARN
+      timeZone: PRC
+      logFormat: "%-4level [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{5} - %X{code} %msg %n"
+    - type: file
+      threshold: INFO
+      logFormat: "%-4level [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{5} - %X{code} %msg %n"
+      currentLogFilename: ./logs/dac.log
+      archivedLogFilenamePattern: ./logs/dac-%d{yyyyMMdd}-%d{HHmm}-%d{ssSSS}.log.gz
+      archivedFileCount: 7
+      timeZone: PRC
+
 
 

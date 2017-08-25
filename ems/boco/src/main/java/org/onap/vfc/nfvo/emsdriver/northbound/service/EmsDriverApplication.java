@@ -18,6 +18,7 @@ package org.onap.vfc.nfvo.emsdriver.northbound.service;
 import io.dropwizard.Application;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
+import io.dropwizard.server.SimpleServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -63,8 +64,8 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
     }
 
 	private void msbRegisteEmsDriverService(EmsDriverConfiguration configuration) {
-		DefaultServerFactory defaultServerFactory = (DefaultServerFactory)configuration.getServerFactory();
-    	HttpConnectorFactory connector = (HttpConnectorFactory)defaultServerFactory.getAdminConnectors().get(0);
+		SimpleServerFactory simpleServerFactory = (SimpleServerFactory)configuration.getServerFactory();
+		HttpConnectorFactory connector = (HttpConnectorFactory)simpleServerFactory.getConnector();
 		MsbRegisterVo registerVo = new MsbRegisterVo();
 		ServiceNodeVo serviceNode = new ServiceNodeVo();
 		String ip = "";
@@ -87,7 +88,7 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 		registerVo.setNodes(nodeList);
 		
 		MsbRestServiceProxy.registerService(registerVo);
-		log.info("register monitor-umc service to msb finished.");
+		log.info("register vfc-emsdriver service to msb finished.");
 		
 	}
 }
