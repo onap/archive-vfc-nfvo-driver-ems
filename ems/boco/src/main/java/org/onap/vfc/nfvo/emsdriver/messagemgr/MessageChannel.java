@@ -56,5 +56,10 @@ public class MessageChannel {
 	public  void clear(){
 		queue.clear();
 	}
+
+	public BlockingQueue<Object> getQueue() {
+		return queue;
+	}
+	
 	
 }

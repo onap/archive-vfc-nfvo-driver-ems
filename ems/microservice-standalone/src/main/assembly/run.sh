@@ -17,6 +17,7 @@
 
 DIRNAME=`dirname $0`
 RUNHOME=`cd $DIRNAME/; pwd`
+export RUNHOME
 echo @RUNHOME@ $RUNHOME
 cd $RUNHOME
 # JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")

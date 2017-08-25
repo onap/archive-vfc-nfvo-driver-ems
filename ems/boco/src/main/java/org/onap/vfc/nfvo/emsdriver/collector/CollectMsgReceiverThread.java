@@ -51,6 +51,7 @@ public class CollectMsgReceiverThread extends DriverThread{
 				
 				Object obj = collectChannel.poll();
 				if(obj == null){
+					Thread.sleep(10);
 					continue;
 				}
 				if(obj != null && obj instanceof CollectMsg){

@@ -220,33 +220,15 @@ public class CollectVo {
 	}
 	
 	
-	public String toString(){
-		StringBuffer sb = new StringBuffer();
-		sb.append("CollectVo:").append("\n");
-		if("alarm".equalsIgnoreCase(type)){
-			sb.append("type = ").append(type).append("\n");
-			sb.append("ip = ").append(IP).append("\n");
-			sb.append("port = ").append(port).append("\n");
-			sb.append("user = ").append(user).append("\n");
-			sb.append("password = ").append(password).append("\n");
-			sb.append("iscollect = ").append(iscollect).append("\n");
-		}else{
-			sb.append("type = ").append(type).append("\n");
-			sb.append("ip = ").append(IP).append("\n");
-			sb.append("port = ").append(port).append("\n");
-			sb.append("user = ").append(user).append("\n");
-			
-			sb.append("password = ").append(password).append("\n");
-			sb.append("remotepath = ").append(remotepath).append("\n");
-			sb.append("match = ").append(match).append("\n");
-			sb.append("passive = ").append(passive).append("\n");
-			sb.append("ftptype = ").append(ftptype).append("\n");
-			sb.append("granularity = ").append(type).append("\n");
-		}
-		
-		
-		return sb.toString();
-		
+	@Override
+	public String toString() {
+		return "CollectVo [emsName=" + emsName + ", type=" + type
+				+ ", crontab=" + crontab + ", IP=" + IP + ", port=" + port
+				+ ", user=" + user + ", password=" + password + ", remotepath="
+				+ remotepath + ", match=" + match + ", passive=" + passive
+				+ ", ftptype=" + ftptype + ", granularity=" + granularity
+				+ ", iscollect=" + iscollect + ", read_timeout=" + read_timeout
+				+ "]";
 	}
 
 	/**
