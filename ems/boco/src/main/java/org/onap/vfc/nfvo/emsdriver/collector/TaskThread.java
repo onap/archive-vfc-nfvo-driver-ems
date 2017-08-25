@@ -48,6 +48,7 @@ import org.onap.vfc.nfvo.emsdriver.commons.ftp.FTPSrv;
 import org.onap.vfc.nfvo.emsdriver.commons.ftp.SFTPSrv;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.Gunzip;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.StringUtil;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.UnZip;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.Zip;
@@ -74,10 +75,17 @@ public class TaskThread implements Runnable{
 	
 	private SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
+	private String csvpathAndFileName;
+	private String xmlPathAndFileName;
+	private int countNum = 0 ;
+	
 	public TaskThread(CollectMsg data) {
 		this.data = data;
 	}
-	
+	public TaskThread() {
+		super();
+	}
+
 	@Override
 	public void run(){
 		
@@ -121,6 +129,25 @@ public class TaskThread implements Runnable{
 				parseResult = processCMXml(tempfile, nename,"CM");
 			}else{
 				parseResult = processPMCsv(tempfile, nename,"PM");
+				
+				//createzipFile
+				String[] fileKeys = this.createZipFile(csvpathAndFileName,xmlPathAndFileName,nename);
+				//ftp store
+				Properties ftpPro = configurationInterface.getProperties();
+				String ip = ftpPro.getProperty("ftp_ip");
+				String port = ftpPro.getProperty("ftp_port");
+				String ftp_user = ftpPro.getProperty("ftp_user");
+				String ftp_password = ftpPro.getProperty("ftp_password");
+				
+				String ftp_passive = ftpPro.getProperty("ftp_passive");
+				String ftp_type = ftpPro.getProperty("ftp_type");
+				String remoteFile = ftpPro.getProperty("ftp_remote_path");
+				this.ftpStore(fileKeys,ip,port,ftp_user,ftp_password,ftp_passive,ftp_type,remoteFile);
+				//create Message
+				String message = this.createMessage(fileKeys[1], ftp_user, ftp_password, ip,  port, countNum,nename);
+				
+				//set message
+				this.setMessage(message);
 			}
 			
 			if (parseResult){
@@ -132,7 +159,7 @@ public class TaskThread implements Runnable{
 		}
 	}
 	
-	private boolean processPMCsv(File tempfile, String nename,String type) {
+	public boolean processPMCsv(File tempfile, String nename,String type) {
 		
 		String csvpath = localPath+nename+"/"+type+"/";
 		File csvpathfile = new File(csvpath);
@@ -140,7 +167,7 @@ public class TaskThread implements Runnable{
 			csvpathfile.mkdirs();
 		}
 		String csvFileName = nename +dateFormat.format(new Date())+  System.nanoTime();
-		String csvpathAndFileName = csvpath+csvFileName;
+		csvpathAndFileName = csvpath+csvFileName+".csv";
 		BufferedOutputStream  bos = null;
 		FileOutputStream fos = null;
 		try {
@@ -163,7 +190,7 @@ public class TaskThread implements Runnable{
 			br = new BufferedReader(isr);
 			//common field
 			String commonField = br.readLine();
-			String[] fields = commonField.split("|",-1);
+			String[] fields = commonField.split("\\|",-1);
 			for(String com : fields){
 				String[] comNameAndValue = com.split("=",2);
 				columnNames.add(comNameAndValue[0].trim());
@@ -171,23 +198,22 @@ public class TaskThread implements Runnable{
 			}
 			//column names
 			String columnName = br.readLine();
-			String[] names = columnName.split("|",-1);
+			String[] names = columnName.split("\\|",-1);
 			for(String name : names){
 				columnNames.add(name);
 			}
 			
-			String xmlPathAndFileName = this.setColumnNames(nename, columnNames,type);
+			xmlPathAndFileName = this.setColumnNames(nename, columnNames,type);
 			
 			String valueLine = "";
 			List<String> valuelist = new ArrayList<String>();
-			int countNum = 0 ;
+			
 			while (br.readLine() != null) {
-				
 				if (valueLine.trim().equals("")) {
 					continue;
 				}
 				countNum ++;
-				String [] values = valueLine.split("|",-1);
+				String [] values = valueLine.split("\\|",-1);
 				
 				valuelist.addAll(commonValues);
 				for(String value : values){
@@ -197,33 +223,6 @@ public class TaskThread implements Runnable{
 				
 				valuelist.clear();
 			}
-			
-			if(bos != null){
-				bos.close();
-				bos = null;
-			}
-			if(fos != null){
-				fos.close();
-				fos = null;
-			}
-			
-			String[] fileKeys = this.createZipFile(csvpathAndFileName,xmlPathAndFileName,nename);
-			//ftp store
-			Properties ftpPro = configurationInterface.getProperties();
-			String ip = ftpPro.getProperty("ftp_ip");
-			String port = ftpPro.getProperty("ftp_port");
-			String ftp_user = ftpPro.getProperty("ftp_user");
-			String ftp_password = ftpPro.getProperty("ftp_password");
-			
-			String ftp_passive = ftpPro.getProperty("ftp_passive");
-			String ftp_type = ftpPro.getProperty("ftp_type");
-			String remoteFile = ftpPro.getProperty("ftp_remote_path");
-			this.ftpStore(fileKeys,ip,port,ftp_user,ftp_password,ftp_passive,ftp_type,remoteFile);
-			//create Message
-			String message = this.createMessage(fileKeys[1], ftp_user, ftp_password, ip,  port, countNum,nename);
-			
-			//set message
-			this.setMessage(message);
 		} catch (IOException e) {
 			log.error("processPMCsv is fail ",e);
 			return false;
@@ -238,7 +237,6 @@ public class TaskThread implements Runnable{
 				if(bos != null){
 					bos.close();
 				}
-				
 				if(fos != null){
 					fos.close();
 				}
@@ -622,7 +620,12 @@ public class TaskThread implements Runnable{
 	
 	    if (fileName.indexOf(".gz") > 1)
 	    {
-//	      decompressFile = deGz(file);
+	    	try {
+				File decompressFile = deGz(fileName);
+				filelist.add(decompressFile);
+			} catch (IOException e) {
+				log.error("decompressed is fail "+StringUtil.getStackTrace(e));
+			}
 	    } else if (fileName.indexOf(".zip") > 1)
 	    {
 	    	try {
@@ -639,6 +642,13 @@ public class TaskThread implements Runnable{
 	    }
 	
 	    return filelist;
+	}
+
+	private File deGz(String gzFileName) throws IOException {
+		Gunzip gunzip = new Gunzip();
+		String orgFile = gzFileName.replace(".gz", "");
+		gunzip.unCompress(gzFileName, orgFile);
+		return new File(orgFile);
 	}
 
 	public File[] deZip(File file) throws Exception{

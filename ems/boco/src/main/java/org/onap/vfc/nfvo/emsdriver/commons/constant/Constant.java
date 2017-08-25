@@ -19,9 +19,9 @@ import java.io.File;
 
 public class Constant {
 	
-	public static String SYS_HOME = System.getenv("EMSDRIVER_HOME")==null?"E:/workspace/ems-driver/":System.getenv("EMSDRIVER_HOME");
+	public static String SYS_HOME = System.getenv("RUNHOME")==null?System.getProperty("user.dir"):System.getenv("RUNHOME");
 	
-	public static String SYS_CFG = SYS_HOME + File.separator + "cfg" + File.separator;
+	public static String SYS_CFG = SYS_HOME + File.separator + "conf" + File.separator;
 	public static String SYS_DATA = SYS_HOME  + "data" + File.separator;
 	public static String SYS_DATA_TEMP = SYS_DATA + File.separator + "temp" + File.separator;
 	public static String SYS_DATA_RESULT = SYS_DATA + File.separator + "RESULT" + File.separator;
