@@ -49,11 +49,8 @@ public class EMSInfo {
 		this.collectMap.put(type, collectVo);
 	}
 	
-	public String toString(){
-		StringBuffer sb = new StringBuffer();
-		sb.append("name = ").append(name).append("\n");
-		sb.append("CollectMap = ").append(collectMap);
-		
-		return sb.toString();
+	@Override
+	public String toString() {
+		return "EMSInfo [name=" + name + ", collectMap=" + collectMap + "]";
 	}
 }
