@@ -64,6 +64,13 @@ public class CollectMsg {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	@Override
+	public String toString() {
+		return "CollectMsg [id=" + id + ", emsName=" + emsName + ", type="
+				+ type + "]";
+	}
+	
 	
 
 }
