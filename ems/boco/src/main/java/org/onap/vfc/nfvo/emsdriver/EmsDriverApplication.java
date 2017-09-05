@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.vfc.nfvo.emsdriver.northbound.service;
+package org.onap.vfc.nfvo.emsdriver;
 
 import io.dropwizard.Application;
 import io.dropwizard.jetty.HttpConnectorFactory;
@@ -29,14 +29,20 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
+import org.onap.vfc.nfvo.emsdriver.northbound.service.CommandResource;
 import org.onap.vfc.nfvo.emsdriver.serviceregister.MsbConfiguration;
 import org.onap.vfc.nfvo.emsdriver.serviceregister.MsbRestServiceProxy;
 import org.onap.vfc.nfvo.emsdriver.serviceregister.model.MsbRegisterVo;
 import org.onap.vfc.nfvo.emsdriver.serviceregister.model.ServiceNodeVo;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 	
 	protected static Log log = LogFactory.getLog(EmsDriverApplication.class);
+	public static ApplicationContext context = null;
 	
 	public static void main(String[] args) throws Exception {
         new EmsDriverApplication().run(args);
@@ -50,17 +56,35 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
     @Override
     public void initialize(Bootstrap<EmsDriverConfiguration> bootstrap) {
         // nothing to do yet
+    	context = new FileSystemXmlApplicationContext("file:" + Constant.SYS_CFG+ "spring.xml");
     }
 
     @Override
     public void run(EmsDriverConfiguration configuration,Environment environment) {
     	// register CommandResource
     	environment.jersey().register(new CommandResource());
-    	
-    	
     	MsbConfiguration.setMsbAddress(configuration.getMsbAddress());
     	//MSB register
-    	this.msbRegisteEmsDriverService(configuration);
+    	String registerFlag = configuration.getAutoServiceRegister();
+    	if(registerFlag.equalsIgnoreCase("false")){
+    		this.msbRegisteEmsDriverService(configuration);
+    	}
+    	//Start workThread
+    	this.startThread();
+    }
+    
+    private void startThread(){
+    	String[] allThreadName = context.getBeanNamesForType(DriverThread.class);
+		log.info("worker num :" + allThreadName.length);
+		for (String threadName : allThreadName) {
+			DriverThread thread = (DriverThread) context.getBean(threadName);
+			if (thread == null) {
+				log.error(threadName + "Thread start error,system exit");
+				System.exit(1);
+			}
+			thread.setName(threadName);
+			thread.start();
+		}
     }
 
 	private void msbRegisteEmsDriverService(EmsDriverConfiguration configuration) {
@@ -91,4 +115,6 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 		log.info("register vfc-emsdriver service to msb finished.");
 		
 	}
+	
+	
 }

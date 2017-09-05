@@ -19,10 +19,10 @@ title dac-service
 set RUNHOME=%~dp0
 echo ### RUNHOME: %RUNHOME%
 
-echo ### Starting dac-service
+echo ### Starting emsdriver-service
 cd /d %RUNHOME%
 
-rem set JAVA_HOME=D:\JDK1.7\jdk\jdk\windows
+rem set JAVA_HOME=D:\JDK1.8\jdk\jdk\windows
 set JAVA="%JAVA_HOME%\bin\java.exe"
 set jvm_opts=-Xms50m -Xmx128m
 
@@ -47,11 +47,11 @@ set date_time_string=%date_time_string:|=-%
 
 set jvm_opts=%jvm_opts% -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=%RUNHOME%logs\dump-dac-%date_time_string%.hprof
 
-set class_path=%RUNHOME%;%RUNHOME%dac.jar
+set class_path=%RUNHOME%;%RUNHOME%boco-driver.jar
 echo ### jvm_opts: %jvm_opts%
 echo ### class_path: %class_path%
 
-%JAVA% -classpath %class_path% %jvm_opts% org.onap.vfc.nfvo.emsdriver.EMSDriverApp  server %RUNHOME%conf/emsdriver.yml
+%JAVA% -classpath %class_path% %jvm_opts% org.onap.vfc.nfvo.emsdriver.EmsDriverApplication  server %RUNHOME%conf/emsdriver.yml
 
 IF ERRORLEVEL 1 goto showerror
 exit

@@ -19,7 +19,7 @@ defaultName: EmsDriver-Stranger
 
 #microservice Bus address
 msbAddress: 10.74.205.123:80
-
+autoServiceRegister: true
 server:
   type: simple
   rootPath: '/api/emsdriver/v1/*'
@@ -38,8 +38,8 @@ logging:
   # Logger-specific levels.
   loggers:
 
-    # Sets the level for 'org.openo.nfvo.monitor.dac' to INFO.
-    org.onap.vfc.nfvo.emsdriver.northbound.service.EmsDriverApplication: INFO
+    # Sets the level for 'org.onap.vfc.nfvo.emsdriver' to INFO.
+    org.onap.vfc.nfvo.emsdriver.EmsDriverApplication: INFO
 
   appenders:
     - type: console
@@ -49,8 +49,8 @@ logging:
     - type: file
       threshold: INFO
       logFormat: "%-4level [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{5} - %X{code} %msg %n"
-      currentLogFilename: ./logs/dac.log
-      archivedLogFilenamePattern: ./logs/dac-%d{yyyyMMdd}-%d{HHmm}-%d{ssSSS}.log.gz
+      currentLogFilename: ./logs/emsdriver.log
+      archivedLogFilenamePattern: ./logs/emsdriver-%d{yyyyMMdd}-%d{HHmm}-%d{ssSSS}.log.gz
       archivedFileCount: 7
       timeZone: PRC
 

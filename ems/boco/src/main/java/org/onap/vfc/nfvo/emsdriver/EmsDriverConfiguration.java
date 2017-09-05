@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.vfc.nfvo.emsdriver.northbound.service;
+package org.onap.vfc.nfvo.emsdriver;
 
 import io.dropwizard.Configuration;
 
@@ -25,8 +25,10 @@ public class EmsDriverConfiguration  extends Configuration{
 
 	@NotEmpty
     private String msbAddress;
+	
+	private String autoServiceRegister="true";
 
-    @NotEmpty
+	@NotEmpty
     private String defaultName = "EmsDriver-Stranger";
 
     @JsonProperty
@@ -38,6 +40,16 @@ public class EmsDriverConfiguration  extends Configuration{
     public void setMsbAddress(String msbAddress) {
         this.msbAddress = msbAddress;
     }
+    
+    @JsonProperty
+    public String getAutoServiceRegister() {
+		return autoServiceRegister;
+	}
+    
+    @JsonProperty
+	public void setAutoServiceRegister(String autoServiceRegister) {
+		this.autoServiceRegister = autoServiceRegister;
+	}
 
     @JsonProperty
     public String getDefaultName() {

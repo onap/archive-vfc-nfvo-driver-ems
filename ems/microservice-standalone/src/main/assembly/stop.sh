@@ -19,7 +19,7 @@ DIRNAME=`dirname $0`
 HOME=`cd $DIRNAME/; pwd`
 Main_Class="org.onap.vfc.nfvo.emsdriver.EMSDriverApp"
 
-echo ================== umc-service info  =============================================
+echo ================== emsdriver-service info  =============================================
 echo HOME=$HOME
 echo Main_Class=$Main_Class
 echo ===============================================================================

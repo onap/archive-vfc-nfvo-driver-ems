@@ -19,12 +19,12 @@ title stopping dac-service
 set HOME=%~dp0
 set Main_Class="org.onap.vfc.nfvo.emsdriver.EMSDriverApp"
 
-echo ================== dac-service info  =============================================
+echo ================== emsdriver-service info  =============================================
 echo HOME=$HOME
 echo Main_Class=%Main_Class%
 echo ===============================================================================
 
-echo ### Stopping dac-service
+echo ### Stopping emsdriver-service
 cd /d %HOME%
 
 rem set JAVA_HOME=D:\WorkSoftware\jdk1.7.0_60
