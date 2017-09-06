@@ -23,7 +23,7 @@ function build_emsdriver {
     docker build ${BUILD_ARGS} -t ${IMAGE_NAME}:${VERSION} -t ${IMAGE_NAME}:latest .
 }
 
-function push_emsdriver{
+function push_emsdriver {
     docker push ${IMAGE_NAME}:${VERSION}
     docker push ${IMAGE_NAME}:latest
 }
