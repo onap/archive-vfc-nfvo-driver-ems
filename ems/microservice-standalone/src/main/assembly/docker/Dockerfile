@@ -15,7 +15,7 @@ WORKDIR /service
 RUN mkdir emsdriver
 
 # get binary zip from nexus
-RUN wget -q -O emsdiver-standalone.zip 'https://nexus.onap.org/service/local/artifact/maven/redirect?r=snapshots&g=org.onap.vfc.nfvo.driver.ems&a=emsdriver-standalone&v=LATEST&e=zip' && \
+RUN wget -q -O emsdiver-standalone.zip 'https://nexus.onap.org/service/local/artifact/maven/redirect?r=snapshots&g=org.onap.vfc.nfvo.driver.ems.ems&a=emsdriver-standalone&v=LATEST&e=zip' && \
     unzip emsdiver-standalone.zip -d emsdriver && \
     rm -rf emsdiver-standalone.zip
 
