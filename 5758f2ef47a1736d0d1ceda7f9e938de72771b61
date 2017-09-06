@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_3fbd3c69",
+        "filename": "ems/microservice-standalone/src/main/assembly/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-09-06T02:58:06Z",
+      "side": 1,
+      "message": "This link is not correct, you can parse this url to ie explore to test it",
+      "range": {
+        "startLine": 18,
+        "startChar": 40,
+        "endLine": 18,
+        "endChar": 43
+      },
+      "revId": "5758f2ef47a1736d0d1ceda7f9e938de72771b61",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_7f93c4fa",
+        "filename": "ems/microservice-standalone/src/main/assembly/docker/instance_config.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-09-06T02:58:06Z",
+      "side": 1,
+      "message": "Delete the two lines",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 66
+      },
+      "revId": "5758f2ef47a1736d0d1ceda7f9e938de72771b61",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_9f8668b8",
+        "filename": "ems/microservice-standalone/src/main/assembly/docker/instance_init.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1389
+      },
+      "writtenOn": "2017-09-06T02:58:06Z",
+      "side": 1,
+      "message": "This file need be deleted",
+      "revId": "5758f2ef47a1736d0d1ceda7f9e938de72771b61",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
