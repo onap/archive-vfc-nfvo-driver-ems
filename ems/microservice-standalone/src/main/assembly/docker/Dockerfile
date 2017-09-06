@@ -8,7 +8,7 @@ ENV https_proxy $HTTPS_PROXY
 
 
 
-RUN apt-get update && apt-get install -y openjdk-8-jdk 
+RUN sudo -E add-apt-repository ppa:openjdk-r/ppa && apt-get update && apt-get install -y openjdk-8-jdk 
 
 ADD . /service
 WORKDIR /service
