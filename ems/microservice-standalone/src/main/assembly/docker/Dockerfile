@@ -8,7 +8,12 @@ ENV https_proxy $HTTPS_PROXY
 
 
 RUN apt-get update && apt-get install -y software-properties-common
-RUN sudo -E add-apt-repository ppa:openjdk-r/ppa && apt-get update && apt-get install -y openjdk-8-jdk 
+RUN apt-get install -y wget && \
+    apt-get install -y unzip && \
+    apt-get install -y curl && \
+    apt-get install -y build-essential && \
+    apt-get install -y libssl-dev
+RUN sudo -E add-apt-repository ppa:openjdk-r/ppa && apt-get update && apt-get install -y openjdk-8-jdk && apt-get install -y git curl && apt-get install -y pandoc
 
 ADD . /service
 WORKDIR /service
