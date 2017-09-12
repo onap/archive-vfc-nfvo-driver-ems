@@ -28,4 +28,5 @@ RUN wget -q -O emsdiver-standalone.zip 'https://nexus.onap.org/service/local/art
 EXPOSE 8206
 
 WORKDIR /service
+RUN chmod +x emsdriver/docker/*.sh
 ENTRYPOINT emsdriver/docker/docker-entrypoint.sh

@@ -1,6 +1,6 @@
 #!/bin/bash
 cd /service/ems/
-chmod +x run.sh
+chmod +x *.sh
 ./run.sh
 
 while [ ! -f logs/emsdriver.log ]; do
