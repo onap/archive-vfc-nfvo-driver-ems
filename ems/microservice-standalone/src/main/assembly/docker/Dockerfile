@@ -1,19 +1,12 @@
-FROM ubuntu:14.04
+FROM centos:7
 
-ARG HTTP_PROXY=${HTTP_PROXY}
-ARG HTTPS_PROXY=${HTTPS_PROXY}
+RUN sed -i 's/enabled=1/enabled=0/' /etc/yum/pluginconf.d/fastestmirror.conf
+RUN sed -i 's|#baseurl=http://mirror.centos.org/centos|baseurl=http://mirrors.ocf.berkeley.edu/centos|' /etc/yum.repos.d/*.repo
+RUN yum update -y
 
-ENV http_proxy $HTTP_PROXY
-ENV https_proxy $HTTPS_PROXY
-
-
-RUN apt-get update && apt-get install -y software-properties-common
-RUN apt-get install -y wget && \
-    apt-get install -y unzip && \
-    apt-get install -y curl && \
-    apt-get install -y build-essential && \
-    apt-get install -y libssl-dev
-RUN sudo -E add-apt-repository ppa:openjdk-r/ppa && apt-get update && apt-get install -y openjdk-8-jdk && apt-get install -y git curl && apt-get install -y pandoc
+RUN yum install -y wget unzip socat java-1.8.0-openjdk-headless
+RUN sed -i 's|#networkaddress.cache.ttl=-1|networkaddress.cache.ttl=10|' /usr/lib/jvm/jre/lib/security/java.security
+ENV JAVA_HOME /usr/lib/jvm/jre
 
 ADD . /service
 WORKDIR /service
@@ -23,7 +16,6 @@ RUN mkdir emsdriver
 RUN wget -q -O emsdiver-standalone.zip 'https://nexus.onap.org/service/local/artifact/maven/redirect?r=snapshots&g=org.onap.vfc.nfvo.driver.ems.ems&a=emsdriver-standalone&v=LATEST&e=zip' && \
     unzip emsdiver-standalone.zip -d emsdriver && \
     rm -rf emsdiver-standalone.zip
-
 
 EXPOSE 8206
 
