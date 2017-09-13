@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /service/ems/
+cd /service/emsdriver
 chmod +x *.sh
 ./run.sh
 

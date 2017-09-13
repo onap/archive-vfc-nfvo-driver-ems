@@ -22,9 +22,6 @@ done
 # Configure service based on docker environment variables
 emsdriver/docker/instance_config.sh
 
-# microservice-specific one-time initialization
-#vfc/gvnfm/vnflcm/lcm/docker/instance_init.sh
-
 date > init.log
 
 # Start the microservice
