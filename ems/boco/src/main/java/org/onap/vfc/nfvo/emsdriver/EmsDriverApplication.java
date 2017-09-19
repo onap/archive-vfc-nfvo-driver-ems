@@ -16,11 +16,14 @@
 package org.onap.vfc.nfvo.emsdriver;
 
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.server.SimpleServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.listing.ApiListingResource;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -38,6 +41,8 @@ import org.onap.vfc.nfvo.emsdriver.serviceregister.model.MsbRegisterVo;
 import org.onap.vfc.nfvo.emsdriver.serviceregister.model.ServiceNodeVo;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 	
@@ -57,6 +62,7 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
     public void initialize(Bootstrap<EmsDriverConfiguration> bootstrap) {
         // nothing to do yet
     	context = new FileSystemXmlApplicationContext("file:" + Constant.SYS_CFG+ "spring.xml");
+    	bootstrap.addBundle(new AssetsBundle("/api-doc", "/api-doc", "index.html", "api-doc"));
     }
 
     @Override
@@ -71,6 +77,7 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
     	}
     	//Start workThread
     	this.startThread();
+    	initSwaggerConfig(environment, configuration);
     }
     
     private void startThread(){
@@ -86,7 +93,26 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 			thread.start();
 		}
     }
+    // init swagger
+    private void initSwaggerConfig(Environment environment, EmsDriverConfiguration configuration)
+    {
+        environment.jersey().register(new ApiListingResource());
+        environment.getObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
+        BeanConfig config = new BeanConfig();
+        config.setTitle(" Console Service rest API");
+        config.setVersion("1.0.0");
+        config.setResourcePackage("org.onap.vfc.nfvo.emsdriver.northbound.service");
+        //swagger rest api basepath
+        SimpleServerFactory simpleServerFactory = (SimpleServerFactory)configuration.getServerFactory();
+        String basePath = simpleServerFactory.getApplicationContextPath();
+        String rootPath = simpleServerFactory.getJerseyRootPath().get();
+        rootPath = rootPath.substring(0, rootPath.indexOf("/*"));
+        basePath = basePath.equals("/") ? rootPath : (new StringBuilder()).append(basePath).append(rootPath).toString();
+        config.setBasePath(basePath);
+        config.setScan(true);    
+    }
+    
 	private void msbRegisteEmsDriverService(EmsDriverConfiguration configuration) {
 		SimpleServerFactory simpleServerFactory = (SimpleServerFactory)configuration.getServerFactory();
 		HttpConnectorFactory connector = (HttpConnectorFactory)simpleServerFactory.getConnector();

@@ -15,21 +15,27 @@
  */
 package org.onap.vfc.nfvo.emsdriver.northbound.service;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.codahale.metrics.annotation.Timed;
 
 @Path("/ems-driver")
 @Produces(MediaType.APPLICATION_JSON)
+@Api(tags = {"ems-driver TestResource"})
 public class CommandResource {
 
 
     @GET
     @Timed
+    @ApiOperation(value = "get ems-driver Info")
     public String executeCommand(@QueryParam("command") String command) {
 
         System.out.println("receiver command = "+command);
