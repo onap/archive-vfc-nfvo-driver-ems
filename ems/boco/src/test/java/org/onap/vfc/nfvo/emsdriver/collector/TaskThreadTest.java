@@ -45,7 +45,7 @@ public class TaskThreadTest {
 	public void processPMCsv(){
 		list = taskThread.decompressed(gzPath);
 		for(File file : list){
-			boolean re = taskThread.processPMCsv(file,"nename","PM");
+			boolean re = taskThread.processPMCsv(file);
 			assertTrue(re);
 		}
 	}

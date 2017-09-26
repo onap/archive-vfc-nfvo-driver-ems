@@ -22,6 +22,7 @@ public class EMSInfo {
 	
 	private String name;
 	
+	
 	private Map<String,CollectVo> collectMap = new HashMap<String,CollectVo>();
 
 	/**
@@ -39,8 +40,7 @@ public class EMSInfo {
 	}
 
 	public CollectVo getCollectVoByType(String type){
-		CollectVo collectVo = null;
-		collectVo = this.collectMap.get(type);
+		CollectVo collectVo = this.collectMap.get(type);
 		return collectVo;
 	}
 	
