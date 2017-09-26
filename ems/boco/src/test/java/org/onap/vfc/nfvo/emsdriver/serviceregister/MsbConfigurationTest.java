@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.vfc.nfvo.emsdriver.collector.alarm;
+package org.onap.vfc.nfvo.emsdriver.serviceregister;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-
-import org.junit.Before;
 import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.collector.alarm.AlarmTaskThread;
 
-public class AlarmTaskThreadTest {
-
-	private AlarmTaskThread taskThread;
-	
-	@Before
-    public void setUp() throws IOException {
-		taskThread = new AlarmTaskThread();
-    }
+public class MsbConfigurationTest {
 	
 	@Test
-	public void build120Alarm(){
-		String alarm = "{\"alarmSeq\":495,\"alarmTitle\":\"LTE cell outage\",\"alarmStatus\":1,\"alarmType\":\"processingErrorAlarm\"}";
-//		String al = taskThread.build120Alarm(alarm);
-		assertNotNull(alarm);
+	public void testSetMsbAddress(){
+		MsbConfiguration.setMsbAddress("aaa/bnn");
 	}
-		
+	
+	@Test
+	public void testGetMsbAddress(){
+		MsbConfiguration.getMsbAddress();
+	}
+
 }

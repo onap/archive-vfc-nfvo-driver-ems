@@ -53,7 +53,7 @@ public class FTPSrv implements FTPInterface{
 		ftpClientConfig.setServerTimeZoneId(TimeZone.getDefault().getID());
 		this.ftpClient.setControlEncoding("GBK");
 		this.ftpClient.configure(ftpClientConfig);
-		ftpClient.setParserFactory(new ExtendsDefaultFTPFileEntryParserFactory());
+//		ftpClient.setParserFactory(new ExtendsDefaultFTPFileEntryParserFactory());
 		
 		if(encode!=null && encode.length()>0){
 			ftpClient.setControlEncoding(encode);
@@ -163,37 +163,31 @@ public class FTPSrv implements FTPInterface{
 		return ftpRemoteFiles;
 	}
 
-
-	public RemoteFile[] list(String dir) {
-		return null;
-	}
-
-
-	public boolean store(String localFile, String remoteFile) {
-		
-		boolean sucess = false;
-		FileInputStream lfileInput = null;
-		try {
-			lfileInput = new FileInputStream(localFile);
-			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-			
-			if (ftpClient.storeFile(remoteFile, lfileInput)){
-				sucess = true;
-			}else{
-				sucess = false;
-			}
-		} catch (Exception ioe) {
-			sucess = false;
-			log.error("store localFile = "+localFile+" is fail "+StringUtil.getStackTrace(ioe));
-		} finally {
-			if (lfileInput != null)
-				try {
-					lfileInput.close();
-				} catch (IOException e) {
-				}
-		}
-		return sucess;
-	}
+//	public boolean store(String localFile, String remoteFile) {
+//		
+//		boolean sucess = false;
+//		FileInputStream lfileInput = null;
+//		try {
+//			lfileInput = new FileInputStream(localFile);
+//			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+//			
+//			if (ftpClient.storeFile(remoteFile, lfileInput)){
+//				sucess = true;
+//			}else{
+//				sucess = false;
+//			}
+//		} catch (Exception ioe) {
+//			sucess = false;
+//			log.error("store localFile = "+localFile+" is fail "+StringUtil.getStackTrace(ioe));
+//		} finally {
+//			if (lfileInput != null)
+//				try {
+//					lfileInput.close();
+//				} catch (IOException e) {
+//				}
+//		}
+//		return sucess;
+//	}
 	
 }
 

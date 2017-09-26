@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.vfc.nfvo.emsdriver.collector.alarm;
+package org.onap.vfc.nfvo.emsdriver.serviceregister.model;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.collector.alarm.AlarmTaskThread;
 
-public class AlarmTaskThreadTest {
-
-	private AlarmTaskThread taskThread;
+public class ServiceNodeVoTest {
 	
-	@Before
-    public void setUp() throws IOException {
-		taskThread = new AlarmTaskThread();
+	private ServiceNodeVo serviceNodeVo;
+
+    @Before
+    public void setUp() {
+    	serviceNodeVo = new ServiceNodeVo();
     }
-	
-	@Test
-	public void build120Alarm(){
-		String alarm = "{\"alarmSeq\":495,\"alarmTitle\":\"LTE cell outage\",\"alarmStatus\":1,\"alarmType\":\"processingErrorAlarm\"}";
-//		String al = taskThread.build120Alarm(alarm);
-		assertNotNull(alarm);
-	}
-		
+    
+    @Test
+    public void testServiceNodeVo(){
+    	serviceNodeVo.setIp("127.0.0.1");
+    	serviceNodeVo.setPort("100");
+    	serviceNodeVo.setTtl(1);
+    	assertNotNull(serviceNodeVo.getIp());
+    	assertNotNull(serviceNodeVo.getPort());
+    	assertNotNull(serviceNodeVo.getTtl());
+    }
+
 }
