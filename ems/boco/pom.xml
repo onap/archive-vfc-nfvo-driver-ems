@@ -26,7 +26,7 @@
   <artifactId>boco-driver</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>org/onap/vfc/nfvo/driver/ems/ems/boco</name>
+  <name>vfc-nfvo-driver-ems-ems-boco</name>
   
 
   <properties>
