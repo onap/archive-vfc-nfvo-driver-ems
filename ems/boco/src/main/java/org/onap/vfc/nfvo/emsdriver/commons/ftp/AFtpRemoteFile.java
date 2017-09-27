@@ -16,8 +16,6 @@
 package org.onap.vfc.nfvo.emsdriver.commons.ftp;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -34,9 +32,6 @@ public class AFtpRemoteFile implements RemoteFile{
 		this.currDir = currDir;
 	}
 	
-	public long getSize() {
-		return ftpFile.getSize();
-	}
 	
 	public String getFileName() {
 		return ftpFile.getName();
@@ -44,38 +39,5 @@ public class AFtpRemoteFile implements RemoteFile{
 	
 	public String getAbsFileName() {
 		return currDir.concat(getFileName());
-	}
-	
-	public boolean isDirectory() {
-		return ftpFile.isDirectory();
-	}
-	public boolean isFile() {
-		return ftpFile.isFile();
-	}
-	
-	public String getOwner() {
-		return ftpFile.getUser();
-	}
-
-	public Date getModifyDate() {
-		return ftpFile.getTimestamp().getTime();
-	}
-	public boolean renameTo(String newName) throws IOException {
-		return ftpClient.rename(
-				currDir.concat(getFileName()), newName);
-	}
-	public boolean remove() throws IOException {
-		return ftpClient.deleteFile(
-				currDir.concat(getFileName()));
-	}
-	
-	public InputStream getInputStream() throws IOException {
-		return ftpClient.retrieveFileStream(this.getAbsFileName());
-	}
-	
-	public void release() {
-		ftpClient = null;
-		ftpFile = null;
-		currDir = null;
 	}
 }

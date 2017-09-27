@@ -28,6 +28,8 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
@@ -45,12 +47,13 @@ import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.ftp.AFtpRemoteFile;
 import org.onap.vfc.nfvo.emsdriver.commons.ftp.FTPInterface;
 import org.onap.vfc.nfvo.emsdriver.commons.ftp.FTPSrv;
-import org.onap.vfc.nfvo.emsdriver.commons.ftp.SFTPSrv;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.DateUtil;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.Gunzip;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.StringUtil;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.UnZip;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.VarExprParser;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.Zip;
 import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationImp;
 import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationInterface;
@@ -62,7 +65,8 @@ public class TaskThread implements Runnable{
 	
 	public  Log log = LogFactory.getLog(TaskThread.class);
 	
-	private MessageChannel collectResultChannel;
+	private MessageChannel cmResultChannel;
+	private MessageChannel pmResultChannel;
 	
 	private CollectMsg data;
 	
@@ -75,9 +79,9 @@ public class TaskThread implements Runnable{
 	
 	private SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	private String csvpathAndFileName;
-	private String xmlPathAndFileName;
-	private int countNum = 0 ;
+//	private String csvpathAndFileName;
+//	private String xmlPathAndFileName;
+//	private int countNum = 0 ;
 	
 	public TaskThread(CollectMsg data) {
 		this.data = data;
@@ -89,8 +93,8 @@ public class TaskThread implements Runnable{
 	@Override
 	public void run(){
 		
-		collectResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_CHANNEL_KEY);
-			
+		cmResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_CHANNEL_KEY);
+		pmResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);
 		try {
 			collectMsgHandle(data);
 		} catch (Exception e) {
@@ -125,29 +129,11 @@ public class TaskThread implements Runnable{
 			  continue;
 			String nename = ma.group(1);
 			boolean parseResult = false;
-			if("CM".equalsIgnoreCase(collectVo.getType())){
+			if("ems-resource".equalsIgnoreCase(collectVo.getType())){
 				parseResult = processCMXml(tempfile, nename,"CM");
 			}else{
-				parseResult = processPMCsv(tempfile, nename,"PM");
+				parseResult = processPMCsv(tempfile);
 				
-				//createzipFile
-				String[] fileKeys = this.createZipFile(csvpathAndFileName,xmlPathAndFileName,nename);
-				//ftp store
-				Properties ftpPro = configurationInterface.getProperties();
-				String ip = ftpPro.getProperty("ftp_ip");
-				String port = ftpPro.getProperty("ftp_port");
-				String ftp_user = ftpPro.getProperty("ftp_user");
-				String ftp_password = ftpPro.getProperty("ftp_password");
-				
-				String ftp_passive = ftpPro.getProperty("ftp_passive");
-				String ftp_type = ftpPro.getProperty("ftp_type");
-				String remoteFile = ftpPro.getProperty("ftp_remote_path");
-				this.ftpStore(fileKeys,ip,port,ftp_user,ftp_password,ftp_passive,ftp_type,remoteFile);
-				//create Message
-				String message = this.createMessage(fileKeys[1], ftp_user, ftp_password, ip,  port, countNum,nename);
-				
-				//set message
-				this.setMessage(message);
 			}
 			
 			if (parseResult){
@@ -159,23 +145,7 @@ public class TaskThread implements Runnable{
 		}
 	}
 	
-	public boolean processPMCsv(File tempfile, String nename,String type) {
-		
-		String csvpath = localPath+nename+"/"+type+"/";
-		File csvpathfile = new File(csvpath);
-		if(!csvpathfile.exists()){
-			csvpathfile.mkdirs();
-		}
-		String csvFileName = nename +dateFormat.format(new Date())+  System.nanoTime();
-		csvpathAndFileName = csvpath+csvFileName+".csv";
-		BufferedOutputStream  bos = null;
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(csvpathAndFileName,false);
-			bos = new BufferedOutputStream(fos, 10240);
-		} catch (FileNotFoundException e1) {
-			log.error("FileNotFoundException "+StringUtil.getStackTrace(e1));
-		}
+	public boolean processPMCsv(File tempfile) {
 		
 		FileInputStream brs = null;
 		InputStreamReader isr = null;
@@ -203,7 +173,7 @@ public class TaskThread implements Runnable{
 				columnNames.add(name);
 			}
 			
-			xmlPathAndFileName = this.setColumnNames(nename, columnNames,type);
+//			xmlPathAndFileName = this.setColumnNames(nename, columnNames,type);
 			
 			String valueLine = "";
 			List<String> valuelist = new ArrayList<String>();
@@ -212,15 +182,21 @@ public class TaskThread implements Runnable{
 				if (valueLine.trim().equals("")) {
 					continue;
 				}
-				countNum ++;
+//				countNum ++;
 				String [] values = valueLine.split("\\|",-1);
 				
 				valuelist.addAll(commonValues);
 				for(String value : values){
 					valuelist.add(value);
 				}
-				this.appendLine(valuelist, bos);
-				
+//				this.appendLine(valuelist, bos);
+				//resultMap
+				HashMap<String,String> resultMap = this.resultMap(columnNames,valuelist);
+				try {
+					pmResultChannel.put(resultMap);
+				} catch (InterruptedException e) {
+					log.error("collectResultChannel.put(resultMap) error ",e);
+				}
 				valuelist.clear();
 			}
 		} catch (IOException e) {
@@ -234,12 +210,7 @@ public class TaskThread implements Runnable{
 					isr.close();
 				if (brs != null)
 					brs.close();
-				if(bos != null){
-					bos.close();
-				}
-				if(fos != null){
-					fos.close();
-				}
+				
 			} catch (Exception e){
 				log.error(e);
 			}
@@ -248,6 +219,18 @@ public class TaskThread implements Runnable{
 		
 	}
 
+	private HashMap<String,String> resultMap(List<String> columnNames, List<String> valuelist) {
+		
+		HashMap<String,String>  resultMap = new HashMap<String,String>();
+		if(columnNames.size() == valuelist.size()){
+			for(int i =0;i<columnNames.size();i++){
+				resultMap.put(columnNames.get(i), valuelist.get(i));
+			}
+		}
+		
+		return resultMap;
+		
+	}
 	private boolean processCMXml(File tempfile, String nename, String type) {
 		
 		String csvpath = localPath+nename+"/"+type+"/";
@@ -415,7 +398,7 @@ public class TaskThread implements Runnable{
 	private void setMessage(String message) {
 
 		try {
-			collectResultChannel.put(message);
+			cmResultChannel.put(message);
 		} catch (Exception e) {
 			log.error("collectResultChannel.put(message) is error "+StringUtil.getStackTrace(e));
 		}
@@ -482,12 +465,7 @@ public class TaskThread implements Runnable{
 		
 		
 		FTPInterface ftpClient;
-		if("ftp".equalsIgnoreCase(ftp_type)){
-			 ftpClient = new FTPSrv();
-		}else{
-			 ftpClient = new SFTPSrv();
-		}
-		
+		ftpClient = new FTPSrv();
 		//login
 		try {
 			ftpClient.login(ip, Integer.parseInt(port), ftp_user, ftp_password, "GBK", Boolean.parseBoolean(ftp_passive), 5*60*1000);
@@ -495,7 +473,7 @@ public class TaskThread implements Runnable{
 			log.error("login fail,ip=["+ip+"] port=["+port+"] user=["+ftp_user+"]pwd=["+ftp_password+"]"+StringUtil.getStackTrace(e));
 		    return;
 		} 
-		ftpClient.store(zipFilePath, remoteFile);
+//		ftpClient.store(zipFilePath, remoteFile);
 		log.debug("store  ["+zipFilePath+"]to["+remoteFile+"]");
 								
 		FileUtils.deleteQuietly(new File(zipFilePath));
@@ -601,19 +579,19 @@ public class TaskThread implements Runnable{
 		}
 	}
 	
-	private void appendLine(List<String> values,BufferedOutputStream  bos) {
-		StringBuilder lineDatas =  new StringBuilder();
-		
-		for (String value : values) {
-			lineDatas.append(value).append("|");
-		}
-		try {
-			bos.write(lineDatas.toString().getBytes());
-			bos.write("\n".getBytes());
-		} catch (IOException e) {
-			log.error("appendLine error "+StringUtil.getStackTrace(e));
-		}
-	}
+//	private void appendLine(List<String> values,BufferedOutputStream  bos) {
+//		StringBuilder lineDatas =  new StringBuilder();
+//		
+//		for (String value : values) {
+//			lineDatas.append(value).append("|");
+//		}
+//		try {
+//			bos.write(lineDatas.toString().getBytes());
+//			bos.write("\n".getBytes());
+//		} catch (IOException e) {
+//			log.error("appendLine error "+StringUtil.getStackTrace(e));
+//		}
+//	}
 
 	public List<File> decompressed(String fileName){
 	    List<File> filelist = new ArrayList<File>();
@@ -683,13 +661,7 @@ public class TaskThread implements Runnable{
 		//isPassiveMode
 		String passivemode = collectVo.getPassive();
 		
-		String ftpType = collectVo.getFtptype();
-		FTPInterface ftpClient = null;
-		if("ftp".equalsIgnoreCase(ftpType)){
-			 ftpClient = new FTPSrv();
-		}else{
-			 ftpClient = new SFTPSrv();
-		}
+		FTPInterface ftpClient = new FTPSrv();
 		
 		//login
 		try {
@@ -701,44 +673,152 @@ public class TaskThread implements Runnable{
 		
 		//download
 		String dir = collectVo.getRemotepath();
-		boolean cdsucess = ftpClient.chdir(dir);
-		if(cdsucess){
-			AFtpRemoteFile[] remoteFiles = (AFtpRemoteFile[]) ftpClient.list();
+		List<String> searchExprList = new ArrayList<String>();
+		String []FPath = dir.split(";");
+		for(int i=0;i<FPath.length;i++){
+			int oldSize = searchExprList.size();
+			String conpath = FPath[i];
+			Hashtable<String,String> varMap = new Hashtable<String,String>();
+			long[] d = DateUtil.getScanScope(new Date(), 900);
+			searchExprList.add(VarExprParser.replaceVar(conpath,d[0],d[1]));
 			
-			for(AFtpRemoteFile ftpRemoteFile: remoteFiles){
-				if(!new File(localPath).exists()){
-					try {
-						new File(localPath).mkdir();
-					} catch (Exception e) {
-						log.error("create localPath is fail localPath="+localPath+" "+StringUtil.getStackTrace(e));
+			varMap.clear();
+			varMap = null;
+			log.info("["+conpath+"]，result["+(searchExprList.size()-oldSize)+"] path");
+			conpath = null;
+		}
+		searchExprList =getLocalPathNoRegular(searchExprList);
+		List<AFtpRemoteFile> remoteFiles = new ArrayList<AFtpRemoteFile>();
+		for(String expr :searchExprList){
+			String keys[] = parseExprKeys(expr);
+			String ftpRegular = keys[1];
+			String ftpDir = keys[0];
+			
+			boolean cdsucess = ftpClient.chdir(expr);
+			if(cdsucess){
+				AFtpRemoteFile[] arf = (AFtpRemoteFile[]) ftpClient.list();
+				log.info(" list ["+ftpDir+"]，result["+(arf==null?"null":arf.length)+"] files");
+				//filter
+				
+				rfileFilter(remoteFiles,arf,ftpRegular);
+				
+				keys = null;
+				ftpRegular=ftpDir = null;
+				
+				for(AFtpRemoteFile ftpRemoteFile: remoteFiles){
+					if(!new File(localPath).exists()){
+						try {
+							new File(localPath).mkdir();
+						} catch (Exception e) {
+							log.error("create localPath is fail localPath="+localPath+" "+StringUtil.getStackTrace(e));
+						}
+					}
+					
+					if(!new File(localPath).exists()){
+						new File(localPath).mkdirs();
+					}
+					
+					String localFileName = localPath + ftpRemoteFile.getFileName();
+					File loaclFile = new File(localFileName);
+					if (loaclFile.exists()) {
+						loaclFile.delete();
+					}
+					
+					boolean flag = ftpClient.downloadFile(ftpRemoteFile.getAbsFileName(), localFileName);
+					
+					if(flag){
+						fileList.add(localFileName);
+					}else{
+						log.error("download file fail fileName="+ftpRemoteFile.getAbsFileName());
 					}
 				}
 				
-				if(!new File(localPath).exists()){
-					new File(localPath).mkdirs();
-				}
-				
-				String localFileName = localPath + ftpRemoteFile.getFileName();
-				File loaclFile = new File(localFileName);
-				if (loaclFile.exists()) {
-					loaclFile.delete();
-				}
-				
-				boolean flag = ftpClient.downloadFile(ftpRemoteFile.getAbsFileName(), localFileName);
-				
-				if(flag){
-					fileList.add(localFileName);
-				}else{
-					log.error("download file fail fileName="+ftpRemoteFile.getAbsFileName());
-				}
+			}else{
+				log.error("chdir is faill dir =["+dir+"]");
 			}
-			
-		}else{
-			log.error("chdir is faill dir =["+dir+"]");
 		}
+		
+		
 		
 		return fileList;
 	}
 	
+	private void rfileFilter(List<AFtpRemoteFile> fileContainer, AFtpRemoteFile[] arfs, String ftpRegular) {
+		if (ftpRegular!=null && ftpRegular.length()>0) {
+			Pattern pattern = null;
+			try {
+				pattern = Pattern.compile(ftpRegular, Pattern.CASE_INSENSITIVE);
+			} catch (Exception e) {
+				log.info("["+ftpRegular+"]Pattern.compile exception:"+e.getMessage());
+			}
+			int hisSize = fileContainer.size();
+			for (int j=0; arfs!=null&&j<arfs.length; j++) {
+				String fileName = parseFileName(arfs[j].getFileName());
+				Matcher matcher = pattern.matcher(fileName);
+				if (matcher.find()) 
+					fileContainer.add(arfs[j]);
+			}
+			log.info("["+ftpRegular+"]filter["+(fileContainer.size()-hisSize)+"]filse");
+			pattern = null;
+		}else {
+			for (int j=0; arfs!=null&&j<arfs.length; j++) 
+				fileContainer.add(arfs[j]);
+		}
+		
+	}
+	
+	private String parseFileName(String fileName) {
+		int idx = fileName.lastIndexOf("/");
+		if (idx == -1)
+			return fileName;
+		return fileName.substring(idx+1, fileName.length());
+	}
+	
+	private String[] parseExprKeys(String source) {
+		
+		if(source.indexOf(";") > -1){
+			source = source.substring(0, source.indexOf(";"));
+		}
+		if (source.endsWith("/")) 
+			return new String[]{source,""};
+
+		int idx = source.lastIndexOf("/");
+		String[] dirkeys = new String[2];
+		dirkeys[0] = source.substring(0, idx+1);
+		dirkeys[1] = source.substring(idx+1, source.length());
+		return dirkeys;
+	}
+	
+	public  List<String> getLocalPathNoRegular(List<String> searchExprList){
+		boolean isregular = false;
+		List<String> regularList = new ArrayList<String>();
+		for(String regular : searchExprList){
+			Pattern lpattern = null;
+			try{
+				lpattern = Pattern.compile("(.*/)<([^/]+)>(/.*)"); 
+			}catch (Exception e) {
+				log.info("["+regular+"]compile fails:"+e.getMessage());
+			}
+			
+			Matcher  matcher = lpattern.matcher(regular);
+			if(matcher.find()){
+				isregular = true;
+				String parpath  = matcher.group(1);
+				File[] arryFile = new File(parpath).listFiles();
+				for(File file :arryFile){
+					if(file.isDirectory()&&file.getName().matches(matcher.group(2))){
+						regularList.add(matcher.group(1)+file.getName()+matcher.group(3));
+					}	
+				}
+			}else{
+				regularList.add(regular);
+			}
+					
+		}
+		if(isregular==true){
+			getLocalPathNoRegular(regularList);
+		}
+		return regularList;
+	}
 	
 }

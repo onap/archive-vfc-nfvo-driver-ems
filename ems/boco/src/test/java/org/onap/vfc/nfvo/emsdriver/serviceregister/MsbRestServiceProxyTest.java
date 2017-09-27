@@ -13,30 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.vfc.nfvo.emsdriver.collector.alarm;
-
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
+package org.onap.vfc.nfvo.emsdriver.serviceregister;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.collector.alarm.AlarmTaskThread;
+import org.onap.vfc.nfvo.emsdriver.serviceregister.model.MsbRegisterVo;
 
-public class AlarmTaskThreadTest {
+public class MsbRestServiceProxyTest {
 
-	private AlarmTaskThread taskThread;
-	
 	@Before
-    public void setUp() throws IOException {
-		taskThread = new AlarmTaskThread();
-    }
-	
-	@Test
-	public void build120Alarm(){
-		String alarm = "{\"alarmSeq\":495,\"alarmTitle\":\"LTE cell outage\",\"alarmStatus\":1,\"alarmType\":\"processingErrorAlarm\"}";
-//		String al = taskThread.build120Alarm(alarm);
-		assertNotNull(alarm);
+	public void upSet(){
+		MsbConfiguration.setMsbAddress("");
 	}
-		
+	@Test
+	public void testRegisterService(){
+		MsbRegisterVo registerInfo = new MsbRegisterVo();
+		registerInfo.setServiceName("ems-driver");
+		registerInfo.setUrl("/api/emsdriver/v1");
+		String registerResponse = MsbRestServiceProxy.registerService(registerInfo);
+		System.out.println(registerResponse);
+	}
 }

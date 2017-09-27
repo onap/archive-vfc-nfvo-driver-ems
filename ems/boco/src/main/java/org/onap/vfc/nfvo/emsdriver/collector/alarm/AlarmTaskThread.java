@@ -61,16 +61,18 @@ public class AlarmTaskThread extends Thread{
 	}
 
 	public void run() {
-		alarmChannel = MessageChannelFactory.getMessageChannel(Constant.ALARM_CHANNEL_KEY);
+		alarmChannel = MessageChannelFactory.getMessageChannel(Constant.RESULT_CHANNEL_KEY);
 		try {
 			this.init();
 			while(!this.isStop){
 				String body;
 				try {
 					body = this.receive();
-					String alarm120 = this.build120Alarm(body);
-					
-					this.send120Alarm(alarm120);
+					try {
+						alarmChannel.put(body);
+					} catch (InterruptedException e) {
+						log.error(StringUtil.getStackTrace(e));
+					}
 				} catch (Exception e) {
 					reinit();
 				}
@@ -80,37 +82,7 @@ public class AlarmTaskThread extends Thread{
 		}
 	}
 	
-	private void send120Alarm(String alarm120) {
-		
-		try {
-			alarmChannel.put(alarm120);
-		} catch (InterruptedException e) {
-			log.error(StringUtil.getStackTrace(e));
-		}
-	}
-
-	public String  build120Alarm(String body) {
-		StringBuilder content = new StringBuilder(
-		"<?xml version='1.0' encoding='iso-8859-1'?>\n")
-		.append("<WholeMsg MsgMark='120' Priority='2' FieldNum='5'><FM_ALARM_MSG>\n");
 	
-	
-		JSONObject reagobj = JSONObject.parseObject(body);
-		
-		Set<String> keys = reagobj.keySet();
-		
-		for (String key : keys) {
-			
-			String value = reagobj.get(key).toString();
-			content.append("<").append(key).append(">");
-		    content.append(value);
-		    content.append("</").append(key).append(">\n");
-		}
-		content.append("</FM_ALARM_MSG></WholeMsg>");
-
-		return content.toString();
-		
-	}
 
 	public String receive() throws Exception {
 
@@ -149,6 +121,10 @@ public class AlarmTaskThread extends Thread{
 			if("realTimeAlarm".equalsIgnoreCase(msg.getMsgType().name)){
 				log.debug("received alarm message");
 				retString =  msg.getBody();
+			}
+			
+			if(retString == null){
+				Thread.sleep(100);
 			}
 		}
 		return retString;
