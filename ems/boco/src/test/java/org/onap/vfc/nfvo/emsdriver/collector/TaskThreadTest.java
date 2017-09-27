@@ -21,24 +21,29 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.vfc.nfvo.emsdriver.collector.TaskThread;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.Gzip;
 
 public class TaskThreadTest {
-	
-	private String gzPath = System.getProperty("user.dir")+"/data/" +"PM-ENB-EUTRANCELLNB-test.csv.gz";
+	private String csvPath = System.getProperty("user.dir")+"/data/" +"PM-ENB-EUTRANCELLNB-test.csv";
+	private String gzPath = System.getProperty("user.dir")+"/data/" +"PM-ENB-EUTRANCELLNB-testa.csv.gz";
 	private TaskThread taskThread;
 	private List<File> list = null;
 	@Before
     public void setUp() throws IOException {
 		taskThread = new TaskThread();
+		Gzip gzip = new Gzip();
+		gzip.compress(csvPath, gzPath);
     }
 	
 	@Test
 	public void decompressed(){
 		list = taskThread.decompressed(gzPath);
 		assertTrue(list.size() > 0);
+		new File(gzPath).delete();
 	}
 
 	@Test
@@ -49,4 +54,10 @@ public class TaskThreadTest {
 			assertTrue(re);
 		}
 	}
+	
+	@After
+    public void setDown() throws IOException {
+		new File(gzPath).delete();
+		new File(gzPath.replace(".gz", "")).delete();
+    }
 }

@@ -15,30 +15,41 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.utils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.After;
 import org.junit.Before;
-import org.onap.vfc.nfvo.emsdriver.commons.utils.UnZip;
+import org.junit.Test;
 
 public class UnZipTest {
-
-	private String zipPath = System.getProperty("user.dir")+"/data/" +"PM-ENB-EUTRANCELLNB-test.csv.gz";
+	private String file = "./test.txt";
+	private String zipPath = "./test.zip";
 	private String toPath = System.getProperty("user.dir")+"/data/";
 	private UnZip unZip = null;
 	
 	@Before
     public void setUp() throws IOException {
+		new File(file).createNewFile();
+		Zip zip = new Zip(file,zipPath);
+		zip.compress();
 		unZip = new UnZip(zipPath,toPath);
+		
     }
-	
+	@Test
 	public void deCompress() throws IOException{
 		unZip.deCompress();
 		
 		assertTrue(new File(toPath).listFiles().length > 0);
 	}
+	@After
+    public void setDown() throws IOException {
+		new File(zipPath).delete();
+		new File(file).delete();
+		new File(toPath+file).delete();
+    }
 	
 	public static void main(String[] str){
 		 System.out.println(System.getProperty("user.dir"));

@@ -41,7 +41,6 @@ public class ZipTest {
 		zip.compress();
 		
 		assertTrue(tofile1.endsWith(".zip"));
-		
 	}
 	
 
