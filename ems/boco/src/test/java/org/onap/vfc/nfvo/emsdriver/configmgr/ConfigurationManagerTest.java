@@ -33,7 +33,7 @@ public class ConfigurationManagerTest {
 	@Before
     public void setUp() throws IOException {
 		configurationManager = new ConfigurationManager();
-		configurationManager.dispose();
+		configurationManager.readcfg();
     }
 	
 	@Test

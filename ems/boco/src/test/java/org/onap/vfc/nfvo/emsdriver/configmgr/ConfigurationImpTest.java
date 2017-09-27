@@ -38,7 +38,7 @@ public class ConfigurationImpTest {
     public void setUp() throws IOException {
 		configurationImp = new ConfigurationImp();
 		configurationManager = new ConfigurationManager();
-		configurationManager.dispose();
+		configurationManager.readcfg();
     }
 	
 	@Test

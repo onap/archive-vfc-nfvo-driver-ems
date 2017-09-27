@@ -38,8 +38,8 @@ public interface FTPInterface {
     
     public RemoteFile[] list();
     
-    public RemoteFile[] list(String dir);
+//    public RemoteFile[] list(String dir);
     
-    public boolean store(String localFile,String remoteFile);
+//    public boolean store(String localFile,String remoteFile);
    
 }

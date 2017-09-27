@@ -25,16 +25,16 @@ public class Constant {
 	public static String SYS_DATA = SYS_HOME  + "data" + File.separator;
 	public static String SYS_DATA_TEMP = SYS_DATA + File.separator + "temp" + File.separator;
 	public static String SYS_DATA_RESULT = SYS_DATA + File.separator + "RESULT" + File.separator;
-	public static String COLLECT_TYPE_CM = "cm";
-	public static String COLLECT_TYPE_PM = "pm";
-	public static String COLLECT_TYPE_ALARM = "alarm";
+	public static String COLLECT_TYPE_CM = "ems-resource";
+	public static String COLLECT_TYPE_PM = "ems-performance";
+	public static String COLLECT_TYPE_ALARM = "ems-alarm";
 	
 	public static String ENCODING_UTF8 = "UTF-8";
 	public static String ENCODING_GBK = "GBK";
 	
 	public static final String COLLECT_CHANNEL_KEY = "COLLECT_CHANNEL_KEY";
 	public static final String COLLECT_RESULT_CHANNEL_KEY = "COLLECT_RESULT_CHANNEL_KEY";
-	public static final String ALARM_CHANNEL_KEY = "ALARM_CHANNEL_KEY";
+	public static final String RESULT_CHANNEL_KEY = "RESULT_CHANNEL_KEY";
 	
 	
 	public static final String MSBAPIROOTDOMAIN = "/api/microservices/v1/services";
