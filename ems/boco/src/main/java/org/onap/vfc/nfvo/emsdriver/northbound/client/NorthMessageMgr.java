@@ -40,7 +40,6 @@ import evel_javalibrary.att.com.EvelFault;
 import evel_javalibrary.att.com.EvelFault.EVEL_SEVERITIES;
 import evel_javalibrary.att.com.EvelFault.EVEL_SOURCE_TYPES;
 import evel_javalibrary.att.com.EvelFault.EVEL_VF_STATUSES;
-import evel_javalibrary.att.com.EvelHeader.PRIORITIES;
 import evel_javalibrary.att.com.EvelHeader;
 import evel_javalibrary.att.com.EvelScalingMeasurement;
 
@@ -212,6 +211,8 @@ public class NorthMessageMgr extends DriverThread{
 			 String neUID = reagobj.getString("neUID");
 			 flt.evel_reporting_entity_id_set(neUID.substring(0,9));//
 			 flt.evel_reporting_entity_name_set(neUID.substring(0,9));
+			 flt.evel_header_set_sourceid(true, reagobj.getString("neName"));
+			 flt.evel_header_set_source_name(reagobj.getString("objectName"));
 			 
 			 flt.evel_header_set_priority(pri);
 			 for(String key : reagobj.keySet()){
@@ -295,17 +296,11 @@ public class NorthMessageMgr extends DriverThread{
 			String evid = reMap.get("startTime")+reMap.get("ObjectType")+reMap.get("rmUID");
 			int Period = Integer.parseInt(reMap.get("Period")!=null?reMap.get("Period"):"15");
 			EvelScalingMeasurement sm  = new EvelScalingMeasurement(Period,evname, evid);
-			JsonObject objJson = null;
-  			JsonBuilderFactory factory = null;
-  			factory = Json.createBuilderFactory(null);
-  			JsonObjectBuilder jsonObjectBuilder = factory.createObjectBuilder();
 
   			for(String key : reMap.keySet()){
-  				jsonObjectBuilder = jsonObjectBuilder.add(key, reMap.get(key));
+  				sm.evel_measurement_custom_measurement_add(reMap.get("ElementType"), key, reMap.get(key));
   				
   			}
-  			objJson = jsonObjectBuilder.build();
-  			sm.evel_measurement_add_jsonobj(objJson);
   			
   			sm.evel_nfcnamingcode_set("");
   			sm.evel_nfnamingcode_set("");
@@ -313,7 +308,10 @@ public class NorthMessageMgr extends DriverThread{
   			String rmUID = reMap.get("rmUID");
   			sm.evel_reporting_entity_id_set(rmUID.substring(0,9));//
   			String Dn = reMap.get("Dn");
-  			sm.evel_reporting_entity_name_set(Dn);
+  			sm.evel_reporting_entity_name_set(Dn.substring(0, Dn != null && Dn.indexOf(";")>0?Dn.indexOf(";"):Dn.length()));
+  			sm.evel_header_set_sourceid(true, reMap.get("rmUID"));
+  			sm.evel_header_set_source_name(reMap.get("rmUID"));
+			 
   			sm.evel_header_set_priority(EvelHeader.PRIORITIES.EVEL_PRIORITY_NORMAL);
            return sm;
 		}
