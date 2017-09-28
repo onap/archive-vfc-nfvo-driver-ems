@@ -189,7 +189,7 @@ public class NorthMessageMgr extends DriverThread{
 			
 			EvelFault flt  = new EvelFault(eventName, evnId,alarmCondition, 
 					specificProblem,pri,severity,
-					EVEL_SOURCE_TYPES.EVEL_SOURCE_OTHER,
+					EVEL_SOURCE_TYPES.EVEL_SOURCE_VIRTUAL_NETWORK_FUNCTION,
 					status);
 			 flt.evel_nfcnamingcode_set("");
 			 flt.evel_nfnamingcode_set("");
