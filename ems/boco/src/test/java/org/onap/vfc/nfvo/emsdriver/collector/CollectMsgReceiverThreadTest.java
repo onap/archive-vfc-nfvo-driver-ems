@@ -15,51 +15,37 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.collector.TaskThreadService;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
 
-public class TaskThreadServiceTest {
-	
-	private TaskThreadService taskThreadService;
-	private CollectMsg collectMsg;
-	
+public class CollectMsgReceiverThreadTest {
+
+	CollectMsgReceiverThread col = null;
 	@Before
 	public void setUp() {
-		collectMsg = new CollectMsg();
-		taskThreadService = TaskThreadService.getInstance(1);
+		col = new CollectMsgReceiverThread();
 	}
 	
+	
 	@Test
-	public void add() {
-		taskThreadService.add(collectMsg);
-		taskThreadService.size();
+	public void dispose() {
 		new Thread(){
-			public void run() { 
-			    try {
+			public void run() {
+				try {
 					Thread.sleep(10);
-					taskThreadService.stopTask();
+					col.setRun(false);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}.start();
-		taskThreadService.run();
+		col.setRun(true);
+		col.dispose();
+		col.getTaskService().stopTask();
+		col.getThread_max_num();
+		col.setThread_max_num(1);
 		
 	}
-
-	@Test
-	public void receive() {
-		taskThreadService.add(collectMsg);
-		CollectMsg collectMsg = taskThreadService.receive();
-		
-		assertNotNull(collectMsg);
-	}
-	
-	
-	
 }

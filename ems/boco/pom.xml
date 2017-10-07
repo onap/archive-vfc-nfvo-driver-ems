@@ -208,20 +208,10 @@
         <artifactId>swagger-jersey2-jaxrs</artifactId>
         <version>${swagger.version}</version>
     </dependency>
-     <dependency>
-		    <groupId>dependencies-all</groupId>
-		    <artifactId>test</artifactId>
-		    <version>3.0</version>
-		    <scope>system</scope> 
-			<systemPath>${basedir}/lib/dependencies-all.jar</systemPath> 
-		</dependency>
-			
-		<dependency>
-		    <groupId>VESLibrary</groupId>
-		    <artifactId>test</artifactId>
-		    <version>3.0</version>
-		    <scope>system</scope> 
-			<systemPath>${basedir}/lib/VESLibrary.jar</systemPath> 
-		</dependency>
+    <dependency>
+		<groupId>evel_javalib2</groupId>
+  		<artifactId>evel_javalib2</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+	 </dependency>
   </dependencies>
 </project>

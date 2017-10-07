@@ -74,6 +74,7 @@ public class AlarmTaskThread extends Thread{
 						log.error(StringUtil.getStackTrace(e));
 					}
 				} catch (Exception e) {
+					e.printStackTrace();
 					reinit();
 				}
 			}
@@ -275,4 +276,21 @@ public class AlarmTaskThread extends Thread{
 			}
 		}
 	}
+
+	/**
+	 * @param isStop the isStop to set
+	 */
+	public void setStop(boolean isStop) {
+		this.isStop = isStop;
+	}
+
+	/**
+	 * @return the heartBeat
+	 */
+	public HeartBeat getHeartBeat() {
+		return heartBeat;
+	}
+	
+	
+	
 }

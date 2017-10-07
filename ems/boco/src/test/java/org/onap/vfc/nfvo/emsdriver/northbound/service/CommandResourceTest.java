@@ -13,28 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onap.vfc.nfvo.emsdriver.commons.ftp;
+package org.onap.vfc.nfvo.emsdriver.northbound.service;
 
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
+import org.junit.Test;
 
-public class AFtpRemoteFile implements RemoteFile{
-	protected FTPClient ftpClient = null;
-	protected FTPFile ftpFile = null;
-	protected String currDir = null;
-	
-	public AFtpRemoteFile(FTPFile rfile, FTPClient ftpClient, String currDir){
-		this.ftpClient = ftpClient;
-		this.ftpFile = rfile;
-		this.currDir = currDir;
-	}
-	
-	
-	public String getFileName() {
-		return ftpFile.getName();
-	}
-	
-	public String getAbsFileName() {
-		return currDir.concat(getFileName());
-	}
+public class CommandResourceTest {
+
+	 @Test
+	 public void testExecuteCommand(){
+		 CommandResource commandResource = new CommandResource();
+		 commandResource.executeCommand("aaa");
+	 }
 }
+

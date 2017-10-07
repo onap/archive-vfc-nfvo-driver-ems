@@ -34,9 +34,4 @@ public class XmlUtil {
 		Document doc = builder.build(is);
 		return doc;
 	}
-	public static Document getDocument(Reader reader) throws XMLStreamException, JDOMException, IOException{
-		SAXBuilder builder = new SAXBuilder();
-		Document doc = builder.build(reader);
-		return doc;
-	}
 }

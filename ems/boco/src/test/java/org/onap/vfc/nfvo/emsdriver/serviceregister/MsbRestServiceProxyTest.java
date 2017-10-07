@@ -15,6 +15,8 @@
  */
 package org.onap.vfc.nfvo.emsdriver.serviceregister;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.vfc.nfvo.emsdriver.serviceregister.model.MsbRegisterVo;
@@ -30,7 +32,15 @@ public class MsbRestServiceProxyTest {
 		MsbRegisterVo registerInfo = new MsbRegisterVo();
 		registerInfo.setServiceName("ems-driver");
 		registerInfo.setUrl("/api/emsdriver/v1");
-		String registerResponse = MsbRestServiceProxy.registerService(registerInfo);
-		System.out.println(registerResponse);
+		MsbRestServiceProxy.registerService(registerInfo);
+	}
+	@Test
+	public void testunRegiserService(){
+		MsbRestServiceProxy.unRegiserService("emsdriver","v1","172.0.0.1","9999");
+	}
+	
+	@Test
+	public void testqueryService(){
+		 List<String> queryService = MsbRestServiceProxy.queryService("emsdriver","v1");
 	}
 }

@@ -15,26 +15,6 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.ftp;
 
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
+public class FTPSrvTest {
 
-public class AFtpRemoteFile implements RemoteFile{
-	protected FTPClient ftpClient = null;
-	protected FTPFile ftpFile = null;
-	protected String currDir = null;
-	
-	public AFtpRemoteFile(FTPFile rfile, FTPClient ftpClient, String currDir){
-		this.ftpClient = ftpClient;
-		this.ftpFile = rfile;
-		this.currDir = currDir;
-	}
-	
-	
-	public String getFileName() {
-		return ftpFile.getName();
-	}
-	
-	public String getAbsFileName() {
-		return currDir.concat(getFileName());
-	}
 }
