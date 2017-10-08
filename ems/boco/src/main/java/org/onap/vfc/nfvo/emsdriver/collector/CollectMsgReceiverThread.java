@@ -88,5 +88,16 @@ public class CollectMsgReceiverThread extends DriverThread{
 		this.thread_max_num = thread_max_num;
 	}
 
+
+
+	/**
+	 * @return the taskService
+	 */
+	public TaskThreadService getTaskService() {
+		return taskService;
+	}
+
+
+
 	
 }

@@ -22,20 +22,57 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.vfc.nfvo.emsdriver.collector.alarm.AlarmTaskThread;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 
 public class AlarmTaskThreadTest {
 
 	private AlarmTaskThread taskThread;
+	private AlarmSocketServer server;
 	
 	@Before
     public void setUp() throws IOException {
-		taskThread = new AlarmTaskThread();
+		new Thread(){
+			public void run(){
+				server = new AlarmSocketServer();
+				server.socketServer();
+			}
+		}.start();
+		
+		CollectVo collectVo = new CollectVo();
+		collectVo.setIP("127.0.0.1");
+		collectVo.setPort("12345");
+		collectVo.setUser("user");
+		collectVo.setPassword("12345");
+		taskThread = new AlarmTaskThread(collectVo);
     }
 	
 	@Test
 	public void build120Alarm(){
 		String alarm = "{\"alarmSeq\":495,\"alarmTitle\":\"LTE cell outage\",\"alarmStatus\":1,\"alarmType\":\"processingErrorAlarm\"}";
-//		String al = taskThread.build120Alarm(alarm);
+		try {
+			new Thread(){
+				public void run(){
+					try {
+						Thread.sleep(3000);
+						
+						server.stop();
+						taskThread.setStop(true);
+						taskThread.close();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}.start();
+			
+			taskThread.init();
+			taskThread.receive();
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertNotNull(alarm);
 	}
 		

@@ -45,7 +45,7 @@ public class MsbRestServiceProxy {
     	List<String> ipList = new ArrayList<String>();
     	String url = MsbConfiguration.getMsbAddress()+Constant.MSBAPIROOTDOMAIN+"/"+serviceName+"/version/"+version;
     	String response = HttpClientUtil.doGet(url, Constant.ENCODING_UTF8);
-    	if(!response.equals("")){
+    	if(response !=null && !"".equals(response)){
         	MsbRegisterVo msbRegisterVo = JSON.parseObject(response,MsbRegisterVo.class);
     		List<ServiceNodeVo> nodeList = msbRegisterVo.getNodes();
     		

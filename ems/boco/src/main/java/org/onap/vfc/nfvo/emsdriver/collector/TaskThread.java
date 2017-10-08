@@ -66,7 +66,7 @@ public class TaskThread implements Runnable{
 	public  Log log = LogFactory.getLog(TaskThread.class);
 	
 	private MessageChannel cmResultChannel;
-	private MessageChannel pmResultChannel;
+	public MessageChannel pmResultChannel;
 	
 	private CollectMsg data;
 	
@@ -115,7 +115,7 @@ public class TaskThread implements Runnable{
 		}
 	}
 
-	private void parseFtpAndSendMessage(String fileName, CollectVo collectVo) {
+	public void parseFtpAndSendMessage(String fileName, CollectVo collectVo) {
 		//
 		List<File> filelist = decompressed(fileName);
 		
@@ -178,7 +178,7 @@ public class TaskThread implements Runnable{
 			String valueLine = "";
 			List<String> valuelist = new ArrayList<String>();
 			
-			while (br.readLine() != null) {
+			while ((valueLine = br.readLine()) != null) {
 				if (valueLine.trim().equals("")) {
 					continue;
 				}
@@ -404,7 +404,7 @@ public class TaskThread implements Runnable{
 		}
 	}
 
-	private String createMessage(String zipName,String user,String pwd,String ip, String port,int countNum, String nename) {
+	public String createMessage(String zipName,String user,String pwd,String ip, String port,int countNum, String nename) {
 
 		StringBuffer strBuffer = new StringBuffer();
 		strBuffer

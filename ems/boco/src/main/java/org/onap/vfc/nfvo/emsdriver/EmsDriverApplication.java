@@ -18,7 +18,6 @@ package org.onap.vfc.nfvo.emsdriver;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jetty.HttpConnectorFactory;
-import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.server.SimpleServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -47,7 +46,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 	
 	protected static Log log = LogFactory.getLog(EmsDriverApplication.class);
-	public static ApplicationContext context = null;
+	private  ApplicationContext context = null;
 	
 	public static void main(String[] args) throws Exception {
         new EmsDriverApplication().run(args);
@@ -72,7 +71,7 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
     	MsbConfiguration.setMsbAddress(configuration.getMsbAddress());
     	//MSB register
     	String registerFlag = configuration.getAutoServiceRegister();
-    	if(registerFlag.equalsIgnoreCase("false")){
+    	if("false".equalsIgnoreCase(registerFlag)){
     		this.msbRegisteEmsDriverService(configuration);
     	}
     	//Start workThread
@@ -88,9 +87,11 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 			if (thread == null) {
 				log.error(threadName + "Thread start error,system exit");
 				System.exit(1);
+			}else{
+				thread.setName(threadName);
+				thread.start();
 			}
-			thread.setName(threadName);
-			thread.start();
+			
 		}
     }
     // init swagger
@@ -122,7 +123,7 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 		try {
 			ip = InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
-			log.error("Unable to get host ip: " + e.getMessage());
+			log.error("Unable to get host ip: ",e);
 		}
 		if(ip.equals("")){
 			ip = connector.getBindHost();

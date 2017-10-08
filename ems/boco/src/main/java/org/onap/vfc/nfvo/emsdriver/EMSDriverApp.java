@@ -28,7 +28,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 public class EMSDriverApp {
 
 	private static Log log = LogFactory.getLog(DriverThread.class);
-	public static ApplicationContext context = null;
+	private static ApplicationContext context = null;
 	static {
 		try {
 			/** spring bean applicationContext **/
@@ -57,9 +57,11 @@ public class EMSDriverApp {
 			if (thread == null) {
 				log.error(threadName + "Thread start error,system exit");
 				System.exit(1);
+			}else{
+				thread.setName(threadName);
+				thread.start();
 			}
-			thread.setName(threadName);
-			thread.start();
+			
 		}
 		
 		try {

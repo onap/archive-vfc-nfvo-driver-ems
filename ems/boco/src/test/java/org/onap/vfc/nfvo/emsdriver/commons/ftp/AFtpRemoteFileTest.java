@@ -15,26 +15,32 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.ftp;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.junit.Before;
+import org.junit.Test;
 
-public class AFtpRemoteFile implements RemoteFile{
-	protected FTPClient ftpClient = null;
-	protected FTPFile ftpFile = null;
-	protected String currDir = null;
-	
-	public AFtpRemoteFile(FTPFile rfile, FTPClient ftpClient, String currDir){
-		this.ftpClient = ftpClient;
-		this.ftpFile = rfile;
-		this.currDir = currDir;
-	}
-	
-	
-	public String getFileName() {
-		return ftpFile.getName();
-	}
-	
-	public String getAbsFileName() {
-		return currDir.concat(getFileName());
-	}
+public class AFtpRemoteFileTest {
+
+	 AFtpRemoteFile aFtpRemoteFile = null;
+	 @Before
+     public void setUp() {
+		 FTPFile f = new FTPFile();
+		 f.setName("aaa/bb.txt");
+		 aFtpRemoteFile = new AFtpRemoteFile(f , new FTPClient(), "aaa/");
+     }
+
+	 @Test
+	 public void getFileName() {
+		String fileName =  aFtpRemoteFile.getFileName();
+		assertNotNull(fileName);
+	 }
+	 @Test
+	 public void getAbsFileName() {
+		 String absFileName = aFtpRemoteFile.getAbsFileName();
+		 assertNotNull(absFileName);
+	 }
+	 
 }

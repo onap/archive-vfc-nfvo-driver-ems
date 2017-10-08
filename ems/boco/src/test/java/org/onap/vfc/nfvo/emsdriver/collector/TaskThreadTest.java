@@ -25,7 +25,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.vfc.nfvo.emsdriver.collector.TaskThread;
+import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.Gzip;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
 
 public class TaskThreadTest {
 	private String csvPath = System.getProperty("user.dir")+"/data/" +"PM-ENB-EUTRANCELLNB-test.csv";
@@ -35,6 +38,7 @@ public class TaskThreadTest {
 	@Before
     public void setUp() throws IOException {
 		taskThread = new TaskThread();
+		taskThread.pmResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);
 		Gzip gzip = new Gzip();
 		gzip.compress(csvPath, gzPath);
     }
@@ -54,6 +58,24 @@ public class TaskThreadTest {
 			assertTrue(re);
 		}
 	}
+	
+	@Test
+	public void parseFtpAndSendMessage(){
+		CollectVo collectVo = new CollectVo();
+		collectVo.setType("ems-p");
+		taskThread.parseFtpAndSendMessage(gzPath,collectVo);
+	}
+	
+	@Test
+	public void createMessage(){
+		CollectVo collectVo = new CollectVo();
+		collectVo.setType("ems-p");
+		taskThread.createMessage("zipName", "user", "pwd", "ip", "port", 122, "nename");
+	}
+	
+	
+	
+	
 	
 	@After
     public void setDown() throws IOException {
