@@ -90,5 +90,5 @@ echo @JAVA_OPTS@ $JAVA_OPTS
 
 class_path="$RUNHOME/:$RUNHOME/boco-driver.jar"
 echo @class_path@ $class_path
-
+# Start
 "$JAVA" $JAVA_OPTS -classpath "$class_path"  org.onap.vfc.nfvo.emsdriver.EMSDriverApp server "$RUNHOME/conf/emsdriver.yml"
