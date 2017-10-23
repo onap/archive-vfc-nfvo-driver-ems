@@ -64,7 +64,8 @@ public class NorthMessageMgr extends DriverThread{
 			level = Level.INFO;
 		}
 		
-		//login north
+		//login north 
+		event_api_url = "http://"+event_api_url;
 		try{
 			AgentMain.evel_initialize(event_api_url, Integer.parseInt(port),
 					path,topic,
