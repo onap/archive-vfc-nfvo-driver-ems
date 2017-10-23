@@ -21,11 +21,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.json.Json;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-
 import org.apache.log4j.Level;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
