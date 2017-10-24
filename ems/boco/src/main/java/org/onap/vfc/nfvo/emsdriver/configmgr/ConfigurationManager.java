@@ -312,6 +312,11 @@ public class ConfigurationManager extends DriverThread{
 						Thread.sleep(60*1000);
 					}
 				} catch (Exception e) {
+					try {
+						Thread.sleep(60*1000);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
 					log.error("ReceiveSource exception",e);
 				}
 			}

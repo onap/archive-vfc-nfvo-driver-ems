@@ -72,6 +72,7 @@ public class NorthMessageMgr extends DriverThread{
 					username,
 					password,
 					level);
+			log.info("AgentMain.evel_initialize sucess ");
 		} catch( Exception e ){
 			log.error("AgentMain.evel_initialize fail ",e);
 		}

@@ -132,8 +132,11 @@ public class TaskThread implements Runnable{
 			if("ems-resource".equalsIgnoreCase(collectVo.getType())){
 				parseResult = processCMXml(tempfile, nename,"CM");
 			}else{
-				parseResult = processPMCsv(tempfile);
-				
+				if(unfileName.indexOf(".csv") > 0){
+					parseResult = processPMCsv(tempfile);
+				}else{
+					parseResult = processPMCsv(tempfile);
+				}
 			}
 			
 			if (parseResult){
