@@ -17,7 +17,7 @@
 title stopping dac-service
 
 set HOME=%~dp0
-set Main_Class="org.onap.vfc.nfvo.emsdriver.EMSDriverApp"
+set Main_Class="org.onap.vfc.nfvo.emsdriver.EmsDriverApplication"
 
 echo ================== emsdriver-service info  =============================================
 echo HOME=$HOME
