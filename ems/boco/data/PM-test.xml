@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PmFile xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <FileHeader> 
+    <TimeStamp>2016-06-27T22:37:45</TimeStamp>  
+    <TimeZone>UTC+8</TimeZone>  
+    <Period>15</Period>  
+    <VendorName>ZTE</VendorName>  
+    <ElementType>CSCF</ElementType>  
+    <PmVersion>V2.0.0</PmVersion>  
+    <StartTime>2016-06-27T22:15:00</StartTime> 
+  </FileHeader>  
+  <Measurements> 
+    <ObjectType>IcscfFunction</ObjectType>  
+    <PmName> 
+      <N i="1">LIQ.AttLIR</N>  
+      <N i="2">LIQ.FailLIA._Cause</N>  
+      <N i="3">LIQ.SuccLIA</N>  
+      <N i="4">UR.AttUAR</N>  
+      <N i="5">UR.FailUAA._Cause</N>  
+      <N i="6">UR.SuccUAA</N> 
+    </PmName>  
+    <PmData> 
+      <Object rmUID="3201ZTHX1ICS24F1A451" Dn=" ZTE-CMHN-CS,SubNetwork=100001,ManagedElement=532024_24,IcscfFunction=1" UserLabel="ICSCF_24"> 
+        <V i="1">16</V>  
+        <CV i="2"> 
+          <SN>LIQ.FailLIA.5001</SN>  
+          <SV>0</SV>  
+          <SN>LIQ.FailLIA.5003</SN>  
+          <SV>0</SV> 
+        </CV>  
+        <V i="3">16</V>  
+        <V i="4">13</V>  
+        <CV i="5"> 
+          <SN>UR.FailUAA.5001</SN>  
+          <SV>0</SV>  
+          <SN>UR.FailUAA.5002</SN>  
+          <SV>0</SV>  
+          <SN>UR.FailUAA.5003</SN>  
+          <SV>0</SV>  
+          <SN>UR.FailUAA.5004</SN>  
+          <SV>0</SV> 
+        </CV>  
+        <V i="6">13</V> 
+      </Object> 
+    </PmData> 
+  </Measurements>  
+  <Measurements> 
+    <ObjectType>EpRpDynCxIcscf</ObjectType>  
+    <PmName> 
+      <N i="1">SIG.SLFHSSCongest</N>  
+      <N i="2">SIG.SLFHSSCongestDuration</N>  
+      <N i="3">SIG.SLFHSSCongestPack</N>  
+      <N i="4">SIG.SLFHSSReceiveBytes</N>  
+      <N i="5">SIG.SLFHSSReceivePack</N>  
+      <N i="6">SIG.SLFHSSSendBytes</N>  
+      <N i="7">SIG.SLFHSSSendPack</N>  
+      <N i="8">SIG.SLFHSSUnavailable</N>  
+      <N i="9">SIG.SLFHSSUnavailableDuration</N> 
+    </PmName>  
+    <PmData> 
+      <Object rmUID="3201ZTHX1CXI24F11A1" Dn=" ZTE-CMHN-CS,SubNetwork=100001,ManagedElement=100021_21,IcscfFunction=1,EpRpDynCxIcscf=1001" UserLabel="JNICSCF7-DRA1_1001"> 
+        <V i="1">0</V>  
+        <V i="2">0</V>  
+        <V i="3">0</V>  
+        <V i="4">30720</V>  
+        <V i="5">57</V>  
+        <V i="6">30720</V>  
+        <V i="7">57</V>  
+        <V i="8">0</V>  
+        <V i="9">0</V> 
+      </Object> 
+    </PmData> 
+  </Measurements> 
+</PmFile>

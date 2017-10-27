@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,8 +29,6 @@ import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.StringUtil;
 import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
 import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
-
-import com.alibaba.fastjson.JSONObject;
 
 
 public class AlarmTaskThread extends Thread{
@@ -93,7 +90,8 @@ public class AlarmTaskThread extends Thread{
 		while (retString == null && !this.isStop) {
 			
 			msg = MessageUtil.readOneMsg(is);
-			
+			log.debug("msg = "+msg.toString(true));
+			log.info("msg.getMsgType().name = "+msg.getMsgType().name);
 			if("ackLoginAlarm".equalsIgnoreCase(msg.getMsgType().name)){
 				log.debug("receive login ack");
 				boolean suc = this.ackLoginAlarm(msg);
@@ -150,7 +148,7 @@ public class AlarmTaskThread extends Thread{
 		        log.error(StringUtil.getStackTrace(e));
 		      }
 		    }
-		log.debug("socket connect host=" + host + ", port=" + port);
+		log.info("socket connect host=" + host + ", port=" + port);
 		try {
 			int portInt = Integer.parseInt(port);
 			socket = new Socket(host, portInt);
@@ -268,7 +266,7 @@ public class AlarmTaskThread extends Thread{
 			close();
 			time++;
 			try {
-				Thread.sleep(1000 * 10);
+				Thread.sleep(1000 * 30);
 				init();
 				return;
 			} catch (Exception e) {

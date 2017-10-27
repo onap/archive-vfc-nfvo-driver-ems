@@ -15,6 +15,8 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -55,6 +57,28 @@ public class DateUtil {
 		}
 		
 		return new long[] {start,end};
+	}
+	
+	public static String TimeString(String timeString){
+		if(timeString == null){
+			return "";
+		}else{
+			timeString = timeString.replace("T", " ");
+			if(timeString.contains("+")){
+				timeString = timeString.substring(0, timeString.indexOf("+"));
+			}
+			return timeString;
+		}
+	}
+	
+	public static String addTime(String srcTimeString,String period) throws ParseException{
+		String finaldate = TimeString(srcTimeString);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = sdf.parse(finaldate);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MINUTE, Integer.valueOf(period));
+		return sdf.format(calendar.getTime());
 	}
 
 }

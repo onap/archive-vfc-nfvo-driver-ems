@@ -61,8 +61,13 @@ public class CollectManager  extends DriverThread{
 				}
 				
 			}
-			this.addCollectJob(collectVos);
-			log.info("addCollectJob is OK ");
+			if(collectVos.size() > 0){
+				this.addCollectJob(collectVos);
+				log.info("1 addCollectJob is OK ");
+			}else{
+				log.error("collectVos size is 0");
+			}
+			
 		}else{
 			log.error("configurationInterface = null,check spring.xml");
 		}

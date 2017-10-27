@@ -49,7 +49,9 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 	private  ApplicationContext context = null;
 	
 	public static void main(String[] args) throws Exception {
+		log.info("EmsDriverApplication start");
         new EmsDriverApplication().run(args);
+        log.info("EmsDriverApplication start sucess");
     }
 
     @Override

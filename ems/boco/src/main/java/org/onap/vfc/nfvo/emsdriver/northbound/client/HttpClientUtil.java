@@ -129,12 +129,16 @@ public class HttpClientUtil {
         try{
             httpClient = HttpClients.createDefault();
             httpGet = new HttpGet(url);
+            httpGet.setHeader("Content-Type", "application/json");
+            httpGet.setHeader("Accept", "application/json");
+            httpGet.setHeader("X-TransactionId", "111");
+            httpGet.setHeader("X-FromAppId", "ems-driver");
             Base64 token = new Base64();
             String authenticationEncoding = new String(token.encode(("AAI:AAI").getBytes()));
 
             httpGet.setHeader("Authorization", "Basic " + authenticationEncoding);
             CloseableHttpResponse response = httpClient.execute(httpGet);
-            log.info("doGet sucess url ="+url);
+            log.info("1 doGet sucess url ="+url);
             try {
 				if(response != null){
 				    HttpEntity resEntity = response.getEntity();
@@ -161,24 +165,4 @@ public class HttpClientUtil {
         }
         return result;
     }
-    
-    public static CloseableHttpClient createCloseableHttpClientWithBasicAuth(){  
-    	  // 创建HttpClientBuilder  
-    	HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();  
-        // 设置BasicAuth  
-        CredentialsProvider provider = new BasicCredentialsProvider();  
-        // Create the authentication scope  
-        AuthScope scope = new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM);  
-        // Create credential pair，username and password
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("AAI", "AAI");  
-        // Inject the credentials  
-        provider.setCredentials(scope, credentials);  
-        // Set the default credentials provider  
-        httpClientBuilder.setDefaultCredentialsProvider(provider);  
-        // HttpClient  
-        CloseableHttpClient closeableHttpClient = httpClientBuilder.build(); 
-        
-        return closeableHttpClient;
-    }  
-    
 }

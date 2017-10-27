@@ -162,6 +162,13 @@ public class FTPSrv implements FTPInterface{
 		return ftpRemoteFiles;
 	}
 
+
+	@Override
+	public String pwd() throws IOException {
+		String returnValue = ftpClient.printWorkingDirectory();
+		return returnValue;
+	}
+
 //	public boolean store(String localFile, String remoteFile) {
 //		
 //		boolean sucess = false;

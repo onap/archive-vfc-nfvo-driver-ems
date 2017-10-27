@@ -20,10 +20,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CrontabVo;
 import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
 import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationManager;
 
@@ -60,5 +62,12 @@ public class ConfigurationManagerTest {
 		assertNotNull(properties);
 	}
 	
+	@Test
+	public void readCorntab() {
+		
+		Map<String, CrontabVo> list = configurationManager.readCorntab();
+		System.out.println(list);
+		assertTrue(list.size() >0);
+	}
 	
 }

@@ -87,7 +87,7 @@ public class ConfigurationManager extends DriverThread{
 		}
 	}
 	
-	private Map<String, CrontabVo> readCorntab() {
+	public Map<String, CrontabVo> readCorntab() {
 		String path = Constant.SYS_CFG + "crontab.xml";
 		File cfg = new File(path);
 		log.debug("start loading " + path);
@@ -95,7 +95,6 @@ public class ConfigurationManager extends DriverThread{
 	    	log.debug("not exists " + path);
 	    	return null;
 	    }
-	    
 	    InputStream is = null;
 	    Map<String, CrontabVo> tmpcache = new HashMap<String, CrontabVo>();
 	    
@@ -116,7 +115,7 @@ public class ConfigurationManager extends DriverThread{
 					continue;
 				}
 				crontabVo.setType(type);
-				if("ems-alarm".equalsIgnoreCase(type)){
+				if(Constant.COLLECT_TYPE_ALARM.equalsIgnoreCase(type)){
 					boolean iscollect =  Boolean.parseBoolean(child.getAttributeValue("iscollect"));
 					if(iscollect){
 						crontabVo.setIscollect(iscollect);
@@ -135,13 +134,12 @@ public class ConfigurationManager extends DriverThread{
 					crontabVo.setMatch(child.getChildText("match"));
 					crontabVo.setGranularity(child.getChildText("granularity"));
 				}
-				tmpcache.put(type, crontabVo);
+				tmpcache.put(type.toUpperCase(), crontabVo);
 			}
 			
 		} catch (Exception e) {
 			log.error("load crontab.xml is error "+StringUtil.getStackTrace(e));
 		}finally{
-			tmpcache.clear();
 			try {
 				if(is != null){
 					is.close();
@@ -307,7 +305,7 @@ public class ConfigurationManager extends DriverThread{
 					
 					//
 					if(emsInfoCache.size() > 0){
-						Thread.sleep(5*60*1000);
+						Thread.sleep(30*60*1000);
 					}else{
 						Thread.sleep(60*1000);
 					}
@@ -327,7 +325,7 @@ public class ConfigurationManager extends DriverThread{
 			String msbAddress = properties.getProperty("msbAddress");
 			String emstUrl = properties.getProperty("esr_emsUrl");
 			//set emsId to url
-			String.format(emstUrl, emsId);
+			emstUrl = String.format(emstUrl, emsId);
 			String getemstUrl = "http://"+msbAddress+emstUrl;
 			String emsResult = HttpClientUtil.doGet(getemstUrl, Constant.ENCODING_UTF8);
 			log.debug(getemstUrl+" result="+emsResult);
@@ -344,7 +342,7 @@ public class ConfigurationManager extends DriverThread{
 				JSONObject collect = (JSONObject)obj;
 				String system_type = (String)collect.get("system-type");
 				CollectVo collectVo = new CollectVo();
-				if("ems-resource".equalsIgnoreCase(system_type)){
+				if(Constant.COLLECT_TYPE_CM.equalsIgnoreCase(system_type)){
 					CrontabVo crontabVo = emsCrontab.get(system_type);
 					if(crontabVo != null){
 						collectVo.setType(system_type);
@@ -358,10 +356,12 @@ public class ConfigurationManager extends DriverThread{
 						collectVo.setMatch(crontabVo.getMatch());
 						collectVo.setPassive(collect.getString("passive"));
 						collectVo.setGranularity(crontabVo.getGranularity());
+					}else{
+						log.error("emsCrontab.get(system_type) result crontabVo is null system_type=["+system_type+"] emsCrontabMap="+emsCrontab );
 					}
 					
 					
-				}else if("ems-performance".equalsIgnoreCase(system_type)){
+				}else if(Constant.COLLECT_TYPE_PM.equalsIgnoreCase(system_type)){
 					CrontabVo crontabVo = emsCrontab.get(system_type);
 					if(crontabVo != null){
 						collectVo.setType(system_type);
@@ -375,8 +375,10 @@ public class ConfigurationManager extends DriverThread{
 						collectVo.setMatch(crontabVo.getMatch());
 						collectVo.setPassive(collect.getString("passive"));
 						collectVo.setGranularity(crontabVo.getGranularity());
+					}else{
+						log.error("emsCrontab.get(system_type) result crontabVo is null system_type=["+system_type+"]" );
 					}
-				}else if("ems-alarm".equalsIgnoreCase(system_type)){
+				}else if(Constant.COLLECT_TYPE_ALARM.equalsIgnoreCase(system_type)){
 					CrontabVo crontabVo = emsCrontab.get(system_type);
 					if(crontabVo != null){
 						collectVo.setIscollect(crontabVo.isIscollect());
@@ -387,7 +389,7 @@ public class ConfigurationManager extends DriverThread{
 						collectVo.setPassword(collect.getString("password"));
 						collectVo.setRead_timeout(crontabVo.getRead_timeout());
 					}else{
-						log.error("emsCrontab.get(system_type) result crontabVo is null" );
+						log.error("emsCrontab.get(system_type) result crontabVo is null system_type=["+system_type+"]");
 					}
 					
 					

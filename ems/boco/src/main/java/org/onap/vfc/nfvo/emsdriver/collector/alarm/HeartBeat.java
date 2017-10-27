@@ -41,19 +41,19 @@ public class HeartBeat extends Thread{
 	}
 	
 	public void run(){
-		log.debug("HeartBeat start heartStr:"+heartStr.toString(false));
+		log.info("HeartBeat start heartStr:"+heartStr.toString(false));
 		this.stop=false;
 		try {
 			while(!this.isStop()){
 				out = new BufferedOutputStream(socket.getOutputStream());
 				MessageUtil.writeMsg(heartStr,out);
-				log.debug("send HeartBeat heartStr:"+heartStr.toString(false));
+				log.info("send HeartBeat heartStr:"+heartStr.toString(false));
 				Thread.sleep(Constant.ONEMINUTE);
 			}
 		} catch (Exception e) {
 			log.error("send HeartBeat fail ",e);
 		} 
-		log.debug("HeartBeat thread stop");
+		log.info("HeartBeat thread stop");
 	}
 	
 

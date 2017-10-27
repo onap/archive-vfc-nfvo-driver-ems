@@ -15,6 +15,8 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.ftp;
 
+import java.io.IOException;
+
 public interface FTPInterface {
 	
     /** 
@@ -37,6 +39,8 @@ public interface FTPInterface {
     public boolean chdir(String dir);
     
     public RemoteFile[] list();
+    
+    public String pwd() throws IOException;
     
 //    public RemoteFile[] list(String dir);
     
