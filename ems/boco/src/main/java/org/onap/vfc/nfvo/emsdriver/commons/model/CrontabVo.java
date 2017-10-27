@@ -114,6 +114,13 @@ public class CrontabVo {
 	public void setRead_timeout(String read_timeout) {
 		this.read_timeout = read_timeout;
 	}
+
+	@Override
+	public String toString() {
+		return "CrontabVo [type=" + type + ", crontab=" + crontab + ", match="
+				+ match + ", granularity=" + granularity + ", iscollect="
+				+ iscollect + ", read_timeout=" + read_timeout + "]";
+	}
 	
 	
 

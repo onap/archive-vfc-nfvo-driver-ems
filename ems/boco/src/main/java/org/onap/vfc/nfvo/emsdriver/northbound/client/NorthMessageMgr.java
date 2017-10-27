@@ -41,7 +41,7 @@ import evel_javalibrary.att.com.EvelScalingMeasurement;
 public class NorthMessageMgr extends DriverThread{
 
 	private MessageChannel alarmChannel = MessageChannelFactory.getMessageChannel(Constant.RESULT_CHANNEL_KEY);
-	private MessageChannel collectChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);
+	private MessageChannel collectResultPMChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_PM_CHANNEL_KEY);
 	private MessageChannel collectResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_CHANNEL_KEY);
 	private ConfigurationInterface configurationInterface ;
 	
@@ -50,31 +50,40 @@ public class NorthMessageMgr extends DriverThread{
 	
 	@Override
 	public void dispose() {
-		Properties properties = configurationInterface.getProperties();
-		String event_api_url = properties.getProperty("event_api_url");
-		String port = properties.getProperty("port");
-		String path = properties.getProperty("path");
-		String topic = properties.getProperty("topic");
-		String username = properties.getProperty("username");
-		String password = properties.getProperty("password");
-		String levelStr = properties.getProperty("level");
-		if("debug".equals(levelStr)){
-			level = Level.DEBUG;
-		}else{
-			level = Level.INFO;
-		}
-		
-		//login north 
-		event_api_url = "http://"+event_api_url;
-		try{
-			AgentMain.evel_initialize(event_api_url, Integer.parseInt(port),
-					path,topic,
-					username,
-					password,
-					level);
-			log.info("AgentMain.evel_initialize sucess ");
-		} catch( Exception e ){
-			log.error("AgentMain.evel_initialize fail ",e);
+		log.info("NorthMessageMgr Thread start threadStop="+threadStop);
+		try {
+			Properties properties = configurationInterface.getProperties();
+			String event_api_url = properties.getProperty("event_api_url");
+			String port = properties.getProperty("port");
+			String path = properties.getProperty("path");
+			String topic = properties.getProperty("topic");
+			String username = properties.getProperty("username");
+			String password = properties.getProperty("password");
+			String levelStr = properties.getProperty("level");
+			if("debug".equals(levelStr)){
+				level = Level.DEBUG;
+			}else{
+				level = Level.INFO;
+			}
+			
+			//login north 
+			event_api_url = "http://"+event_api_url;
+			log.info("AgentMain.evel_initialize start event_api_url=["+event_api_url+"]port=["+port+"]path=["+path+"]"
+					+ "topic=["+topic+"]username=["+username+"]password=["+password+"]level=["+level+"]");
+			try{
+				AgentMain.evel_initialize(event_api_url, Integer.parseInt(port),
+						path,topic,
+						username,
+						password,
+						level);
+				log.info("AgentMain.evel_initialize sucess ");
+			} catch( Exception e ){
+				log.error("AgentMain.evel_initialize fail ",e);
+			}catch( Error e1 ){
+				log.error("AgentMain.evel_initialize Error ",e1);
+			}
+		} catch (Exception e2) {
+			log.error("NorthMessageMgr start fail ",e2);
 		}
 		
 		new HeatBeatTread().start();
@@ -84,6 +93,8 @@ public class NorthMessageMgr extends DriverThread{
 		new ResultMessageRecv().start();
 		
 		new CollectMessageRecv().start();
+		
+		log.error("NorthMessageMgr start sucess ");
 	}
 	
 	
@@ -98,7 +109,7 @@ public class NorthMessageMgr extends DriverThread{
 		            header.evel_nfnamingcode_set("EMS-driver");
 		            header.evel_nfcnamingcode_set("EMS-driver");
 		            AgentMain.evel_post_event(header);
-		            log.debug("HeatBeat send!");
+		            log.info("HeatBeat send!");
 		            try {
 		                Thread.sleep(60*1000);
 		            } catch( Exception e ){
@@ -121,7 +132,7 @@ public class NorthMessageMgr extends DriverThread{
 					if(System.currentTimeMillis() - timeStamp > Constant.ONEMINUTE){
 						timeStamp = System.currentTimeMillis();
 						
-						log.debug("ALARM_CHANNEL Msg size :"+alarmChannel.size());
+						log.info("ALARM_CHANNEL Msg size :"+alarmChannel.size());
 					}
 					
 					Object obj = alarmChannel.poll();
@@ -135,7 +146,9 @@ public class NorthMessageMgr extends DriverThread{
 						EvelFault evelFault = this.resultEvelFault(reagobj);
 						
 						//send
+						log.info("AgentMain.evel_post_event alarm start");
 						AgentMain.evel_post_event(evelFault);
+						log.info("AgentMain.evel_post_event alarm sucess");
 					}else{
 						log.error("AlarmMessageRecv receive Object = "+obj);
 					}
@@ -257,26 +270,30 @@ public class NorthMessageMgr extends DriverThread{
 		long timeStamp = System.currentTimeMillis();
 		
 		public void run() {
+			log.info("CollectMessageRecv Thread is start threadStop="+threadStop);
 			while(!threadStop){
 				
 				try {
 					if(System.currentTimeMillis() - timeStamp > Constant.ONEMINUTE){
 						timeStamp = System.currentTimeMillis();
 						
-						log.debug("COLLECT_CHANNEL_KEY Msg size :"+collectChannel.size());
+						log.debug(Constant.COLLECT_RESULT_PM_CHANNEL_KEY+" Msg size :"+collectResultPMChannel.size());
 					}
 					
-					Object obj = collectChannel.poll();
+					Object obj = collectResultPMChannel.poll();
 					if(obj == null){
 						continue;
 					}
 					if(obj instanceof Map){
 						@SuppressWarnings("unchecked")
 						Map<String,String> reMap = (Map<String,String>)obj;
+						log.debug("reMap ="+reMap);
 						EvelScalingMeasurement evelScalingMeasurement = this.resultEvelScalingMeasurement(reMap);
-						
+						log.debug("evelScalingMeasurement="+evelScalingMeasurement);
 						//send
+						log.info("AgentMain.evel_post_event start");
 						AgentMain.evel_post_event(evelScalingMeasurement);
+						log.info("AgentMain.evel_post_event sucess");
 						
 					}else{
 						log.error("CollectMessageRecv receive Object = "+obj);
@@ -284,6 +301,8 @@ public class NorthMessageMgr extends DriverThread{
 					
 				} catch (Exception e) {
 					log.error("CollectMessageRecv exception",e);
+				}catch (Error e) {
+					log.error("CollectMessageRecv Error",e);
 				}
 			}
 		}

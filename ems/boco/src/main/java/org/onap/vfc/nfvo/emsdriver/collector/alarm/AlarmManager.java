@@ -49,6 +49,8 @@ public class AlarmManager  extends DriverThread{
 			if(CollectVo != null){
 				CollectVo.setEmsName(emsInfo.getName());
 				collectVos.add(CollectVo);
+			}else{
+				log.error("emsInfo.getCollectVoByType(EMS_RESOUCE) result CollectVo = null emsInfo ="+emsInfo);
 			}
 		}
 		
@@ -56,6 +58,7 @@ public class AlarmManager  extends DriverThread{
 			AlarmTaskThread alarm = new AlarmTaskThread(collectVo);
 			alarm.setName(collectVo.getIP()+collectVo.getPort());
 			alarm.start();
+			log.info("AlarmTaskThread is start");
 		}
 		
 	}

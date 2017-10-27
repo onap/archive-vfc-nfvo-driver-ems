@@ -60,6 +60,7 @@ public class QuartzManager {
 				
 			}
 			sucess = true;
+			log.info("add job sucess cronExpression="+time);
 		} catch (Exception e) {
 			log.error("add job fail cronExpression="+time,e);
 			sucess = false;

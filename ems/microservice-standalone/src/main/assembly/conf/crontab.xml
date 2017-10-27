@@ -18,15 +18,15 @@
 
 -->
 <scheduler>
-      <crontab type ="ems-resource" crontab="">
+      <crontab type ="ems_resource" crontab="">
          <match>*</match>
          <granularity>15</granularity>
       </crontab>
-      <crontab type ="ems-performance" crontab="0 0/15 * * * ?">
-          <match>*</match>
+      <crontab type ="ems_performance" crontab="0 0/15 * * * ?">
+          <match>/&lt;*${s_year}${s_mon}${s_day}${s_hour}&gt;/.*${s_year}${s_mon}${s_day}${s_hour}${s_min}.*</match>
           <granularity>15</granularity>
       </crontab>
-      <crontab type ="ems-alarm" iscollect = "true">
-		<readtimeout>180000</readtimeout>;
+      <crontab type ="ems_alarm" iscollect="true">
+		<readtimeout>18000</readtimeout>;
       </crontab>
 </scheduler>

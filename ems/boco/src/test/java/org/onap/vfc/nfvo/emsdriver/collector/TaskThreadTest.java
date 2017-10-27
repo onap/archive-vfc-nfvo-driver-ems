@@ -32,13 +32,14 @@ import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
 
 public class TaskThreadTest {
 	private String csvPath = System.getProperty("user.dir")+"/data/" +"PM-ENB-EUTRANCELLNB-test.csv";
+	private String xmlPath = System.getProperty("user.dir")+"/data/" +"PM-test.xml";
 	private String gzPath = System.getProperty("user.dir")+"/data/" +"PM-ENB-EUTRANCELLNB-testa.csv.gz";
 	private TaskThread taskThread;
 	private List<File> list = null;
 	@Before
     public void setUp() throws IOException {
 		taskThread = new TaskThread();
-		taskThread.pmResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);
+		taskThread.pmResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_PM_CHANNEL_KEY);
 		Gzip gzip = new Gzip();
 		gzip.compress(csvPath, gzPath);
     }
@@ -58,6 +59,13 @@ public class TaskThreadTest {
 			assertTrue(re);
 		}
 	}
+	@Test
+	public void processPMXml(){
+		File file = new File(xmlPath);
+		boolean re = taskThread.processPMXml(file);
+		assertTrue(re);
+		System.out.println(taskThread.pmResultChannel.size()); 
+	}
 	
 	@Test
 	public void parseFtpAndSendMessage(){
@@ -72,10 +80,6 @@ public class TaskThreadTest {
 		collectVo.setType("ems-p");
 		taskThread.createMessage("zipName", "user", "pwd", "ip", "port", 122, "nename");
 	}
-	
-	
-	
-	
 	
 	@After
     public void setDown() throws IOException {

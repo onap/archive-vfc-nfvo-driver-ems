@@ -37,4 +37,8 @@ public class AFtpRemoteFile implements RemoteFile{
 	public String getAbsFileName() {
 		return currDir.concat(getFileName());
 	}
+	
+	public boolean isDirectory() {
+		return ftpFile.isDirectory();
+	}
 }
