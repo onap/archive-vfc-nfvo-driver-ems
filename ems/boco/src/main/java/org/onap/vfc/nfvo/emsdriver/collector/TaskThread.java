@@ -142,6 +142,7 @@ public class TaskThread implements Runnable{
 			
 			if (parseResult){
 				log.info("parser "+tempfile+" sucess");
+				tempfile.delete();
 			}else {
 				log.info("parser "+tempfile+" fail");
 			}
@@ -811,6 +812,7 @@ public class TaskThread implements Runnable{
 	    	try {
 				File decompressFile = deGz(fileName);
 				filelist.add(decompressFile);
+				new File(fileName).delete();
 			} catch (IOException e) {
 				log.error("decompressed is fail "+StringUtil.getStackTrace(e));
 			}
@@ -818,6 +820,7 @@ public class TaskThread implements Runnable{
 	    {
 	    	try {
 				File[] files = deZip(new File(fileName));
+				new File(fileName).delete();
 				for(File temp :files){
 					filelist.add(temp);
 				}

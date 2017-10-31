@@ -1,5 +1,5 @@
 
-# Copyright 2017 CMCC Technologies Co., Ltd
+# Copyright 2017 CMCC Technologies Co. Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -51,6 +51,13 @@ logging:
       logFormat: "%-4level [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{5} - %X{code} %msg %n"
       currentLogFilename: ./logs/emsdriver.log
       archivedLogFilenamePattern: ./logs/emsdriver-%d{yyyyMMdd}-%d{HHmm}-%d{ssSSS}.log.gz
+      archivedFileCount: 7
+      timeZone: PRC
+    - type: file
+      threshold: ERROR
+      logFormat: "%-4level [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{5} - %X{code} %msg %n"
+      currentLogFilename: ./logs/error.log
+      archivedLogFilenamePattern: ./logs/error-%d{yyyyMMdd}-%d{HHmm}-%d{ssSSS}.log.gz
       archivedFileCount: 7
       timeZone: PRC
 

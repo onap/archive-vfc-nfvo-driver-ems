@@ -31,6 +31,7 @@ import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
 import com.alibaba.fastjson.JSONObject;
 
 import evel_javalibrary.att.com.AgentMain;
+import evel_javalibrary.att.com.AgentMain.EVEL_ERR_CODES;
 import evel_javalibrary.att.com.EvelFault;
 import evel_javalibrary.att.com.EvelFault.EVEL_SEVERITIES;
 import evel_javalibrary.att.com.EvelFault.EVEL_SOURCE_TYPES;
@@ -71,12 +72,12 @@ public class NorthMessageMgr extends DriverThread{
 			log.info("AgentMain.evel_initialize start event_api_url=["+event_api_url+"]port=["+port+"]path=["+path+"]"
 					+ "topic=["+topic+"]username=["+username+"]password=["+password+"]level=["+level+"]");
 			try{
-				AgentMain.evel_initialize(event_api_url, Integer.parseInt(port),
+				EVEL_ERR_CODES evecode = AgentMain.evel_initialize(event_api_url, Integer.parseInt(port),
 						path,topic,
 						username,
 						password,
 						level);
-				log.info("AgentMain.evel_initialize sucess ");
+				log.info("AgentMain.evel_initialize sucess EVEL_ERR_CODES="+evecode);
 			} catch( Exception e ){
 				log.error("AgentMain.evel_initialize fail ",e);
 			}catch( Error e1 ){
@@ -94,7 +95,7 @@ public class NorthMessageMgr extends DriverThread{
 		
 		new CollectMessageRecv().start();
 		
-		log.error("NorthMessageMgr start sucess ");
+		log.info("NorthMessageMgr start sucess ");
 	}
 	
 	
@@ -309,7 +310,7 @@ public class NorthMessageMgr extends DriverThread{
 
 		private EvelScalingMeasurement resultEvelScalingMeasurement(Map<String,String> reMap) {
 			String evname = "Mfvs_"+reMap.get("ElementType")+reMap.get("ObjectType");
-			String evid = reMap.get("startTime")+reMap.get("ObjectType")+reMap.get("rmUID");
+			String evid = reMap.get("StartTime")+reMap.get("ObjectType")+reMap.get("rmUID");
 			int Period = Integer.parseInt(reMap.get("Period")!=null?reMap.get("Period"):"15");
 			EvelScalingMeasurement sm  = new EvelScalingMeasurement(Period,evname, evid);
 
