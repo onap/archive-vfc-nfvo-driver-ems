@@ -23,10 +23,10 @@
          <granularity>15</granularity>
       </crontab>
       <crontab type ="ems_performance" crontab="0 0/15 * * * ?">
-          <match>/&lt;*${s_year}${s_mon}${s_day}${s_hour}&gt;/.*${s_year}${s_mon}${s_day}${s_hour}${s_min}.*</match>
+          <match>/&lt;${s_year}${s_mon}${s_day}${s_hour}&gt;/.*${s_year}${s_mon}${s_day}${s_hour}${s_min}.*</match>
           <granularity>15</granularity>
       </crontab>
       <crontab type ="ems_alarm" iscollect="true">
-		<readtimeout>18000</readtimeout>;
+		<readtimeout>180000</readtimeout>;
       </crontab>
 </scheduler>
