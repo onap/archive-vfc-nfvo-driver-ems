@@ -213,7 +213,7 @@
 		    <artifactId>evel_javalib2</artifactId>
 		    <version>0.0.2-SNAPSHOT</version>
 		    <scope>system</scope> 
-			<systemPath>${basedir}/3rdParty/evel_javalib2-0.0.2-SNAPSHOT.jar</systemPath> 
+			<systemPath>${basedir}/3rdParty/evel_javalib2-0.0.1-SNAPSHOT.jar</systemPath> 
 	</dependency>
 	<dependency>
   		<groupId>javax.json</groupId>
