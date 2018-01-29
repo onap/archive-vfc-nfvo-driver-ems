@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MessageChannel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.messagemgr</a> &gt; <span class="el_source">MessageChannel.java</span></div><h1>MessageChannel.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.messagemgr;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
+
+public class MessageChannel {
+	
+<span class="fc" id="L25">	private BlockingQueue&lt;Object&gt; queue = null;</span>
+	
+<span class="fc" id="L27">	public MessageChannel(int size){</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">		if(size&gt;0){</span>
+<span class="fc" id="L29">			queue = new  LinkedBlockingQueue&lt;Object&gt;(size);</span>
+		}else{
+<span class="fc" id="L31">			queue = new  LinkedBlockingQueue&lt;Object&gt;();</span>
+		}
+<span class="fc" id="L33">	}</span>
+	
+<span class="fc" id="L35">	public MessageChannel(){</span>
+<span class="fc" id="L36">		queue = new  LinkedBlockingQueue&lt;Object&gt;();</span>
+<span class="fc" id="L37">	}</span>
+	public  void put(Object msg) throws InterruptedException{
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">		while(!queue.offer(msg)){</span>
+<span class="nc" id="L40">			queue.poll();</span>
+		}
+<span class="fc" id="L42">	}</span>
+	
+	public  Object get() throws InterruptedException{
+<span class="fc" id="L45">		return queue.take();</span>
+	}
+	
+	public  Object poll() throws InterruptedException{
+<span class="fc" id="L49">		return queue.poll(100, TimeUnit.MILLISECONDS);</span>
+	}
+	
+	public  int size(){
+<span class="fc" id="L53">		return queue.size();</span>
+	}
+
+	public  void clear(){
+<span class="fc" id="L57">		queue.clear();</span>
+<span class="fc" id="L58">	}</span>
+
+	public BlockingQueue&lt;Object&gt; getQueue() {
+<span class="fc" id="L61">		return queue;</span>
+	}
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

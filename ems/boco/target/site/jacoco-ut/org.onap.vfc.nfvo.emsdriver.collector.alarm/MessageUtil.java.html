@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MessageUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.collector.alarm</a> &gt; <span class="el_source">MessageUtil.java</span></div><h1>MessageUtil.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.collector.alarm;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
+
+
+<span class="nc" id="L27">public class MessageUtil</span>
+{
+<span class="fc" id="L29">	public static String MSG_BODY_ENCODE_CHARSET=&quot;UTF-8&quot;;</span>
+<span class="fc" id="L30">	public static int MSG_BUF_SIZE=8096 ;</span>
+	
+	public static Msg putLoginMsg(String user,String passwd)
+	{
+<span class="fc" id="L34">		String body = String.format(Msg.reqLoginAlarm, user,passwd,&quot;msg&quot;);</span>
+<span class="fc" id="L35">		Msg msg = new Msg(body,MsgType.reqLoginAlarm);</span>
+		
+
+<span class="fc" id="L38">		return msg;</span>
+		
+	}
+	public static Msg putLoginFtp(String user,String passwd)
+	{
+<span class="fc" id="L43">		String body = String.format(Msg.reqLoginAlarm, user,passwd,&quot;ftp&quot;);</span>
+<span class="fc" id="L44">		Msg msg = new Msg(body,MsgType.reqLoginAlarm);</span>
+		
+
+<span class="fc" id="L47">		return msg;</span>
+		
+	}
+	
+	public static Msg putSyncMsg(int reqId,int alarmSeq)
+	{
+<span class="fc" id="L53">		String body = String.format(Msg.syncAlarmMessageMsg, reqId,alarmSeq);</span>
+<span class="fc" id="L54">		Msg msg = new Msg(body,MsgType.reqSyncAlarmMsg);</span>
+		
+
+<span class="fc" id="L57">		return msg;</span>
+		
+	}
+	
+	public static Msg putHeartBeatMsg(int reqId)
+	{
+<span class="fc" id="L63">		String body = String.format(Msg.reqHeartBeat, reqId);</span>
+<span class="fc" id="L64">		Msg msg = new Msg(body,MsgType.reqHeartBeat);</span>
+<span class="fc" id="L65">		return msg;</span>
+		
+	}
+	
+	public static Msg reqSyncAlarmFile(int reqId, String startTime,String endTime) {
+<span class="fc" id="L70">		String body = String.format(Msg.syncActiveAlarmFileMsg, reqId,startTime,endTime);</span>
+<span class="fc" id="L71">		Msg msg = new Msg(body,MsgType.reqSyncAlarmFile);</span>
+<span class="fc" id="L72">		return msg;</span>
+	}
+	
+	public static Msg reqSyncAlarmFileByAlarmSeq(int reqId, int alarmSeq) {
+<span class="fc" id="L76">		String body = String.format(Msg.syncAlarmMessageByalarmSeq, reqId,alarmSeq);</span>
+<span class="fc" id="L77">		Msg msg = new Msg(body,MsgType.reqSyncAlarmFile);</span>
+<span class="fc" id="L78">		return msg;</span>
+	}
+	
+	public static Msg reqSyncAlarmFileByTime(int reqId, String startTime,String endTime) {
+<span class="fc" id="L82">		String body = String.format(Msg.syncAlarmFileMsg, reqId,startTime,endTime);</span>
+<span class="fc" id="L83">		Msg msg = new Msg(body,MsgType.reqSyncAlarmFile);</span>
+<span class="fc" id="L84">		return msg;</span>
+	}
+	
+	public static Msg closeConnAlarmMsg()
+	{
+<span class="fc" id="L89">		String body = String.format(Msg.disconnectMsg);</span>
+<span class="fc" id="L90">		Msg msg = new Msg(body,MsgType.closeConnAlarm);</span>
+<span class="fc" id="L91">		return msg;</span>
+	}
+
+	public static Msg readOneMsg(BufferedInputStream is) throws Exception
+	{
+<span class="fc" id="L96">		byte[] inputB = new byte[9];</span>
+		
+<span class="fc" id="L98">		ByteArrayInputStream bais = null;</span>
+<span class="fc" id="L99">		DataInputStream ois = null;</span>
+		
+<span class="fc" id="L101">		Msg msg = new Msg();</span>
+		try {
+<span class="fc" id="L103">			DataInputStream dis = new DataInputStream(is);</span>
+<span class="fc" id="L104">			dis.readFully(inputB);</span>
+<span class="fc" id="L105">			bais = new ByteArrayInputStream(inputB);</span>
+<span class="fc" id="L106">			ois = new DataInputStream(bais);</span>
+<span class="fc" id="L107">			short StartSign = ois.readShort();</span>
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">			if (StartSign != Msg.StartSign) {</span>
+<span class="nc" id="L109">				throw new Exception(&quot;start sign is [&quot; + Msg.StartSign</span>
+						+ &quot;],not is [&quot; + StartSign + &quot;]&quot;);
+			}
+<span class="fc" id="L112">			int msgType = ois.readByte();</span>
+<span class="fc" id="L113">			msg.setMsgType(MsgType.getMsgTypeValue(msgType));</span>
+<span class="fc" id="L114">			int timeStamp = ois.readInt();</span>
+<span class="fc" id="L115">			msg.setTimeStamp(timeStamp);</span>
+<span class="fc" id="L116">			int bodylength = ois.readShort();</span>
+<span class="fc" id="L117">			msg.setLenOfBody(bodylength);</span>
+<span class="fc" id="L118">			byte b[] = new byte[bodylength];</span>
+<span class="fc" id="L119">			dis.readFully(b);</span>
+<span class="fc" id="L120">			msg.newBodyfromBytes(b);</span>
+<span class="nc" id="L121">		} catch (Exception e) {</span>
+<span class="nc" id="L122">			throw new Exception(e);</span>
+		}finally{
+<span class="pc bpc" id="L124" title="3 of 4 branches missed.">			if(bais != null){</span>
+<span class="pc" id="L125">				bais.close();</span>
+			}
+<span class="pc bpc" id="L127" title="3 of 4 branches missed.">			if(ois != null){</span>
+<span class="pc" id="L128">				ois.close();</span>
+			}
+<span class="nc" id="L130">		}</span>
+		
+<span class="fc" id="L132">		return msg;</span>
+	}
+	
+	public static void writeMsg(Msg msg,BufferedOutputStream dout) throws Exception{
+		
+<span class="fc" id="L137">		ByteArrayOutputStream byteOutStream = null;</span>
+<span class="fc" id="L138">		DataOutputStream oos = null;</span>
+		try {
+<span class="fc" id="L140">			byteOutStream = new ByteArrayOutputStream(9);</span>
+<span class="fc" id="L141">			oos = new DataOutputStream(byteOutStream);</span>
+<span class="fc" id="L142">			oos.writeShort(Msg.StartSign);</span>
+<span class="fc" id="L143">			oos.writeByte(msg.getMsgType().value);</span>
+<span class="fc" id="L144">			oos.writeInt(Msg.creatMsgTimeStamp());</span>
+<span class="fc" id="L145">			oos.writeShort(msg.getBodyLenNow());</span>
+			
+<span class="fc" id="L147">			dout.write(byteOutStream.toByteArray());</span>
+			
+<span class="fc" id="L149">			dout.write(msg.getBodyBytes());</span>
+<span class="fc" id="L150">			dout.flush();</span>
+<span class="nc" id="L151">		} catch (Exception e) {</span>
+<span class="nc" id="L152">			throw new Exception(e);</span>
+		}finally{
+<span class="pc bpc" id="L154" title="3 of 4 branches missed.">			if(oos != null){</span>
+<span class="pc" id="L155">				oos.close();</span>
+			}
+<span class="pc bpc" id="L157" title="3 of 4 branches missed.">			if(byteOutStream != null){</span>
+<span class="pc" id="L158">				byteOutStream.close();</span>
+			}
+<span class="nc" id="L160">		}</span>
+		
+<span class="fc" id="L162">	}</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

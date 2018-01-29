@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QuartzManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.taskscheduler</a> &gt; <span class="el_source">QuartzManager.java</span></div><h1>QuartzManager.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation. CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.taskscheduler;
+
+
+import java.text.ParseException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
+import org.quartz.CronTrigger;
+import org.quartz.Job;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
+import org.quartz.impl.StdSchedulerFactory;
+
+<span class="nc" id="L32">public class QuartzManager {</span>
+
+
+<span class="nc" id="L35">	private static Log log = LogFactory.getFactory().getInstance(QuartzManager.class);</span>
+<span class="nc" id="L36">	private static SchedulerFactory gSchedulerFactory = new StdSchedulerFactory();</span>
+<span class="nc" id="L37">	private static String JOB_GROUP_NAME = &quot;EXTJWEB_JOBGROUP_NAME&quot;;</span>
+<span class="nc" id="L38">	private static String TRIGGER_GROUP_NAME = &quot;EXTJWEB_TRIGGERGROUP_NAME&quot;;</span>
+
+	/**
+	 * @param jobName
+	 * @param job
+	 * @param time
+	 * @throws SchedulerException
+	 * @throws ParseException
+	 */
+	public static boolean addJob(String jobName, String jobClass, String time,CollectVo collectVo) {
+<span class="nc" id="L48">		boolean sucess = false;</span>
+		try {
+<span class="nc" id="L50">			Scheduler sched = gSchedulerFactory.getScheduler();</span>
+<span class="nc" id="L51">			JobDetail jobDetail = new JobDetail(jobName, JOB_GROUP_NAME, Class.forName(jobClass));</span>
+			
+<span class="nc" id="L53">			CronTrigger trigger = new CronTrigger(jobName, TRIGGER_GROUP_NAME);</span>
+<span class="nc" id="L54">			trigger.setCronExpression(time);</span>
+			
+<span class="nc" id="L56">			jobDetail.getJobDataMap().put(&quot;collectVo&quot;, collectVo);</span>
+<span class="nc" id="L57">			sched.scheduleJob(jobDetail, trigger);</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">			if (!sched.isShutdown()){</span>
+<span class="nc" id="L59">				sched.start();</span>
+				
+			}
+<span class="nc" id="L62">			sucess = true;</span>
+<span class="nc" id="L63">			log.info(&quot;add job sucess cronExpression=&quot;+time);</span>
+<span class="nc" id="L64">		} catch (Exception e) {</span>
+<span class="nc" id="L65">			log.error(&quot;add job fail cronExpression=&quot;+time,e);</span>
+<span class="nc" id="L66">			sucess = false;</span>
+<span class="nc" id="L67">		}</span>
+<span class="nc" id="L68">		return sucess;</span>
+	}
+
+
+
+	/**
+	 * @param jobName
+	 * @param time
+	 */
+	@SuppressWarnings(&quot;unchecked&quot;)
+	public static boolean modifyJobTime(String jobName, String time,CollectVo collectVo) {
+<span class="nc" id="L79">		boolean sucess = false;</span>
+		try {
+<span class="nc" id="L81">			Scheduler sched = gSchedulerFactory.getScheduler();</span>
+<span class="nc" id="L82">			CronTrigger trigger = (CronTrigger) sched.getTrigger(jobName, TRIGGER_GROUP_NAME);</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">			if(trigger == null) {</span>
+<span class="nc" id="L84">				return false;</span>
+			}
+<span class="nc" id="L86">			String oldTime = trigger.getCronExpression();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">			if (!oldTime.equalsIgnoreCase(time)) {</span>
+<span class="nc" id="L88">				JobDetail jobDetail = sched.getJobDetail(jobName, JOB_GROUP_NAME);</span>
+				
+<span class="nc" id="L90">				Class&lt;Job&gt; objJobClass = jobDetail.getJobClass();</span>
+<span class="nc" id="L91">				String jobClass = objJobClass.getName();</span>
+<span class="nc" id="L92">				removeJob(jobName);</span>
+
+<span class="nc" id="L94">				addJob(jobName, jobClass, time,collectVo);</span>
+			}
+<span class="nc" id="L96">			sucess = true;</span>
+<span class="nc" id="L97">		} catch (Exception e) {</span>
+<span class="nc" id="L98">			log.error(&quot;modifyJobTime fail cronExpression=&quot;+time,e);</span>
+<span class="nc" id="L99">			sucess = false;</span>
+<span class="nc" id="L100">		}</span>
+<span class="nc" id="L101">		return sucess ;</span>
+	}
+
+	/**
+
+
+	/**
+	 * @param jobName
+	 */
+	public static boolean removeJob(String jobName) {
+<span class="nc" id="L111">		boolean sucess = false;</span>
+		try {
+<span class="nc" id="L113">			Scheduler sched = gSchedulerFactory.getScheduler();</span>
+<span class="nc" id="L114">			sched.pauseTrigger(jobName, TRIGGER_GROUP_NAME);</span>
+<span class="nc" id="L115">			sched.unscheduleJob(jobName, TRIGGER_GROUP_NAME);</span>
+<span class="nc" id="L116">			sched.deleteJob(jobName, JOB_GROUP_NAME);</span>
+<span class="nc" id="L117">			sucess = true;</span>
+<span class="nc" id="L118">		} catch (Exception e) {</span>
+<span class="nc" id="L119">			sucess = false;</span>
+<span class="nc" id="L120">			log.error(&quot;remove job fail jobName=&quot;+jobName,e);</span>
+<span class="nc" id="L121">		}</span>
+<span class="nc" id="L122">		return sucess;</span>
+	}
+
+	
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static boolean startJobs() {
+<span class="nc" id="L132">		boolean sucess = false;</span>
+		try {
+<span class="nc" id="L134">			Scheduler sched = gSchedulerFactory.getScheduler();</span>
+<span class="nc" id="L135">			sched.start();</span>
+<span class="nc" id="L136">			sucess = true;</span>
+<span class="nc" id="L137">		} catch (Exception e) {</span>
+<span class="nc" id="L138">			sucess = false;</span>
+<span class="nc" id="L139">			log.error(&quot;start jobs fail&quot;,e);</span>
+<span class="nc" id="L140">		}</span>
+<span class="nc" id="L141">		return sucess;</span>
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static boolean shutdownJobs() {
+<span class="nc" id="L149">		boolean sucess = false;</span>
+		try {
+<span class="nc" id="L151">			Scheduler sched = gSchedulerFactory.getScheduler();</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">			if(!sched.isShutdown()) {</span>
+<span class="nc" id="L153">				sched.shutdown();</span>
+			}
+<span class="nc" id="L155">			sucess = true;</span>
+<span class="nc" id="L156">		} catch (Exception e) {</span>
+<span class="nc" id="L157">			sucess = false;</span>
+<span class="nc" id="L158">			log.error(&quot;shutdown jobs fail &quot;,e);</span>
+<span class="nc" id="L159">		}</span>
+		
+<span class="nc" id="L161">		return sucess;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

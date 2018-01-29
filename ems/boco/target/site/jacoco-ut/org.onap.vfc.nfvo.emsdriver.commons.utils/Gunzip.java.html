@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Gunzip.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.commons.utils</a> &gt; <span class="el_source">Gunzip.java</span></div><h1>Gunzip.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.commons.utils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.zip.GZIPInputStream;
+
+
+<span class="fc" id="L27">public class Gunzip {</span>
+	
+	/**
+	 * 
+	 */
+	public void unCompress(String gzFileName, String toFile) 
+		throws IOException {
+<span class="fc" id="L34">		GZIPInputStream gzIn = null;</span>
+<span class="fc" id="L35">		FileOutputStream fileOutput = null;</span>
+<span class="fc" id="L36">		FileInputStream gzInput = new FileInputStream(gzFileName);</span>
+		try {
+<span class="fc" id="L38">			gzIn = new GZIPInputStream(gzInput);</span>
+<span class="fc" id="L39">			File tofile = new File(toFile);</span>
+<span class="fc" id="L40">			enable(tofile);</span>
+<span class="fc" id="L41">			fileOutput = new FileOutputStream(tofile, false);</span>
+
+<span class="fc" id="L43">			moveBytes(gzIn, fileOutput, -1, -1, 1024);</span>
+		} finally{
+<span class="pc bpc" id="L45" title="3 of 4 branches missed.">			if(gzIn != null){</span>
+<span class="pc" id="L46">				gzIn.close();</span>
+			}
+<span class="pc bpc" id="L48" title="3 of 4 branches missed.">			if(fileOutput != null){</span>
+<span class="pc" id="L49">				fileOutput.close();</span>
+			}
+			
+<span class="nc" id="L52">		}</span>
+		
+		
+<span class="fc" id="L55">	}</span>
+	
+	private void enable(File tofile) throws IOException {
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">		if (!tofile.exists()) {</span>
+<span class="fc" id="L59">			String parentPath = tofile.getParent();</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">			if (parentPath != null)</span>
+<span class="fc" id="L61">				new File(parentPath).mkdirs();</span>
+<span class="fc" id="L62">			tofile.createNewFile();</span>
+		}
+<span class="fc" id="L64">	}</span>
+
+
+	public long moveBytes(InputStream input, OutputStream output, long off, long len, int bufsize) 
+			throws IOException {
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">			if (off &gt; 0)</span>
+<span class="nc" id="L70">				input.skip(off);</span>
+			
+<span class="fc" id="L72">			long totalNum = 0;</span>
+<span class="fc" id="L73">			byte[] buf = new byte[bufsize];</span>
+
+			while (true) {
+<span class="pc bpc" id="L76" title="3 of 4 branches missed.">				if (len&gt;0 &amp;&amp; (len-totalNum)&lt;=0)</span>
+<span class="nc" id="L77">					break;</span>
+				
+<span class="pc bpc" id="L79" title="3 of 4 branches missed.">				else if (len&gt;0 &amp;&amp; bufsize&gt;(len-totalNum))</span>
+<span class="nc" id="L80">					bufsize = (int)(len-totalNum);</span>
+				
+<span class="fc" id="L82">				int readNum = input.read(buf, 0, bufsize);</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">				if (readNum &lt;= 0)</span>
+<span class="fc" id="L84">					break;</span>
+				
+<span class="fc" id="L86">				output.write(buf, 0, readNum);</span>
+<span class="fc" id="L87">				totalNum += readNum;</span>
+<span class="fc" id="L88">			}</span>
+<span class="fc" id="L89">			buf = null;</span>
+<span class="fc" id="L90">			return totalNum;</span>
+		}
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

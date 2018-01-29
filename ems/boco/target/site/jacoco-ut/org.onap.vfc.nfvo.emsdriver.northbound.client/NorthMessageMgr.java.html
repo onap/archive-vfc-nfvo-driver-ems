@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NorthMessageMgr.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.northbound.client</a> &gt; <span class="el_source">NorthMessageMgr.java</span></div><h1>NorthMessageMgr.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.northbound.client;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.log4j.Level;
+import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
+import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationInterface;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
+
+import com.alibaba.fastjson.JSONObject;
+
+import evel_javalibrary.att.com.AgentMain;
+import evel_javalibrary.att.com.AgentMain.EVEL_ERR_CODES;
+import evel_javalibrary.att.com.EvelFault;
+import evel_javalibrary.att.com.EvelFault.EVEL_SEVERITIES;
+import evel_javalibrary.att.com.EvelFault.EVEL_SOURCE_TYPES;
+import evel_javalibrary.att.com.EvelFault.EVEL_VF_STATUSES;
+import evel_javalibrary.att.com.EvelHeader;
+import evel_javalibrary.att.com.EvelScalingMeasurement;
+
+<span class="nc" id="L42">public class NorthMessageMgr extends DriverThread{</span>
+
+<span class="nc" id="L44">	private MessageChannel alarmChannel = MessageChannelFactory.getMessageChannel(Constant.RESULT_CHANNEL_KEY);</span>
+<span class="nc" id="L45">	private MessageChannel collectResultPMChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_PM_CHANNEL_KEY);</span>
+<span class="nc" id="L46">	private MessageChannel collectResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_CHANNEL_KEY);</span>
+	private ConfigurationInterface configurationInterface ;
+	
+<span class="nc" id="L49">	private boolean threadStop = false;</span>
+<span class="nc" id="L50">	private Level level = Level.DEBUG;</span>
+	
+	@Override
+	public void dispose() {
+<span class="nc" id="L54">		log.info(&quot;NorthMessageMgr Thread start threadStop=&quot;+threadStop);</span>
+		try {
+<span class="nc" id="L56">			Properties properties = configurationInterface.getProperties();</span>
+<span class="nc" id="L57">			String event_api_url = properties.getProperty(&quot;event_api_url&quot;);</span>
+<span class="nc" id="L58">			String port = properties.getProperty(&quot;port&quot;);</span>
+<span class="nc" id="L59">			String path = properties.getProperty(&quot;path&quot;);</span>
+<span class="nc" id="L60">			String topic = properties.getProperty(&quot;topic&quot;);</span>
+<span class="nc" id="L61">			String username = properties.getProperty(&quot;username&quot;);</span>
+<span class="nc" id="L62">			String password = properties.getProperty(&quot;password&quot;);</span>
+<span class="nc" id="L63">			String levelStr = properties.getProperty(&quot;level&quot;);</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">			if(&quot;debug&quot;.equals(levelStr)){</span>
+<span class="nc" id="L65">				level = Level.DEBUG;</span>
+			}else{
+<span class="nc" id="L67">				level = Level.INFO;</span>
+			}
+			
+			//login north 
+<span class="nc" id="L71">			event_api_url = &quot;http://&quot;+event_api_url;</span>
+<span class="nc" id="L72">			log.info(&quot;AgentMain.evel_initialize start event_api_url=[&quot;+event_api_url+&quot;]port=[&quot;+port+&quot;]path=[&quot;+path+&quot;]&quot;</span>
+					+ &quot;topic=[&quot;+topic+&quot;]username=[&quot;+username+&quot;]password=[&quot;+password+&quot;]level=[&quot;+level+&quot;]&quot;);
+			try{
+<span class="nc" id="L75">				EVEL_ERR_CODES evecode = AgentMain.evel_initialize(event_api_url, Integer.parseInt(port),</span>
+						path,topic,
+						username,
+						password,
+						level);
+<span class="nc" id="L80">				log.info(&quot;AgentMain.evel_initialize sucess EVEL_ERR_CODES=&quot;+evecode);</span>
+<span class="nc" id="L81">			} catch( Exception e ){</span>
+<span class="nc" id="L82">				log.error(&quot;AgentMain.evel_initialize fail &quot;,e);</span>
+<span class="nc" id="L83">			}catch( Error e1 ){</span>
+<span class="nc" id="L84">				log.error(&quot;AgentMain.evel_initialize Error &quot;,e1);</span>
+<span class="nc" id="L85">			}</span>
+<span class="nc" id="L86">		} catch (Exception e2) {</span>
+<span class="nc" id="L87">			log.error(&quot;NorthMessageMgr start fail &quot;,e2);</span>
+<span class="nc" id="L88">		}</span>
+		
+<span class="nc" id="L90">		new HeatBeatTread().start();</span>
+		//
+<span class="nc" id="L92">		new AlarmMessageRecv().start();</span>
+		
+<span class="nc" id="L94">		new ResultMessageRecv().start();</span>
+		
+<span class="nc" id="L96">		new CollectMessageRecv().start();</span>
+		
+<span class="nc" id="L98">		log.info(&quot;NorthMessageMgr start sucess &quot;);</span>
+<span class="nc" id="L99">	}</span>
+	
+	
+<span class="nc" id="L102">	class HeatBeatTread extends Thread{</span>
+		
+		public void run() {
+			
+<span class="nc bnc" id="L106" title="All 2 branches missed.">			while(!threadStop){</span>
+				
+				try {
+<span class="nc" id="L109">					EvelHeader header  = EvelHeader.evel_new_heartbeat(&quot;Hearbeat_EMS&quot;,&quot;EMS-driver&quot;);</span>
+<span class="nc" id="L110">		            header.evel_nfnamingcode_set(&quot;EMS-driver&quot;);</span>
+<span class="nc" id="L111">		            header.evel_nfcnamingcode_set(&quot;EMS-driver&quot;);</span>
+<span class="nc" id="L112">		            AgentMain.evel_post_event(header);</span>
+<span class="nc" id="L113">		            log.info(&quot;HeatBeat send!&quot;);</span>
+		            try {
+<span class="nc" id="L115">		                Thread.sleep(60*1000);</span>
+<span class="nc" id="L116">		            } catch( Exception e ){</span>
+<span class="nc" id="L117">		                 e.printStackTrace();</span>
+<span class="nc" id="L118">		            }</span>
+<span class="nc" id="L119">				} catch (Exception e) {</span>
+<span class="nc" id="L120">					log.error(&quot;HeatBeatTread exception&quot;,e);</span>
+<span class="nc" id="L121">				}</span>
+			}
+<span class="nc" id="L123">		}</span>
+	}
+	
+<span class="nc" id="L126">	class AlarmMessageRecv extends Thread{</span>
+<span class="nc" id="L127">		long timeStamp = System.currentTimeMillis();</span>
+		
+		public void run() {
+<span class="nc bnc" id="L130" title="All 2 branches missed.">			while(!threadStop){</span>
+				
+				try {
+<span class="nc bnc" id="L133" title="All 2 branches missed.">					if(System.currentTimeMillis() - timeStamp &gt; Constant.ONEMINUTE){</span>
+<span class="nc" id="L134">						timeStamp = System.currentTimeMillis();</span>
+						
+<span class="nc" id="L136">						log.info(&quot;ALARM_CHANNEL Msg size :&quot;+alarmChannel.size());</span>
+					}
+					
+<span class="nc" id="L139">					Object obj = alarmChannel.poll();</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">					if(obj == null){</span>
+<span class="nc" id="L141">						continue;</span>
+					}
+<span class="nc bnc" id="L143" title="All 2 branches missed.">					if(obj instanceof String){</span>
+<span class="nc" id="L144">						String result = (String)obj;</span>
+<span class="nc" id="L145">						JSONObject reagobj = JSONObject.parseObject(result);</span>
+						
+<span class="nc" id="L147">						EvelFault evelFault = this.resultEvelFault(reagobj);</span>
+						
+						//send
+<span class="nc" id="L150">						log.info(&quot;AgentMain.evel_post_event alarm start&quot;);</span>
+<span class="nc" id="L151">						AgentMain.evel_post_event(evelFault);</span>
+<span class="nc" id="L152">						log.info(&quot;AgentMain.evel_post_event alarm sucess&quot;);</span>
+<span class="nc" id="L153">					}else{</span>
+<span class="nc" id="L154">						log.error(&quot;AlarmMessageRecv receive Object = &quot;+obj);</span>
+					}
+					
+<span class="nc" id="L157">				} catch (Exception e) {</span>
+<span class="nc" id="L158">					log.error(&quot;AlarmMessageRecv exception&quot;,e);</span>
+<span class="nc" id="L159">				}</span>
+			}
+<span class="nc" id="L161">		}</span>
+
+		private EvelFault resultEvelFault(JSONObject reagobj) {
+			
+<span class="nc" id="L165">			String eventName = null;</span>
+<span class="nc" id="L166">			EvelHeader.PRIORITIES pri = null;</span>
+<span class="nc" id="L167">			EVEL_SEVERITIES severity = null;</span>
+<span class="nc" id="L168">			EVEL_VF_STATUSES status = null;</span>
+<span class="nc" id="L169">			String alarmStatus = reagobj.getString(&quot;alarmStatus&quot;);</span>
+<span class="nc" id="L170">			String origSeverity = reagobj.getString(&quot;origSeverity&quot;);</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">			if(&quot;0&quot;.equals(alarmStatus)){</span>
+<span class="nc" id="L172">				status = EVEL_VF_STATUSES.EVEL_VF_STATUS_IDLE;</span>
+<span class="nc" id="L173">				eventName = &quot;Fault_&quot;+reagobj.getString(&quot;neType&quot;)+&quot;_&quot;+reagobj.getString(&quot;alarmTitle&quot;)+&quot;Cleared&quot;;</span>
+				
+<span class="nc bnc" id="L175" title="All 2 branches missed.">				if(&quot;1&quot;.equals(origSeverity)){</span>
+<span class="nc" id="L176">					severity = EVEL_SEVERITIES.EVEL_SEVERITY_CRITICAL;</span>
+<span class="nc" id="L177">					pri = EvelHeader.PRIORITIES.EVEL_PRIORITY_HIGH;</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">				}else if(&quot;2&quot;.equals(origSeverity)){</span>
+<span class="nc" id="L179">					severity = EVEL_SEVERITIES.EVEL_SEVERITY_MAJOR;</span>
+<span class="nc" id="L180">					pri = EvelHeader.PRIORITIES.EVEL_PRIORITY_MEDIUM;</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">				}else if(&quot;3&quot;.equals(origSeverity)){</span>
+<span class="nc" id="L182">					severity = EVEL_SEVERITIES.EVEL_SEVERITY_MINOR;</span>
+<span class="nc" id="L183">					pri = EvelHeader.PRIORITIES.EVEL_PRIORITY_NORMAL;</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">				}else if(&quot;4&quot;.equals(origSeverity)){</span>
+<span class="nc" id="L185">					severity = EVEL_SEVERITIES.EVEL_SEVERITY_WARNING;</span>
+<span class="nc" id="L186">					pri = EvelHeader.PRIORITIES.EVEL_PRIORITY_LOW;</span>
+					
+				}
+			}else{
+<span class="nc" id="L190">				status = EVEL_VF_STATUSES.EVEL_VF_STATUS_ACTIVE;</span>
+<span class="nc" id="L191">				eventName = &quot;Fault_&quot;+reagobj.getString(&quot;neType&quot;)+&quot;_&quot;+reagobj.getString(&quot;alarmTitle&quot;);</span>
+<span class="nc" id="L192">				pri = EvelHeader.PRIORITIES.EVEL_PRIORITY_NORMAL;</span>
+<span class="nc" id="L193">				severity = EVEL_SEVERITIES.EVEL_SEVERITY_NORMAL;</span>
+			}
+			
+<span class="nc" id="L196">			String evnId = reagobj.getString(&quot;alarmId&quot;);</span>
+<span class="nc" id="L197">			String alarmCondition = reagobj.getString(&quot;specificProblem&quot;);</span>
+			
+<span class="nc" id="L199">			String specificProblem = reagobj.getString(&quot;specificProblem&quot;);</span>
+			
+<span class="nc" id="L201">			EvelFault flt  = new EvelFault(eventName, evnId,alarmCondition, </span>
+					specificProblem,pri,severity,
+					EVEL_SOURCE_TYPES.EVEL_SOURCE_VIRTUAL_NETWORK_FUNCTION,
+					status);
+<span class="nc" id="L205">			 flt.evel_nfcnamingcode_set(&quot;&quot;);</span>
+<span class="nc" id="L206">			 flt.evel_nfnamingcode_set(&quot;&quot;);</span>
+<span class="nc" id="L207">			 flt.evel_header_type_set(&quot;applicationVnf&quot;);</span>
+<span class="nc" id="L208">			 String eventTime = reagobj.getString(&quot;eventTime&quot;);</span>
+<span class="nc" id="L209">			 SimpleDateFormat format = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span>
+<span class="nc" id="L210">			 Date eventTimeD = new Date();</span>
+			 try {
+<span class="nc" id="L212">				eventTimeD = format.parse(eventTime);</span>
+<span class="nc" id="L213">			 } catch (ParseException e) {</span>
+				// TODO Auto-generated catch block
+<span class="nc" id="L215">				e.printStackTrace();</span>
+<span class="nc" id="L216">			 }</span>
+<span class="nc" id="L217">			 flt.evel_start_epoch_set(eventTimeD.getTime());</span>
+<span class="nc" id="L218">			 flt.evel_last_epoch_set(eventTimeD.getTime());</span>
+			 
+<span class="nc" id="L220">			 flt.evel_fault_category_set(reagobj.getString(&quot;alarmType&quot;));</span>
+<span class="nc" id="L221">			 flt.evel_fault_interface_set(reagobj.getString(&quot;objectName&quot;));</span>
+<span class="nc" id="L222">			 String neUID = reagobj.getString(&quot;neUID&quot;);</span>
+<span class="nc" id="L223">			 flt.evel_reporting_entity_id_set(neUID.substring(0,9));//</span>
+<span class="nc" id="L224">			 flt.evel_reporting_entity_name_set(neUID.substring(0,9));</span>
+<span class="nc" id="L225">			 flt.evel_header_set_sourceid(true, reagobj.getString(&quot;neName&quot;));</span>
+<span class="nc" id="L226">			 flt.evel_header_set_source_name(reagobj.getString(&quot;objectName&quot;));</span>
+			 
+<span class="nc" id="L228">			 flt.evel_header_set_priority(pri);</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">			 for(String key : reagobj.keySet()){</span>
+<span class="nc" id="L230">				 flt.evel_fault_addl_info_add(key, reagobj.getString(key));</span>
+<span class="nc" id="L231">			 }</span>
+             
+<span class="nc" id="L233">             return flt;</span>
+		}
+	}
+
+<span class="nc" id="L237">	class ResultMessageRecv extends Thread{</span>
+<span class="nc" id="L238">		long timeStamp = System.currentTimeMillis();</span>
+		
+		public void run() {
+<span class="nc bnc" id="L241" title="All 2 branches missed.">			while(!threadStop){</span>
+				
+				try {
+<span class="nc bnc" id="L244" title="All 2 branches missed.">					if(System.currentTimeMillis() - timeStamp &gt; Constant.ONEMINUTE){</span>
+<span class="nc" id="L245">						timeStamp = System.currentTimeMillis();</span>
+						
+<span class="nc" id="L247">						log.debug(&quot;COLLECT_RESULT_CHANNEL Msg size :&quot;+collectResultChannel.size());</span>
+					}
+					
+<span class="nc" id="L250">					Object obj = collectResultChannel.poll();</span>
+<span class="nc bnc" id="L251" title="All 2 branches missed.">					if(obj == null){</span>
+<span class="nc" id="L252">						continue;</span>
+					}
+<span class="nc bnc" id="L254" title="All 2 branches missed.">					if(obj instanceof String){</span>
+						//http
+<span class="nc" id="L256">						Properties properties = configurationInterface.getProperties();</span>
+<span class="nc" id="L257">						String msbAddress = properties.getProperty(&quot;msbAddress&quot;);</span>
+<span class="nc" id="L258">						String url = properties.getProperty(&quot;dataNotifyUrl&quot;);</span>
+<span class="nc" id="L259">						String postUrl = &quot;http://&quot;+msbAddress+url;</span>
+<span class="nc" id="L260">						HttpClientUtil.doPost(postUrl, (String)obj, Constant.ENCODING_UTF8);</span>
+					}
+					
+<span class="nc" id="L263">				} catch (Exception e) {</span>
+<span class="nc" id="L264">					log.error(&quot;ResultMessageRecv exception&quot;,e);</span>
+<span class="nc" id="L265">				}</span>
+			}
+<span class="nc" id="L267">		}</span>
+	}
+	
+<span class="nc" id="L270">	class CollectMessageRecv extends Thread{</span>
+<span class="nc" id="L271">		long timeStamp = System.currentTimeMillis();</span>
+		
+		public void run() {
+<span class="nc" id="L274">			log.info(&quot;CollectMessageRecv Thread is start threadStop=&quot;+threadStop);</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">			while(!threadStop){</span>
+				
+				try {
+<span class="nc bnc" id="L278" title="All 2 branches missed.">					if(System.currentTimeMillis() - timeStamp &gt; Constant.ONEMINUTE){</span>
+<span class="nc" id="L279">						timeStamp = System.currentTimeMillis();</span>
+						
+<span class="nc" id="L281">						log.debug(Constant.COLLECT_RESULT_PM_CHANNEL_KEY+&quot; Msg size :&quot;+collectResultPMChannel.size());</span>
+					}
+					
+<span class="nc" id="L284">					Object obj = collectResultPMChannel.poll();</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">					if(obj == null){</span>
+<span class="nc" id="L286">						continue;</span>
+					}
+<span class="nc bnc" id="L288" title="All 2 branches missed.">					if(obj instanceof Map){</span>
+						@SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L290">						Map&lt;String,String&gt; reMap = (Map&lt;String,String&gt;)obj;</span>
+<span class="nc" id="L291">						log.debug(&quot;reMap =&quot;+reMap);</span>
+<span class="nc" id="L292">						EvelScalingMeasurement evelScalingMeasurement = this.resultEvelScalingMeasurement(reMap);</span>
+<span class="nc" id="L293">						log.debug(&quot;evelScalingMeasurement=&quot;+evelScalingMeasurement);</span>
+						//send
+<span class="nc" id="L295">						log.info(&quot;AgentMain.evel_post_event start&quot;);</span>
+<span class="nc" id="L296">						AgentMain.evel_post_event(evelScalingMeasurement);</span>
+<span class="nc" id="L297">						log.info(&quot;AgentMain.evel_post_event sucess&quot;);</span>
+						
+<span class="nc" id="L299">					}else{</span>
+<span class="nc" id="L300">						log.error(&quot;CollectMessageRecv receive Object = &quot;+obj);</span>
+					}
+					
+<span class="nc" id="L303">				} catch (Exception e) {</span>
+<span class="nc" id="L304">					log.error(&quot;CollectMessageRecv exception&quot;,e);</span>
+<span class="nc" id="L305">				}catch (Error e) {</span>
+<span class="nc" id="L306">					log.error(&quot;CollectMessageRecv Error&quot;,e);</span>
+<span class="nc" id="L307">				}</span>
+			}
+<span class="nc" id="L309">		}</span>
+
+		private EvelScalingMeasurement resultEvelScalingMeasurement(Map&lt;String,String&gt; reMap) {
+<span class="nc" id="L312">			String evname = &quot;Mfvs_&quot;+reMap.get(&quot;ElementType&quot;)+reMap.get(&quot;ObjectType&quot;);</span>
+<span class="nc" id="L313">			String evid = reMap.get(&quot;StartTime&quot;)+reMap.get(&quot;ObjectType&quot;)+reMap.get(&quot;rmUID&quot;);</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">			int Period = Integer.parseInt(reMap.get(&quot;Period&quot;)!=null?reMap.get(&quot;Period&quot;):&quot;15&quot;);</span>
+<span class="nc" id="L315">			EvelScalingMeasurement sm  = new EvelScalingMeasurement(Period,evname, evid);</span>
+
+<span class="nc bnc" id="L317" title="All 2 branches missed.">  			for(String key : reMap.keySet()){</span>
+<span class="nc" id="L318">  				sm.evel_measurement_custom_measurement_add(reMap.get(&quot;ElementType&quot;), key, reMap.get(key));</span>
+  				
+<span class="nc" id="L320">  			}</span>
+  			
+<span class="nc" id="L322">  			sm.evel_nfcnamingcode_set(&quot;&quot;);</span>
+<span class="nc" id="L323">  			sm.evel_nfnamingcode_set(&quot;&quot;);</span>
+<span class="nc" id="L324">  			sm.evel_header_type_set(&quot;applicationVnf&quot;);</span>
+<span class="nc" id="L325">  			String rmUID = reMap.get(&quot;rmUID&quot;);</span>
+<span class="nc" id="L326">  			sm.evel_reporting_entity_id_set(rmUID.substring(0,9));//</span>
+<span class="nc" id="L327">  			String Dn = reMap.get(&quot;Dn&quot;);</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">			if(Dn!=null)</span>
+<span class="nc bnc" id="L329" title="All 4 branches missed.">  			sm.evel_reporting_entity_name_set(Dn.substring(0, Dn != null &amp;&amp; Dn.indexOf(&quot;;&quot;)&gt;0?Dn.indexOf(&quot;;&quot;):Dn.length()));</span>
+			else
+			{
+                          // decide the flow if Dn is null
+
+			}
+<span class="nc" id="L335">  			sm.evel_header_set_sourceid(true, reMap.get(&quot;rmUID&quot;));</span>
+<span class="nc" id="L336">  			sm.evel_header_set_source_name(reMap.get(&quot;rmUID&quot;));</span>
+			 
+<span class="nc" id="L338">  			sm.evel_header_set_priority(EvelHeader.PRIORITIES.EVEL_PRIORITY_NORMAL);</span>
+<span class="nc" id="L339">           return sm;</span>
+		}
+	}
+
+	/**
+	 * @return the configurationInterface
+	 */
+	public ConfigurationInterface getConfigurationInterface() {
+<span class="nc" id="L347">		return configurationInterface;</span>
+	}
+
+	/**
+	 * @param configurationInterface the configurationInterface to set
+	 */
+	public void setConfigurationInterface(
+			ConfigurationInterface configurationInterface) {
+<span class="nc" id="L355">		this.configurationInterface = configurationInterface;</span>
+<span class="nc" id="L356">	}</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

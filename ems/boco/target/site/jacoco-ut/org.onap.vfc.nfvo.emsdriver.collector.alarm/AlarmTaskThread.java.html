@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AlarmTaskThread.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.collector.alarm</a> &gt; <span class="el_source">AlarmTaskThread.java</span></div><h1>AlarmTaskThread.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.collector.alarm;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.StringUtil;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
+
+
+public class AlarmTaskThread extends Thread{
+<span class="pc" id="L35">	public  Log log = LogFactory.getLog(AlarmTaskThread.class);</span>
+	
+<span class="pc" id="L37">	private HeartBeat heartBeat = null;</span>
+	
+<span class="pc" id="L39">	private boolean isStop = false;</span>
+<span class="pc" id="L40">	private CollectVo collectVo = null;</span>
+<span class="pc" id="L41">	private int read_timeout = Constant.READ_TIMEOUT_MILLISECOND;</span>
+	private int reqId;
+	
+<span class="pc" id="L44">	private Socket socket = null;</span>
+<span class="pc" id="L45">	private BufferedInputStream is = null;</span>
+<span class="pc" id="L46">	private BufferedOutputStream dos = null;</span>
+	
+	private MessageChannel alarmChannel;
+	
+	
+	public AlarmTaskThread() {
+<span class="nc" id="L52">		super();</span>
+<span class="nc" id="L53">	}</span>
+
+<span class="fc" id="L55">	public AlarmTaskThread(CollectVo collectVo) {</span>
+
+<span class="fc" id="L57">		this.collectVo = collectVo;</span>
+<span class="fc" id="L58">	}</span>
+
+	public void run() {
+<span class="nc" id="L61">		alarmChannel = MessageChannelFactory.getMessageChannel(Constant.RESULT_CHANNEL_KEY);</span>
+		try {
+<span class="nc" id="L63">			this.init();</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">			while(!this.isStop){</span>
+				String body;
+				try {
+<span class="nc" id="L67">					body = this.receive();</span>
+					try {
+<span class="nc" id="L69">						alarmChannel.put(body);</span>
+<span class="nc" id="L70">					} catch (InterruptedException e) {</span>
+<span class="nc" id="L71">						log.error(StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L72">					}</span>
+<span class="nc" id="L73">				} catch (Exception e) {</span>
+<span class="nc" id="L74">					e.printStackTrace();</span>
+<span class="nc" id="L75">					reinit();</span>
+<span class="nc" id="L76">				}</span>
+			}
+<span class="nc" id="L78">		} catch (Exception e) {</span>
+<span class="nc" id="L79">			log.error(StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L80">		}</span>
+<span class="nc" id="L81">	}</span>
+	
+	
+
+	public String receive() throws Exception {
+
+<span class="fc" id="L87">		Msg msg =null;</span>
+<span class="fc" id="L88">		String retString = null;</span>
+		
+<span class="pc bpc" id="L90" title="1 of 4 branches missed.">		while (retString == null &amp;&amp; !this.isStop) {</span>
+			
+<span class="fc" id="L92">			msg = MessageUtil.readOneMsg(is);</span>
+<span class="fc" id="L93">			log.debug(&quot;msg = &quot;+msg.toString(true));</span>
+<span class="fc" id="L94">			log.info(&quot;msg.getMsgType().name = &quot;+msg.getMsgType().name);</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">			if(&quot;ackLoginAlarm&quot;.equalsIgnoreCase(msg.getMsgType().name)){</span>
+<span class="fc" id="L96">				log.debug(&quot;receive login ack&quot;);</span>
+<span class="fc" id="L97">				boolean suc = this.ackLoginAlarm(msg);</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">				if(suc){</span>
+					
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">					if(reqId == Integer.MAX_VALUE){</span>
+<span class="nc" id="L101">						reqId = 0;</span>
+					}
+<span class="fc" id="L103">					reqId ++;</span>
+<span class="fc" id="L104">					Msg  msgheart = MessageUtil.putHeartBeatMsg(reqId);</span>
+<span class="fc" id="L105">					heartBeat =  new HeartBeat(socket,msgheart); </span>
+<span class="fc" id="L106">					heartBeat.setName(&quot;CMCC_JT_HeartBeat&quot;);</span>
+					// start heartBeat
+<span class="fc" id="L108">					heartBeat.start();</span>
+				}
+<span class="fc" id="L110">				retString = null;</span>
+			}
+			
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">			if(&quot;ackHeartBeat&quot;.equalsIgnoreCase(msg.getMsgType().name)){</span>
+<span class="nc" id="L114">				log.debug(&quot;received heartBeat message:&quot;+msg.getBody());</span>
+<span class="nc" id="L115">				retString = null;</span>
+			}
+			
+			
+			
+<span class="fc bfc" id="L120" title="All 2 branches covered.">			if(&quot;realTimeAlarm&quot;.equalsIgnoreCase(msg.getMsgType().name)){</span>
+<span class="fc" id="L121">				log.debug(&quot;received alarm message&quot;);</span>
+<span class="fc" id="L122">				retString =  msg.getBody();</span>
+			}
+			
+<span class="fc bfc" id="L125" title="All 2 branches covered.">			if(retString == null){</span>
+<span class="fc" id="L126">				Thread.sleep(100);</span>
+			}
+		}
+<span class="fc" id="L129">		return retString;</span>
+	}
+	
+	public void init() throws Exception {
+<span class="fc" id="L133">		isStop = false;</span>
+		//host
+<span class="fc" id="L135">		String host = collectVo.getIP();</span>
+		//port
+<span class="fc" id="L137">		String port = collectVo.getPort();</span>
+		//user
+<span class="fc" id="L139">		String user = collectVo.getUser();</span>
+		//password
+<span class="fc" id="L141">		String password = collectVo.getPassword();</span>
+		
+<span class="fc" id="L143">		String read_timeout = collectVo.getRead_timeout();</span>
+<span class="pc bpc" id="L144" title="3 of 4 branches missed.">		if ((read_timeout != null) &amp;&amp; (read_timeout.trim().length() &gt; 0)) {</span>
+		      try {
+<span class="nc" id="L146">		        this.read_timeout = Integer.parseInt(read_timeout);</span>
+<span class="nc" id="L147">		      } catch (NumberFormatException e) {</span>
+<span class="nc" id="L148">		        log.error(StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L149">		      }</span>
+		    }
+<span class="fc" id="L151">		log.info(&quot;socket connect host=&quot; + host + &quot;, port=&quot; + port);</span>
+		try {
+<span class="fc" id="L153">			int portInt = Integer.parseInt(port);</span>
+<span class="fc" id="L154">			socket = new Socket(host, portInt);</span>
+			
+<span class="nc" id="L156">		} catch (UnknownHostException e) {</span>
+<span class="nc" id="L157">			throw new Exception(&quot;remote host [&quot; + host + &quot;]connect fail&quot; + StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L158">		} catch (IOException e) {</span>
+<span class="nc" id="L159">			throw new Exception(&quot;create socket IOException &quot; + StringUtil.getStackTrace(e));</span>
+<span class="fc" id="L160">		}</span>
+		try {
+<span class="fc" id="L162">			socket.setSoTimeout(this.read_timeout);</span>
+<span class="fc" id="L163">			socket.setTcpNoDelay(true);</span>
+<span class="fc" id="L164">			socket.setKeepAlive(true);</span>
+<span class="nc" id="L165">		} catch (SocketException e) {</span>
+<span class="nc" id="L166">			throw new Exception(&quot; SocketException &quot; + StringUtil.getStackTrace(e));</span>
+<span class="fc" id="L167">		}</span>
+		try {
+<span class="fc" id="L169">			dos = new BufferedOutputStream(socket.getOutputStream());</span>
+			
+<span class="fc" id="L171">			Msg  msg = MessageUtil.putLoginMsg(user,password);</span>
+			
+			try {
+<span class="fc" id="L174">				log.debug(&quot;send login message &quot;+msg.toString(false));</span>
+<span class="fc" id="L175">				MessageUtil.writeMsg(msg,dos);</span>
+				
+<span class="nc" id="L177">			} catch (Exception e) {</span>
+<span class="nc" id="L178">				log.error(&quot;send login message is fail &quot;+StringUtil.getStackTrace(e));</span>
+<span class="fc" id="L179">			}</span>
+
+<span class="fc" id="L181">			is = new BufferedInputStream(socket.getInputStream());</span>
+			
+<span class="nc" id="L183">		} catch (SocketException e) {</span>
+<span class="nc" id="L184">			throw new Exception(StringUtil.getStackTrace(e));</span>
+<span class="fc" id="L185">		}</span>
+<span class="fc" id="L186">	}</span>
+	
+	private boolean ackLoginAlarm(Msg msg) throws Exception {
+		
+<span class="fc" id="L190">		boolean is_success = false;</span>
+		try {
+<span class="fc" id="L192">			String loginres = msg.getBody();</span>
+			//ackLoginAlarm; result=fail(succ); resDesc=username-error
+<span class="fc" id="L194">			String [] loginbody = loginres.split(&quot;;&quot;);</span>
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">			if(loginbody.length &gt; 1){</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">				for(String str :loginbody){</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">		            if(str.contains(&quot;=&quot;)){</span>
+<span class="fc" id="L198">		            	String [] paras1 = str.split(&quot;=&quot;,-1);</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">		            	if(&quot;result&quot;.equalsIgnoreCase(paras1[0].trim())){</span>
+<span class="pc bpc" id="L200" title="1 of 2 branches missed.">							if(&quot;succ&quot;.equalsIgnoreCase(paras1[1].trim())){</span>
+<span class="fc" id="L201">								is_success = true;</span>
+							}else{
+<span class="nc" id="L203">								is_success = false;</span>
+							}
+						}
+		            }
+				}
+			}else {
+<span class="nc" id="L209">				log.error(&quot;login ack body Incorrect formatbody=&quot; + loginres);</span>
+			}
+			
+			
+<span class="nc" id="L213">		} catch (Exception e) {</span>
+<span class="nc" id="L214">			log.error(&quot;pocess login ack fail&quot;+StringUtil.getStackTrace(e));</span>
+<span class="fc" id="L215">		}</span>
+<span class="pc bpc" id="L216" title="1 of 2 branches missed.">		if (is_success) {</span>
+<span class="fc" id="L217">			log.info(&quot;login sucess receive login ack &quot; + msg.getBody());</span>
+		} else {
+<span class="nc" id="L219">			log.error(&quot;login fail receive login ack  &quot; + msg.getBody());</span>
+<span class="nc" id="L220">			this.close();</span>
+<span class="nc" id="L221">			this.isStop = true;</span>
+<span class="nc" id="L222">			throw new Exception(&quot;login fail quit&quot;);</span>
+		}
+<span class="fc" id="L224">		return is_success;</span>
+	}
+
+	public void close() {
+
+<span class="nc bnc" id="L229" title="All 2 branches missed.">		if(heartBeat != null){</span>
+<span class="nc" id="L230">			heartBeat.setStop(true);</span>
+		}
+		
+<span class="nc bnc" id="L233" title="All 2 branches missed.">		if (is != null) {</span>
+			try {
+<span class="nc" id="L235">				is.close();</span>
+<span class="nc" id="L236">			} catch (IOException e) {</span>
+			} finally {
+<span class="nc" id="L238">				is = null;</span>
+<span class="nc" id="L239">			}</span>
+		}
+
+<span class="nc bnc" id="L242" title="All 2 branches missed.">		if (dos != null) {</span>
+			try {
+<span class="nc" id="L244">				dos.close();</span>
+<span class="nc" id="L245">			} catch (IOException e) {</span>
+			} finally {
+<span class="nc" id="L247">				dos = null;</span>
+<span class="nc" id="L248">			}</span>
+		}
+
+<span class="nc bnc" id="L251" title="All 2 branches missed.">		if (socket != null) {</span>
+			try {
+<span class="nc" id="L253">				socket.close();</span>
+<span class="nc" id="L254">			} catch (IOException e) {</span>
+			} finally {
+<span class="nc" id="L256">				socket = null;</span>
+<span class="nc" id="L257">			}</span>
+
+		}
+<span class="nc" id="L260">	}</span>
+	
+	public void  reinit() {
+<span class="nc" id="L263">		int time = 0;</span>
+<span class="nc" id="L264">		close();</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">		while(!this.isStop) {</span>
+<span class="nc" id="L266">			close();</span>
+<span class="nc" id="L267">			time++;</span>
+			try {
+<span class="nc" id="L269">				Thread.sleep(1000 * 30);</span>
+<span class="nc" id="L270">				init();</span>
+<span class="nc" id="L271">				return;</span>
+<span class="nc" id="L272">			} catch (Exception e) {</span>
+<span class="nc" id="L273">				log.error(&quot;Number [&quot;+time+&quot;]reconnect [&quot;+collectVo.getIP()+&quot;]fail&quot; );</span>
+<span class="nc" id="L274">			}</span>
+		}
+<span class="nc" id="L276">	}</span>
+
+	/**
+	 * @param isStop the isStop to set
+	 */
+	public void setStop(boolean isStop) {
+<span class="nc" id="L282">		this.isStop = isStop;</span>
+<span class="nc" id="L283">	}</span>
+
+	/**
+	 * @return the heartBeat
+	 */
+	public HeartBeat getHeartBeat() {
+<span class="nc" id="L289">		return heartBeat;</span>
+	}
+	
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

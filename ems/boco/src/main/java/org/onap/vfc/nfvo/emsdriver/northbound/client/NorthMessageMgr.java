@@ -325,7 +325,13 @@ public class NorthMessageMgr extends DriverThread{
   			String rmUID = reMap.get("rmUID");
   			sm.evel_reporting_entity_id_set(rmUID.substring(0,9));//
   			String Dn = reMap.get("Dn");
+			if(Dn!=null)
   			sm.evel_reporting_entity_name_set(Dn.substring(0, Dn != null && Dn.indexOf(";")>0?Dn.indexOf(";"):Dn.length()));
+			else
+			{
+                          // decide the flow if Dn is null
+
+			}
   			sm.evel_header_set_sourceid(true, reMap.get("rmUID"));
   			sm.evel_header_set_source_name(reMap.get("rmUID"));
 			 

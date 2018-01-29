@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Zip.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.commons.utils</a> &gt; <span class="el_source">Zip.java</span></div><h1>Zip.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.commons.utils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+
+public class Zip {
+<span class="fc" id="L27">	protected int compressDirectoryCount = 0; </span>
+<span class="fc" id="L28">	protected int compressFileCount = 0;     </span>
+	
+<span class="fc" id="L30">	protected int relativeAddrIdx = 0;        </span>
+<span class="fc" id="L31">	protected int compressLevel = 6;         </span>
+<span class="fc" id="L32">	protected String zipFilePath = null;      </span>
+<span class="fc" id="L33">	protected String compressPath = null;    </span>
+	
+<span class="fc" id="L35">	protected ZipOutputStream zipOutput = null;</span>
+	
+	/**
+	 * 
+	 */
+<span class="fc" id="L40">	public Zip(String compressPath, String zipFilePath) throws IOException{</span>
+<span class="fc" id="L41">		File compressFile = new File(compressPath);</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">		if (!compressFile.exists())</span>
+<span class="nc" id="L43">			throw new IOException(&quot;the file or directory '&quot;+compressPath+&quot;' not found!&quot;);</span>
+		
+<span class="fc" id="L45">		this.zipFilePath = zipFilePath;</span>
+<span class="fc" id="L46">		this.compressPath = compressFile.getAbsolutePath();</span>
+
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">		if (this.zipFilePath == null) {</span>
+<span class="nc" id="L49">			StringBuffer zipFilePathBuf = new StringBuffer(this.compressPath);</span>
+<span class="nc" id="L50">			int bufLen = zipFilePathBuf.length();</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">			if (zipFilePathBuf.charAt(bufLen-1) == '/')</span>
+<span class="nc" id="L52">				zipFilePathBuf.deleteCharAt(bufLen-1);</span>
+<span class="nc" id="L53">			this.zipFilePath = zipFilePathBuf.append(&quot;.zip&quot;).toString();</span>
+		}
+<span class="fc" id="L55">		relativeAddrIdx = this.compressPath.lastIndexOf(File.separator)+1;</span>
+<span class="fc" id="L56">	}</span>
+	
+	/**
+	 * 
+	 */
+	public void compress() throws IOException {
+<span class="fc" id="L62">		File theFile = new File(zipFilePath);</span>
+		
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">		if (!theFile.exists()) {</span>
+<span class="fc" id="L65">			String parentPath = theFile.getParent();</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">			if (parentPath != null)</span>
+<span class="fc" id="L67">				new File(parentPath).mkdirs();</span>
+<span class="fc" id="L68">			theFile.createNewFile();</span>
+		}
+<span class="fc" id="L70">		zipOutput = new ZipOutputStream(new FileOutputStream(zipFilePath));</span>
+<span class="fc" id="L71">		zipOutput.setMethod(ZipOutputStream.DEFLATED);</span>
+<span class="fc" id="L72">		zipOutput.setLevel(compressLevel);</span>
+<span class="fc" id="L73">		compressDirectory(new File(compressPath));</span>
+<span class="fc" id="L74">		zipOutput.close();</span>
+<span class="fc" id="L75">	}</span>
+	
+	protected void compressDirectory(File directoryPath) throws IOException {
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">		if (directoryPath.isFile()) {</span>
+<span class="fc" id="L79">			compressFile(directoryPath.getAbsolutePath());</span>
+		}else{
+<span class="nc" id="L81">			File listFiles[] = directoryPath.listFiles();</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">			for (int i=0; i&lt;listFiles.length; i++)</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">				if (listFiles[i].isFile()) {</span>
+<span class="nc" id="L84">					compressFile(listFiles[i].getAbsolutePath());</span>
+				}else {
+<span class="nc" id="L86">					compressDirectoryCount ++;</span>
+<span class="nc" id="L87">					compressDirectory(listFiles[i]);</span>
+				}
+		}
+	
+	
+<span class="fc" id="L92">	}</span>
+	protected void compressFile(String absolutePath) throws IOException {
+<span class="fc" id="L94">		compressFileCount ++;</span>
+<span class="fc" id="L95">		byte byteBuf[] = new byte[2048];</span>
+<span class="fc" id="L96">		zipOutput.putNextEntry(new ZipEntry(absolutePath.substring(relativeAddrIdx)));</span>
+		
+<span class="fc" id="L98">		FileInputStream input= new FileInputStream(absolutePath);</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">		for (int count=0; (count=input.read(byteBuf,0,byteBuf.length))!=-1;)</span>
+<span class="nc" id="L100">			zipOutput.write(byteBuf, 0, count);</span>
+<span class="fc" id="L101">		input.close();</span>
+<span class="fc" id="L102">		zipOutput.closeEntry();</span>
+<span class="fc" id="L103">	}</span>
+	
+	public void setCompressLevel(int level) {
+<span class="nc" id="L106">		compressLevel = level;</span>
+<span class="nc" id="L107">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

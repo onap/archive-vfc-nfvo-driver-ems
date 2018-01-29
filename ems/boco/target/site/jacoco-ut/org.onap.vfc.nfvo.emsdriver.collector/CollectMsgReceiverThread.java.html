@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CollectMsgReceiverThread.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.collector</a> &gt; <span class="el_source">CollectMsgReceiverThread.java</span></div><h1>CollectMsgReceiverThread.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.collector;
+
+import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
+
+<span class="fc" id="L24">public class CollectMsgReceiverThread extends DriverThread{</span>
+
+<span class="fc" id="L26">	private long timeStamp = System.currentTimeMillis();</span>
+	
+	private MessageChannel collectChannel;
+	
+	private TaskThreadService taskService;
+	
+<span class="fc" id="L32">	private int thread_max_num = 100;</span>
+	
+	
+	
+	@Override
+	public void dispose() {
+<span class="fc" id="L38">		collectChannel =  MessageChannelFactory.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);</span>
+		
+<span class="fc" id="L40">		taskService = TaskThreadService.getInstance(thread_max_num);</span>
+<span class="fc" id="L41">		taskService.start();</span>
+		
+<span class="fc bfc" id="L43" title="All 2 branches covered.">		while (isRun()) {</span>
+			
+			try {
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">				if(System.currentTimeMillis() - timeStamp &gt; Constant.ONEMINUTE){</span>
+<span class="nc" id="L47">					timeStamp = System.currentTimeMillis();</span>
+					
+<span class="nc" id="L49">					log.debug(&quot;COLLECT_CHANNEL Msg size :&quot;+collectChannel.size());</span>
+				}
+				
+<span class="fc" id="L52">				Object obj = collectChannel.poll();</span>
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">				if(obj == null){</span>
+<span class="fc" id="L54">					Thread.sleep(10);</span>
+<span class="fc" id="L55">					continue;</span>
+				}
+<span class="nc bnc" id="L57" title="All 4 branches missed.">				if(obj != null &amp;&amp; obj instanceof CollectMsg){</span>
+<span class="nc" id="L58">					CollectMsg collectMsg = (CollectMsg)obj;</span>
+<span class="nc" id="L59">					taskService.add(collectMsg);</span>
+<span class="nc" id="L60">					log.debug(&quot;receive a CollectMsg id = &quot;+collectMsg.getId());</span>
+<span class="nc" id="L61">				}else{</span>
+<span class="nc" id="L62">					log.error(&quot;receive Objcet not CollectMsg &quot;+obj);</span>
+				}
+				
+<span class="nc" id="L65">			} catch (Exception e) {</span>
+<span class="nc" id="L66">				log.error(&quot;dispatch alarm exception&quot;,e);</span>
+				
+<span class="nc" id="L68">			}</span>
+		}
+		
+<span class="fc" id="L71">	}</span>
+
+
+
+	/**
+	 * @return the thread_max_num
+	 */
+	public int getThread_max_num() {
+<span class="fc" id="L79">		return thread_max_num;</span>
+	}
+
+
+
+	/**
+	 * @param thread_max_num the thread_max_num to set
+	 */
+	public void setThread_max_num(int thread_max_num) {
+<span class="fc" id="L88">		this.thread_max_num = thread_max_num;</span>
+<span class="fc" id="L89">	}</span>
+
+
+
+	/**
+	 * @return the taskService
+	 */
+	public TaskThreadService getTaskService() {
+<span class="fc" id="L97">		return taskService;</span>
+	}
+
+
+
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

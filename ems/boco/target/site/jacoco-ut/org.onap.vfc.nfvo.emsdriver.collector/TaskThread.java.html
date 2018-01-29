@@ -1,0 +1,1066 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaskThread.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.collector</a> &gt; <span class="el_source">TaskThread.java</span></div><h1>TaskThread.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.collector;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
+import org.onap.vfc.nfvo.emsdriver.commons.ftp.AFtpRemoteFile;
+import org.onap.vfc.nfvo.emsdriver.commons.ftp.FTPInterface;
+import org.onap.vfc.nfvo.emsdriver.commons.ftp.FTPSrv;
+import org.onap.vfc.nfvo.emsdriver.commons.ftp.RemoteFile;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.DateUtil;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.Gunzip;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.StringUtil;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.UnZip;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.VarExprParser;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.Zip;
+import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationImp;
+import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationInterface;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
+
+
+public class TaskThread implements Runnable{
+	
+<span class="fc" id="L67">	public  Log log = LogFactory.getLog(TaskThread.class);</span>
+	
+	private MessageChannel cmResultChannel;
+	public MessageChannel pmResultChannel;
+	
+	private CollectMsg data;
+	
+<span class="fc" id="L74">	private ConfigurationInterface configurationInterface = new ConfigurationImp();</span>
+	
+<span class="fc" id="L76">	private String localPath = Constant.SYS_DATA_TEMP;</span>
+<span class="fc" id="L77">	private String resultPath = Constant.SYS_DATA_RESULT;</span>
+	
+<span class="fc" id="L79">	private SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyyMMddHHmmss&quot;);</span>
+	
+<span class="fc" id="L81">	private SimpleDateFormat dateFormat2 = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);</span>
+	
+//	private String csvpathAndFileName;
+//	private String xmlPathAndFileName;
+//	private int countNum = 0 ;
+	
+<span class="fc" id="L87">	public TaskThread(CollectMsg data) {</span>
+<span class="fc" id="L88">		this.data = data;</span>
+<span class="fc" id="L89">	}</span>
+	public TaskThread() {
+<span class="fc" id="L91">		super();</span>
+<span class="fc" id="L92">	}</span>
+
+	@Override
+	public void run(){
+		
+<span class="fc" id="L97">		cmResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_CHANNEL_KEY);</span>
+<span class="fc" id="L98">		pmResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_PM_CHANNEL_KEY);</span>
+		try {
+<span class="nc" id="L100">			collectMsgHandle(data);</span>
+<span class="fc" id="L101">		} catch (Exception e) {</span>
+<span class="fc" id="L102">			log.error(&quot;&quot;,e);</span>
+<span class="nc" id="L103">		}</span>
+<span class="fc" id="L104">	}</span>
+
+	private void collectMsgHandle(CollectMsg collectMsg) {
+<span class="fc" id="L107">		String emsName = collectMsg.getEmsName();</span>
+<span class="fc" id="L108">		String type = collectMsg.getType();</span>
+<span class="nc" id="L109">		CollectVo collectVo = configurationInterface.getCollectVoByEmsNameAndType(emsName, type);</span>
+		
+		//ftp download 
+<span class="nc" id="L112">		List&lt;String&gt; downloadfiles = this.ftpDownload(collectVo);</span>
+		//paser ftp update message send
+<span class="nc bnc" id="L114" title="All 2 branches missed.">		for(String fileName :downloadfiles){</span>
+<span class="nc" id="L115">			this.parseFtpAndSendMessage(fileName,collectVo);</span>
+<span class="nc" id="L116">		}</span>
+<span class="nc" id="L117">	}</span>
+
+	public void parseFtpAndSendMessage(String fileName, CollectVo collectVo) {
+		//
+<span class="fc" id="L121">		List&lt;File&gt; filelist = decompressed(fileName);</span>
+		
+<span class="fc bfc" id="L123" title="All 2 branches covered.">		for (File tempfile : filelist) { </span>
+		
+<span class="fc" id="L125">			String unfileName = tempfile.getName();</span>
+			
+<span class="fc" id="L127">			Pattern pa = Pattern.compile(&quot;.*-(.*)-\\w{2}-&quot;);</span>
+<span class="fc" id="L128">			Matcher ma = pa.matcher(unfileName);</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">			if (!ma.find())</span>
+<span class="fc" id="L130">			  continue;</span>
+<span class="nc" id="L131">			String nename = ma.group(1);</span>
+<span class="nc" id="L132">			boolean parseResult = false;</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">			if(Constant.COLLECT_TYPE_CM.equalsIgnoreCase(collectVo.getType())){</span>
+<span class="nc" id="L134">				parseResult = processCMXml(tempfile, nename,&quot;CM&quot;);</span>
+			}else{
+<span class="nc bnc" id="L136" title="All 2 branches missed.">				if(unfileName.indexOf(&quot;.csv&quot;) &gt; 0){</span>
+<span class="nc" id="L137">					parseResult = processPMCsv(tempfile);</span>
+				}else{
+<span class="nc" id="L139">					parseResult = processPMXml(tempfile);</span>
+				}
+			}
+			
+<span class="nc bnc" id="L143" title="All 2 branches missed.">			if (parseResult){</span>
+<span class="nc" id="L144">				log.info(&quot;parser &quot;+tempfile+&quot; sucess&quot;);</span>
+<span class="nc" id="L145">				tempfile.delete();</span>
+			}else {
+<span class="nc" id="L147">				log.info(&quot;parser &quot;+tempfile+&quot; fail&quot;);</span>
+			}
+			
+<span class="nc" id="L150">		}</span>
+<span class="fc" id="L151">	}</span>
+	
+	public boolean processPMXml(File file) {
+
+<span class="fc" id="L155">		FileInputStream fis = null;</span>
+<span class="fc" id="L156">		InputStreamReader isr = null;</span>
+<span class="fc" id="L157">		XMLStreamReader reader = null;</span>
+		try {
+<span class="fc" id="L159">			 fis = new FileInputStream(file);</span>
+<span class="fc" id="L160">			 isr = new InputStreamReader(fis, Constant.ENCODING_UTF8);</span>
+
+<span class="fc" id="L162">			XMLInputFactory fac = XMLInputFactory.newInstance();</span>
+<span class="fc" id="L163">			 reader = fac.createXMLStreamReader(isr);</span>
+			 
+<span class="fc" id="L165">			boolean fileHeaderStart = false;</span>
+<span class="fc" id="L166">			boolean measurementStart = false;</span>
+<span class="fc" id="L167">			boolean pmNameFlag = false;</span>
+<span class="fc" id="L168">			boolean pmDataFlag = false;</span>
+<span class="fc" id="L169">			boolean objectFlag = true;</span>
+
+<span class="fc" id="L171">			int index = -1;</span>
+<span class="fc" id="L172">			int nameIndex = -1;</span>
+<span class="fc" id="L173">			String currentMea = null;</span>
+<span class="fc" id="L174">			String subName = null;</span>
+<span class="fc" id="L175">			String localName = null;</span>
+<span class="fc" id="L176">			String endLocalName = null;</span>
+<span class="fc" id="L177">			String objectType = null;</span>
+
+			
+<span class="fc" id="L180">			LinkedHashMap&lt;String, String&gt; commonNameAndValue = new LinkedHashMap&lt;String, String&gt;();</span>
+<span class="fc" id="L181">			LinkedHashMap&lt;String, String&gt; pmDatas = null;</span>
+<span class="fc" id="L182">			LinkedHashMap&lt;Integer, String&gt; pmNames = null;</span>
+
+
+<span class="fc" id="L185">			int event = -1;</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">			while (reader.hasNext()) {</span>
+				try{
+<span class="fc" id="L188">					event = reader.next();</span>
+	
+<span class="fc bfc" id="L190" title="All 4 branches covered.">					switch (event) {</span>
+					case XMLStreamConstants.START_ELEMENT:
+<span class="fc" id="L192">						localName = reader.getLocalName();</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">						if (&quot;FileHeader&quot;.equalsIgnoreCase(localName)) {</span>
+<span class="fc" id="L194">							fileHeaderStart = true;</span>
+						}
+<span class="fc bfc" id="L196" title="All 2 branches covered.">						if(fileHeaderStart){</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">							if(!&quot;FileHeader&quot;.equalsIgnoreCase(localName)){</span>
+<span class="fc" id="L198">								commonNameAndValue.put(localName,reader.getElementText().trim());</span>
+							}
+							
+						}
+<span class="fc bfc" id="L202" title="All 2 branches covered.">						if (&quot;Measurements&quot;.equalsIgnoreCase(localName)) {</span>
+							// a new Measurement starts
+<span class="fc" id="L204">							measurementStart = true; </span>
+						}
+<span class="fc bfc" id="L206" title="All 2 branches covered.">						if (measurementStart) {</span>
+							// measurement handler
+<span class="fc bfc" id="L208" title="All 2 branches covered.">							if (&quot;ObjectType&quot;.equalsIgnoreCase(localName)) {</span>
+<span class="fc" id="L209">								objectType = reader.getElementText().trim();</span>
+<span class="fc" id="L210">								commonNameAndValue.put(&quot;ObjectType&quot;,objectType);</span>
+							}
+<span class="fc bfc" id="L212" title="All 2 branches covered.">							if (&quot;PmName&quot;.equalsIgnoreCase(localName)) {</span>
+<span class="fc" id="L213">								pmNameFlag = true;</span>
+<span class="fc" id="L214">								pmNames = new LinkedHashMap&lt;Integer, String&gt;();</span>
+	
+							}
+<span class="fc bfc" id="L217" title="All 2 branches covered.">							if (pmNameFlag) {</span>
+								// pmname handler, add columnNames
+<span class="fc bfc" id="L219" title="All 2 branches covered.">								if (&quot;N&quot;.equalsIgnoreCase(localName)) {</span>
+<span class="fc" id="L220">									nameIndex = Integer.parseInt(getXMLAttribute(reader, &quot;i&quot;));</span>
+<span class="fc" id="L221">									String text = reader.getElementText().trim();</span>
+<span class="fc" id="L222">									pmNames.put(nameIndex, text);</span>
+								}
+							}
+<span class="fc bfc" id="L225" title="All 2 branches covered.">							if (&quot;PmData&quot;.equalsIgnoreCase(localName)) {</span>
+<span class="fc" id="L226">								pmDataFlag = true;</span>
+<span class="fc" id="L227">								pmDatas = new LinkedHashMap&lt;String, String&gt;();</span>
+							}
+							
+<span class="fc bfc" id="L230" title="All 2 branches covered.">							if (pmDataFlag) {</span>
+								// pmdata handler
+<span class="fc bfc" id="L232" title="All 2 branches covered.">								if (&quot;Object&quot;.equalsIgnoreCase(localName)) {</span>
+<span class="fc" id="L233">									objectFlag = true;</span>
+<span class="fc" id="L234">									int n = reader.getAttributeCount();</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">									for(int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L236">										String name = reader.getAttributeLocalName(i);</span>
+<span class="fc" id="L237">										commonNameAndValue.put(name, reader.getAttributeValue(i));</span>
+									}
+								}
+<span class="fc bfc" id="L240" title="All 2 branches covered.">								if (objectFlag) {</span>
+	
+									// add columnValues
+<span class="fc bfc" id="L243" title="All 2 branches covered.">									if (&quot;V&quot;.equalsIgnoreCase(localName)) {</span>
+<span class="fc" id="L244">										String indexStr = getXMLAttribute(reader, &quot;i&quot;);</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">										if(indexStr == null) {</span>
+<span class="nc" id="L246">											log.error(&quot;ERROR: illegal value index&quot;);</span>
+<span class="nc" id="L247">											continue;</span>
+										}
+<span class="fc" id="L249">										index = Integer.parseInt(indexStr);</span>
+<span class="fc" id="L250">										String name = pmNames.get(index);</span>
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">										if(name == null){</span>
+<span class="nc" id="L252">											log.error(&quot;illegal data: valueIndex=&quot;+index);</span>
+<span class="nc" id="L253">											continue;</span>
+										}
+										
+<span class="fc" id="L256">										String value = reader.getElementText().trim();</span>
+<span class="fc" id="L257">										pmDatas.put(name, value);</span>
+									}
+<span class="fc bfc" id="L259" title="All 2 branches covered.">									if (&quot;CV&quot;.equalsIgnoreCase(localName)) {</span>
+									
+<span class="fc" id="L261">										String indexStr = getXMLAttribute(reader, &quot;i&quot;);</span>
+<span class="pc bpc" id="L262" title="1 of 2 branches missed.">										if(indexStr == null) {</span>
+<span class="nc" id="L263">											log.error(&quot;ERROR: illegal value index&quot;);</span>
+<span class="nc" id="L264">											continue;</span>
+										}
+<span class="fc" id="L266">										index = Integer.parseInt(indexStr);</span>
+										
+<span class="fc" id="L268">										currentMea = pmNames.get(index);</span>
+<span class="pc bpc" id="L269" title="1 of 2 branches missed.">										if(currentMea == null){</span>
+<span class="nc" id="L270">											log.error(&quot;illegal data: valueIndex=&quot;+index);</span>
+<span class="nc" id="L271">											continue;</span>
+										}
+									}
+	
+<span class="fc bfc" id="L275" title="All 2 branches covered.">									if (&quot;SN&quot;.equalsIgnoreCase(localName)) {</span>
+<span class="fc" id="L276">										subName = reader.getElementText().trim();</span>
+										
+									}
+<span class="fc bfc" id="L279" title="All 2 branches covered.">									if (&quot;SV&quot;.equalsIgnoreCase(localName)) {</span>
+<span class="fc" id="L280">										String subValue = reader.getElementText().trim();</span>
+//										pmDatas.put(currentMea+subName, subValue);
+<span class="fc" id="L282">										pmDatas.put(subName, subValue);</span>
+<span class="fc" id="L283">									}</span>
+								}
+							}
+	
+						}	
+	
+						break;
+					case XMLStreamConstants.CHARACTERS:
+						// ...
+<span class="fc" id="L292">						break;</span>
+					case XMLStreamConstants.END_ELEMENT:
+						// ...
+<span class="fc" id="L295">						endLocalName = reader.getLocalName();</span>
+<span class="fc bfc" id="L296" title="All 2 branches covered.">						if(&quot;Object&quot;.equalsIgnoreCase(endLocalName)){</span>
+<span class="fc" id="L297">							objectFlag = false;</span>
+<span class="fc" id="L298">							pmDatas.putAll(commonNameAndValue);</span>
+							try {
+<span class="fc" id="L300">								pmResultChannel.put(pmDatas);</span>
+								
+<span class="nc" id="L302">							} catch (InterruptedException e) {</span>
+<span class="nc" id="L303">								log.error(&quot;collectResultChannel.put(resultMap) error &quot;,e);</span>
+<span class="fc" id="L304">							}</span>
+//							System.out.println(pmDatas);
+//							pmDatas.clear();
+		                }
+<span class="fc bfc" id="L308" title="All 2 branches covered.">						if (endLocalName.equalsIgnoreCase(&quot;PmData&quot;)) {</span>
+<span class="fc" id="L309">							pmDataFlag = false;</span>
+						}
+	
+<span class="fc bfc" id="L312" title="All 2 branches covered.">						if (endLocalName.equalsIgnoreCase(&quot;PmName&quot;)) {</span>
+<span class="fc" id="L313">							pmNameFlag = false;</span>
+						}
+<span class="fc bfc" id="L315" title="All 2 branches covered.">						if (endLocalName.equalsIgnoreCase(&quot;Measurements&quot;)) {</span>
+							// a measurement over
+<span class="fc" id="L317">							measurementStart = false;</span>
+						}
+						
+<span class="fc bfc" id="L320" title="All 2 branches covered.">						if(&quot;FileHeader&quot;.equalsIgnoreCase(endLocalName)){</span>
+<span class="fc" id="L321">		                    fileHeaderStart = false;</span>
+		                }
+						break;
+					}
+<span class="nc" id="L325">				}catch (Exception e){</span>
+<span class="nc" id="L326">					log.error(&quot;&quot;,e);</span>
+<span class="nc" id="L327">					event = reader.next();</span>
+<span class="pc" id="L328">				}</span>
+			}
+			
+<span class="nc" id="L331">		} catch (Exception e) {</span>
+<span class="nc" id="L332">			log.error(&quot;processPMXml is Exception &quot;,e);</span>
+<span class="nc" id="L333">			return false;</span>
+		} finally{
+<span class="nc" id="L335">			try{</span>
+<span class="pc bpc" id="L336" title="5 of 6 branches missed.">				if(reader != null)reader.close();</span>
+<span class="pc bpc" id="L337" title="5 of 6 branches missed.">				if(isr!= null)isr.close();</span>
+<span class="pc bpc" id="L338" title="5 of 6 branches missed.">				if(fis != null)fis.close();</span>
+<span class="nc" id="L339">			}catch (Exception e) {</span>
+<span class="nc" id="L340">				e.printStackTrace();</span>
+<span class="pc" id="L341">			}</span>
+<span class="nc" id="L342">		}</span>
+<span class="fc" id="L343">		return true;</span>
+	}
+		
+	private String getXMLAttribute(XMLStreamReader reader, String obj) {
+<span class="fc" id="L347">		String res = null;</span>
+<span class="pc bpc" id="L348" title="2 of 4 branches missed.">		if(obj == null || reader == null){</span>
+<span class="nc" id="L349">			return res;</span>
+		}
+<span class="fc" id="L351">		int n = reader.getAttributeCount();</span>
+<span class="fc bfc" id="L352" title="All 2 branches covered.">		for(int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L353">			String name = reader.getAttributeLocalName(i);</span>
+<span class="pc bpc" id="L354" title="1 of 2 branches missed.">			if(obj.equalsIgnoreCase(name)){</span>
+<span class="fc" id="L355">				res = reader.getAttributeValue(i);</span>
+			}
+		}
+<span class="fc" id="L358">		return res;</span>
+	}
+	
+	public boolean processPMCsv(File tempfile) {
+		
+<span class="fc" id="L363">		FileInputStream brs = null;</span>
+<span class="fc" id="L364">		InputStreamReader isr = null;</span>
+<span class="fc" id="L365">		BufferedReader br = null;</span>
+		
+<span class="fc" id="L367">		List&lt;String&gt; columnNames = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L368">		List&lt;String&gt; commonValues = new ArrayList&lt;String&gt;();</span>
+		try {
+			
+<span class="fc" id="L371">			brs = new FileInputStream(tempfile);</span>
+<span class="fc" id="L372">			isr = new InputStreamReader(brs, Constant.ENCODING_UTF8);</span>
+<span class="fc" id="L373">			br = new BufferedReader(isr);</span>
+			//common field
+<span class="fc" id="L375">			String commonField = br.readLine();</span>
+<span class="fc" id="L376">			String[] fields = commonField.split(&quot;\\|&quot;,-1);</span>
+<span class="fc bfc" id="L377" title="All 2 branches covered.">			for(String com : fields){</span>
+<span class="fc" id="L378">				String[] comNameAndValue = com.split(&quot;=&quot;,2);</span>
+<span class="fc" id="L379">				columnNames.add(comNameAndValue[0].trim());</span>
+<span class="fc" id="L380">				commonValues.add(comNameAndValue[1]);</span>
+			}
+			//column names
+<span class="fc" id="L383">			String columnName = br.readLine();</span>
+<span class="fc" id="L384">			String[] names = columnName.split(&quot;\\|&quot;,-1);</span>
+<span class="fc bfc" id="L385" title="All 2 branches covered.">			for(String name : names){</span>
+<span class="fc" id="L386">				columnNames.add(name);</span>
+			}
+
+<span class="fc" id="L389">			String valueLine = &quot;&quot;;</span>
+<span class="fc" id="L390">			List&lt;String&gt; valuelist = new ArrayList&lt;String&gt;();</span>
+			
+<span class="fc bfc" id="L392" title="All 2 branches covered.">			while ((valueLine = br.readLine()) != null) {</span>
+<span class="pc bpc" id="L393" title="1 of 2 branches missed.">				if (valueLine.trim().equals(&quot;&quot;)) {</span>
+<span class="nc" id="L394">					continue;</span>
+				}
+//				countNum ++;
+<span class="fc" id="L397">				String [] values = valueLine.split(&quot;\\|&quot;,-1);</span>
+				
+<span class="fc" id="L399">				valuelist.addAll(commonValues);</span>
+<span class="fc bfc" id="L400" title="All 2 branches covered.">				for(String value : values){</span>
+<span class="fc" id="L401">					valuelist.add(value);</span>
+				}
+//				this.appendLine(valuelist, bos);
+				//resultMap
+<span class="fc" id="L405">				HashMap&lt;String,String&gt; resultMap = this.resultMap(columnNames,valuelist);</span>
+				try {
+<span class="fc" id="L407">					pmResultChannel.put(resultMap);</span>
+<span class="nc" id="L408">				} catch (InterruptedException e) {</span>
+<span class="nc" id="L409">					log.error(&quot;collectResultChannel.put(resultMap) error &quot;,e);</span>
+<span class="fc" id="L410">				}</span>
+<span class="fc" id="L411">				valuelist.clear();</span>
+<span class="fc" id="L412">			}</span>
+<span class="nc" id="L413">		} catch (IOException e) {</span>
+<span class="nc" id="L414">			log.error(&quot;processPMCsv is fail &quot;,e);</span>
+<span class="nc" id="L415">			return false;</span>
+		}finally{
+<span class="nc" id="L417">			try{</span>
+<span class="pc bpc" id="L418" title="5 of 6 branches missed.">				if (br != null)</span>
+<span class="pc" id="L419">					br.close();</span>
+<span class="pc bpc" id="L420" title="5 of 6 branches missed.">				if (isr != null)</span>
+<span class="pc" id="L421">					isr.close();</span>
+<span class="pc bpc" id="L422" title="5 of 6 branches missed.">				if (brs != null)</span>
+<span class="pc" id="L423">					brs.close();</span>
+				
+<span class="nc" id="L425">			} catch (Exception e){</span>
+<span class="nc" id="L426">				log.error(e);</span>
+<span class="pc" id="L427">			}</span>
+<span class="nc" id="L428">		}</span>
+<span class="fc" id="L429">		return true;</span>
+		
+	}
+
+	private HashMap&lt;String,String&gt; resultMap(List&lt;String&gt; columnNames, List&lt;String&gt; valuelist) {
+		
+<span class="fc" id="L435">		HashMap&lt;String,String&gt;  resultMap = new HashMap&lt;String,String&gt;();</span>
+<span class="pc bpc" id="L436" title="1 of 2 branches missed.">		if(columnNames.size() == valuelist.size()){</span>
+<span class="fc bfc" id="L437" title="All 2 branches covered.">			for(int i =0;i&lt;columnNames.size();i++){</span>
+<span class="fc" id="L438">				resultMap.put(columnNames.get(i), valuelist.get(i));</span>
+			}
+		}
+		
+<span class="fc" id="L442">		return resultMap;</span>
+		
+	}
+	private boolean processCMXml(File tempfile, String nename, String type) {
+		
+<span class="nc" id="L447">		String csvpath = localPath+nename+&quot;/&quot;+type+&quot;/&quot;;</span>
+<span class="nc" id="L448">		File csvpathfile = new File(csvpath);</span>
+<span class="nc bnc" id="L449" title="All 2 branches missed.">		if(!csvpathfile.exists()){</span>
+<span class="nc" id="L450">			csvpathfile.mkdirs();</span>
+		}
+<span class="nc" id="L452">		String csvFileName = nename +dateFormat.format(new Date())+  System.nanoTime();</span>
+<span class="nc" id="L453">		String csvpathAndFileName = csvpath+csvFileName+&quot;.csv&quot;;</span>
+<span class="nc" id="L454">		BufferedOutputStream  bos = null;</span>
+<span class="nc" id="L455">		FileOutputStream fos = null;</span>
+		try {
+<span class="nc" id="L457">			fos = new FileOutputStream(csvpathAndFileName,false);</span>
+<span class="nc" id="L458">			bos = new BufferedOutputStream(fos, 10240);</span>
+<span class="nc" id="L459">		} catch (FileNotFoundException e1) {</span>
+<span class="nc" id="L460">			log.error(&quot;FileNotFoundException &quot;+StringUtil.getStackTrace(e1));</span>
+<span class="nc" id="L461">		}</span>
+		
+<span class="nc" id="L463">		boolean FieldNameFlag = false;</span>
+<span class="nc" id="L464">		boolean FieldValueFlag = false;</span>
+		//line num
+<span class="nc" id="L466">		int countNum = 0;</span>
+<span class="nc" id="L467">		String xmlPathAndFileName = null;</span>
+<span class="nc" id="L468">		String localName = null;</span>
+<span class="nc" id="L469">		String endLocalName = null;</span>
+<span class="nc" id="L470">		String rmUID = null;</span>
+<span class="nc" id="L471">		int index = -1;</span>
+<span class="nc" id="L472">		ArrayList&lt;String&gt; names = new ArrayList&lt;String&gt;();// colname</span>
+<span class="nc" id="L473">		LinkedHashMap&lt;String, String&gt; nameAndValue = new LinkedHashMap&lt;String, String&gt;();</span>
+
+		
+<span class="nc" id="L476">		FileInputStream fis = null;</span>
+<span class="nc" id="L477">		InputStreamReader isr = null;</span>
+<span class="nc" id="L478">		XMLStreamReader reader = null;</span>
+		try{
+<span class="nc" id="L480">			fis = new FileInputStream(tempfile);</span>
+<span class="nc" id="L481">			isr = new InputStreamReader(fis, Constant.ENCODING_UTF8);</span>
+<span class="nc" id="L482">			XMLInputFactory fac = XMLInputFactory.newInstance();</span>
+<span class="nc" id="L483">			reader = fac.createXMLStreamReader(isr);</span>
+<span class="nc" id="L484">			int event = -1;</span>
+<span class="nc" id="L485">			boolean setcolum = true;</span>
+<span class="nc bnc" id="L486" title="All 2 branches missed.">			while (reader.hasNext()){</span>
+				try{
+<span class="nc" id="L488">					event = reader.next();</span>
+<span class="nc bnc" id="L489" title="All 4 branches missed.">					switch (event){</span>
+					case XMLStreamConstants.START_ELEMENT:
+<span class="nc" id="L491">						localName = reader.getLocalName();</span>
+<span class="nc bnc" id="L492" title="All 2 branches missed.">						if (&quot;FieldName&quot;.equalsIgnoreCase(localName)){</span>
+<span class="nc" id="L493">							FieldNameFlag = true;</span>
+						}
+<span class="nc bnc" id="L495" title="All 2 branches missed.">						if (FieldNameFlag){</span>
+<span class="nc bnc" id="L496" title="All 2 branches missed.">							if (&quot;N&quot;.equalsIgnoreCase(localName)){</span>
+<span class="nc" id="L497">								String colName = reader.getElementText().trim();</span>
+<span class="nc" id="L498">								names.add(colName);</span>
+							}
+						}
+<span class="nc bnc" id="L501" title="All 2 branches missed.">						if (&quot;FieldValue&quot;.equalsIgnoreCase(localName)){</span>
+<span class="nc" id="L502">							FieldValueFlag = true;</span>
+							
+						}
+<span class="nc bnc" id="L505" title="All 2 branches missed.">						if (FieldValueFlag){</span>
+<span class="nc bnc" id="L506" title="All 2 branches missed.">							if(setcolum){</span>
+<span class="nc" id="L507">								xmlPathAndFileName = this.setColumnNames(nename, names,type);</span>
+<span class="nc" id="L508">								setcolum = false;</span>
+							}
+							
+<span class="nc bnc" id="L511" title="All 2 branches missed.">							if (&quot;Object&quot;.equalsIgnoreCase(localName)){</span>
+<span class="nc" id="L512">								int ac = reader.getAttributeCount();</span>
+<span class="nc bnc" id="L513" title="All 2 branches missed.">								for (int i = 0; i &lt; ac; i++){</span>
+<span class="nc bnc" id="L514" title="All 2 branches missed.">									if (&quot;rmUID&quot;.equalsIgnoreCase(reader.getAttributeLocalName(i))){</span>
+<span class="nc" id="L515">										rmUID = reader.getAttributeValue(i).trim();</span>
+									}
+								}
+<span class="nc" id="L518">								nameAndValue.put(&quot;rmUID&quot;, rmUID);</span>
+							}
+<span class="nc bnc" id="L520" title="All 2 branches missed.">							if (&quot;V&quot;.equalsIgnoreCase(localName)) {</span>
+<span class="nc" id="L521">								index = Integer.parseInt(reader</span>
+<span class="nc" id="L522">										.getAttributeValue(0)) - 1;</span>
+<span class="nc" id="L523">								String currentName = names.get(index);</span>
+<span class="nc" id="L524">								String v = reader.getElementText().trim();</span>
+<span class="nc" id="L525">								nameAndValue.put(currentName, v);</span>
+<span class="nc" id="L526">							}</span>
+						}
+						break;
+					case XMLStreamConstants.CHARACTERS:
+<span class="nc" id="L530">						break;</span>
+					case XMLStreamConstants.END_ELEMENT:
+<span class="nc" id="L532">						endLocalName = reader.getLocalName();</span>
+
+<span class="nc bnc" id="L534" title="All 2 branches missed.">						if (&quot;FieldName&quot;.equalsIgnoreCase(endLocalName)){</span>
+<span class="nc" id="L535">							FieldNameFlag = false;</span>
+						}
+<span class="nc bnc" id="L537" title="All 2 branches missed.">						if (&quot;FieldValue&quot;.equalsIgnoreCase(endLocalName)){</span>
+<span class="nc" id="L538">							FieldValueFlag = false;</span>
+						}
+<span class="nc bnc" id="L540" title="All 2 branches missed.">						if (&quot;Object&quot;.equalsIgnoreCase(endLocalName)){</span>
+<span class="nc" id="L541">							countNum ++;</span>
+<span class="nc" id="L542">							this.appendLine(nameAndValue,bos);</span>
+<span class="nc" id="L543">							nameAndValue.clear();</span>
+						}
+						break;
+					}
+<span class="nc" id="L547">				} catch (Exception e)</span>
+				{
+<span class="nc" id="L549">					log.error(&quot;&quot;+StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L550">					event = reader.next();</span>
+<span class="nc" id="L551">				}</span>
+			}
+			
+			
+<span class="nc bnc" id="L555" title="All 2 branches missed.">			if(bos != null){</span>
+<span class="nc" id="L556">				bos.close();</span>
+<span class="nc" id="L557">				bos = null;</span>
+			}
+<span class="nc bnc" id="L559" title="All 2 branches missed.">			if(fos != null){</span>
+<span class="nc" id="L560">				fos.close();</span>
+<span class="nc" id="L561">				fos = null;</span>
+			}
+			
+<span class="nc" id="L564">			String[] fileKeys = this.createZipFile(csvpathAndFileName,xmlPathAndFileName,nename);</span>
+			//ftp store
+<span class="nc" id="L566">			Properties ftpPro = configurationInterface.getProperties();</span>
+<span class="nc" id="L567">			String ip = ftpPro.getProperty(&quot;ftp_ip&quot;);</span>
+<span class="nc" id="L568">			String port = ftpPro.getProperty(&quot;ftp_port&quot;);</span>
+<span class="nc" id="L569">			String ftp_user = ftpPro.getProperty(&quot;ftp_user&quot;);</span>
+<span class="nc" id="L570">			String ftp_password = ftpPro.getProperty(&quot;ftp_password&quot;);</span>
+			
+<span class="nc" id="L572">			String ftp_passive = ftpPro.getProperty(&quot;ftp_passive&quot;);</span>
+<span class="nc" id="L573">			String ftp_type = ftpPro.getProperty(&quot;ftp_type&quot;);</span>
+<span class="nc" id="L574">			String remoteFile = ftpPro.getProperty(&quot;ftp_remote_path&quot;);</span>
+<span class="nc" id="L575">			this.ftpStore(fileKeys,ip,port,ftp_user,ftp_password,ftp_passive,ftp_type,remoteFile);</span>
+			//create Message
+<span class="nc" id="L577">			String message = this.createMessage(fileKeys[1], ftp_user, ftp_password, ip,  port, countNum,nename);</span>
+			
+			//set message
+<span class="nc" id="L580">			this.setMessage(message);</span>
+<span class="nc" id="L581">		} catch (Exception e){</span>
+<span class="nc" id="L582">			log.error(&quot;&quot;+StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L583">			return false;</span>
+		} finally{
+<span class="nc" id="L585">			try{</span>
+<span class="nc bnc" id="L586" title="All 6 branches missed.">				if (reader != null){</span>
+<span class="nc" id="L587">					reader.close();</span>
+				}
+<span class="nc bnc" id="L589" title="All 6 branches missed.">				if (isr != null){</span>
+<span class="nc" id="L590">					isr.close();</span>
+				}
+<span class="nc bnc" id="L592" title="All 6 branches missed.">				if (fis != null){</span>
+<span class="nc" id="L593">					fis.close();</span>
+				}
+<span class="nc bnc" id="L595" title="All 6 branches missed.">				if(bos != null){</span>
+<span class="nc" id="L596">					bos.close();</span>
+				}
+				
+<span class="nc bnc" id="L599" title="All 6 branches missed.">				if(fos != null){</span>
+<span class="nc" id="L600">					fos.close();</span>
+				}
+<span class="nc" id="L602">			} catch (Exception e){</span>
+<span class="nc" id="L603">				log.error(e);</span>
+<span class="nc" id="L604">			}</span>
+<span class="nc" id="L605">		}</span>
+<span class="nc" id="L606">		return true;</span>
+	}
+	
+	private void setMessage(String message) {
+
+		try {
+<span class="nc" id="L612">			cmResultChannel.put(message);</span>
+<span class="nc" id="L613">		} catch (Exception e) {</span>
+<span class="nc" id="L614">			log.error(&quot;collectResultChannel.put(message) is error &quot;+StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L615">		}</span>
+<span class="nc" id="L616">	}</span>
+
+	public String createMessage(String zipName,String user,String pwd,String ip, String port,int countNum, String nename) {
+
+<span class="fc" id="L620">		StringBuffer strBuffer = new StringBuffer();</span>
+<span class="fc" id="L621">		strBuffer</span>
+<span class="fc" id="L622">				.append(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;&quot;</span>
+						+ &quot;&lt;FILE_DATA_READY_UL xmlns:xsi=\&quot; http://www.w3.org/2001/XMLSchema-instance\&quot;&gt;&quot;
+						+ &quot;&lt;Header SessionID=\&quot;&quot;);
+<span class="fc" id="L625">		strBuffer.append(&quot;&quot;);</span>
+<span class="fc" id="L626">		strBuffer.append(&quot;\&quot; LicenceID=\&quot;&quot;);</span>
+<span class="fc" id="L627">		strBuffer.append(&quot;&quot;);</span>
+<span class="fc" id="L628">		strBuffer.append(&quot;\&quot; SystemID=\&quot;&quot;);</span>
+<span class="fc" id="L629">		strBuffer.append(&quot;&quot;);</span>
+<span class="fc" id="L630">		strBuffer.append(&quot;\&quot; Time=\&quot;&quot;);</span>
+<span class="fc" id="L631">		strBuffer.append( dateFormat2.format(new Date()));</span>
+<span class="fc" id="L632">		strBuffer.append(&quot;\&quot; PolicyID=\&quot;&quot;);</span>
+<span class="fc" id="L633">		strBuffer.append(&quot;&quot;);</span>
+<span class="fc" id="L634">		strBuffer.append(&quot;\&quot;/&gt;&lt;Body&gt;&quot;);</span>
+<span class="fc" id="L635">		strBuffer.append(&quot;&lt;DataCatalog&gt;&quot;);</span>
+<span class="fc" id="L636">		strBuffer.append(&quot;&quot;);</span>
+<span class="fc" id="L637">		strBuffer.append(&quot;&lt;/DataCatalog&gt;&lt;GroupID&gt;&quot;);</span>
+<span class="fc" id="L638">		strBuffer.append(nename);</span>
+<span class="fc" id="L639">		strBuffer.append(&quot;&lt;/GroupID&gt;&lt;DataSourceName&gt;&quot;);</span>
+<span class="fc" id="L640">		strBuffer.append(&quot;&quot;);</span>
+<span class="fc" id="L641">		strBuffer.append(&quot;&lt;/DataSourceName&gt;&lt;InstanceID&gt;&quot;);</span>
+<span class="fc" id="L642">		strBuffer.append(&quot;&quot;);</span>
+<span class="fc" id="L643">		strBuffer.append(&quot;&lt;/InstanceID&gt;&lt;FileFormat&gt;&quot;);</span>
+<span class="fc" id="L644">		strBuffer.append(&quot;csv&quot;);</span>
+<span class="fc" id="L645">		strBuffer.append(&quot;&lt;/FileFormat&gt;&lt;CharSet&gt;&quot;);</span>
+<span class="fc" id="L646">		strBuffer.append(&quot;gbk&quot;);</span>
+<span class="fc" id="L647">		strBuffer.append(&quot;&lt;/CharSet&gt;&lt;FieldSeparator&gt;&quot;);</span>
+<span class="fc" id="L648">		strBuffer.append(&quot;|&quot;);</span>
+<span class="fc" id="L649">		strBuffer.append(&quot;&lt;/FieldSeparator&gt;&lt;IsCompressed&gt;&quot;);</span>
+<span class="fc" id="L650">		strBuffer.append(&quot;true&quot;);</span>
+<span class="fc" id="L651">		strBuffer.append(&quot;&lt;/IsCompressed&gt;&lt;StartTime&gt;&quot;);</span>
+<span class="fc" id="L652">		strBuffer.append(dateFormat2.format(new Date()));</span>
+<span class="fc" id="L653">		strBuffer.append(&quot;&lt;/StartTime&gt;&lt;EndTime&gt;&quot;);</span>
+<span class="fc" id="L654">		strBuffer.append(&quot;&quot;);</span>
+<span class="fc" id="L655">		strBuffer.append(&quot;&lt;/EndTime&gt;&lt;FileList&gt;&quot;);</span>
+<span class="fc" id="L656">		strBuffer.append(zipName);</span>
+<span class="fc" id="L657">		strBuffer.append(&quot;&lt;/FileList&gt;&lt;ConnectionString&gt;&quot;);</span>
+<span class="fc" id="L658">		strBuffer.append(&quot;ftp://&quot; + user + &quot;:&quot; + pwd + &quot;@&quot; + ip + &quot;:&quot; + port);</span>
+<span class="fc" id="L659">		strBuffer.append(&quot;&lt;/ConnectionString&gt;&quot;);</span>
+<span class="fc" id="L660">		strBuffer.append(&quot;&lt;DataCount&gt;&quot;);</span>
+<span class="fc" id="L661">		strBuffer.append(countNum);</span>
+<span class="fc" id="L662">		strBuffer.append(&quot;&lt;/DataCount&gt;&quot;);</span>
+		
+<span class="fc" id="L664">		strBuffer.append(&quot;&lt;FileSize&gt;&quot;).append(&quot;&quot;).append(&quot;&lt;/FileSize&gt;&quot;);</span>
+<span class="fc" id="L665">		strBuffer.append(&quot;&lt;DataGranularity&gt;&quot;).append(&quot;&quot;).append(&quot;&lt;/DataGranularity&gt;&quot;);</span>
+
+		
+<span class="fc" id="L668">		strBuffer.append(&quot;&lt;/Body&gt;&lt;/FILE_DATA_READY_UL&gt;&quot;);</span>
+<span class="fc" id="L669">		return strBuffer.toString();</span>
+
+	}
+
+	private void ftpStore(String[] fileKeys, String ip, String port, String ftp_user, String ftp_password, 
+			String ftp_passive, String ftp_type, String remoteFile) {
+<span class="nc" id="L675">		String zipFilePath = fileKeys[0];</span>
+		
+		
+		FTPInterface ftpClient;
+<span class="nc" id="L679">		ftpClient = new FTPSrv();</span>
+		//login
+		try {
+<span class="nc" id="L682">			ftpClient.login(ip, Integer.parseInt(port), ftp_user, ftp_password, &quot;GBK&quot;, Boolean.parseBoolean(ftp_passive), 5*60*1000);</span>
+<span class="nc" id="L683">		} catch (Exception e) {</span>
+<span class="nc" id="L684">			log.error(&quot;login fail,ip=[&quot;+ip+&quot;] port=[&quot;+port+&quot;] user=[&quot;+ftp_user+&quot;]pwd=[&quot;+ftp_password+&quot;]&quot;+StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L685">		    return;</span>
+<span class="nc" id="L686">		} </span>
+//		ftpClient.store(zipFilePath, remoteFile);
+<span class="nc" id="L688">		log.debug(&quot;store  [&quot;+zipFilePath+&quot;]to[&quot;+remoteFile+&quot;]&quot;);</span>
+								
+<span class="nc" id="L690">		FileUtils.deleteQuietly(new File(zipFilePath));</span>
+		
+		
+<span class="nc" id="L693">	}</span>
+
+	private String[] createZipFile(String csvpathAndFileName,String xmlPathAndFileName,String nename) {
+		
+<span class="nc" id="L697">		String zipPath = resultPath+nename +dateFormat.format(new Date())+&quot;_&quot;+System.nanoTime();</span>
+		
+<span class="nc" id="L699">		File destDir = new File(zipPath);</span>
+<span class="nc" id="L700">		destDir.mkdirs();</span>
+		
+		try {
+<span class="nc" id="L703">			FileUtils.copyFileToDirectory(new File(csvpathAndFileName), destDir);</span>
+<span class="nc" id="L704">			FileUtils.copyFileToDirectory(new File(xmlPathAndFileName), destDir);</span>
+<span class="nc" id="L705">		} catch (IOException e) {</span>
+			
+<span class="nc" id="L707">		}</span>
+		
+<span class="nc" id="L709">		String destFilePath = zipPath + &quot;.zip&quot;;</span>
+		try {
+<span class="nc" id="L711">			Zip zip = new Zip(destDir.getAbsolutePath(), destFilePath);</span>
+<span class="nc" id="L712">			zip.setCompressLevel(9);</span>
+<span class="nc" id="L713">			zip.compress();</span>
+
+<span class="nc" id="L715">			FileUtils.deleteDirectory(destDir);</span>
+<span class="nc" id="L716">		} catch (IOException e) {</span>
+<span class="nc" id="L717">			log.error(&quot;zip.compress() is fail &quot;+StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L718">		}</span>
+<span class="nc" id="L719">		return new String[] { destFilePath, zipPath + &quot;.zip&quot;};</span>
+	}
+
+
+	private String setColumnNames(String nename, List&lt;String&gt; names,String type) {
+		//write xml
+<span class="nc" id="L725">		String xmlpath = localPath+nename +&quot;/&quot;+type+&quot;/&quot;;</span>
+<span class="nc" id="L726">		File xmlpathfile = new File(xmlpath);</span>
+<span class="nc bnc" id="L727" title="All 2 branches missed.">		if(!xmlpathfile.exists()){</span>
+<span class="nc" id="L728">			xmlpathfile.mkdirs();</span>
+		}
+<span class="nc" id="L730">		String xmlFileName = nename +dateFormat.format(new Date())+ System.nanoTime();</span>
+<span class="nc" id="L731">		String fieldLine = &quot;&quot;;</span>
+<span class="nc bnc" id="L732" title="All 2 branches missed.">		for (int i = 0; i &lt; names.size(); i++) {</span>
+<span class="nc" id="L733">			String field = &quot;\t&lt;Field&gt;\r\n&quot; + &quot;\t\t&lt;FieldNo&gt;&quot; + i</span>
+					+ &quot;&lt;/FieldNo&gt;\r\n&quot; + &quot;\t\t&lt;FieldName&gt;&quot;
+<span class="nc" id="L735">					+ names.get(i) + &quot;&lt;/FieldName&gt;\r\n&quot;</span>
+<span class="nc" id="L736">					+ &quot;\t\t&lt;FieldType&gt;&quot; + names.get(i)</span>
+					+ &quot;&lt;/FieldType&gt;\r\n&quot;
+<span class="nc" id="L738">					+ &quot;\t\t&lt;FieldNameOther&gt;&quot; + names.get(i)</span>
+					+ &quot;&lt;/FieldNameOther&gt;\r\n&quot; +
+					&quot;\t&lt;/Field&gt;\r\n&quot;;
+<span class="nc" id="L741">			fieldLine = fieldLine + field;</span>
+		}
+
+<span class="nc" id="L744">		String str = &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;gbk\&quot;?&gt;\r\n&quot;</span>
+				+ &quot;&lt;xml&gt;\r\n&quot; + &quot;&lt;FILE_STRUCTURE&gt;\r\n&quot; + fieldLine
+				+ &quot;&lt;/FILE_STRUCTURE&gt;\r\n&quot; + &quot;&lt;/xml&gt;\r\n&quot;;
+<span class="nc" id="L747">		String xmlPathAndFileName = xmlpath+xmlFileName+&quot;.xml&quot;;</span>
+		try {
+<span class="nc" id="L749">			this.writeDetail(xmlPathAndFileName,str);</span>
+<span class="nc" id="L750">		} catch (Exception e) {</span>
+<span class="nc" id="L751">			log.error(&quot;writeDetail is fail ,xmlFileName=&quot;+xmlFileName +StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L752">		}</span>
+		
+<span class="nc" id="L754">		return xmlPathAndFileName;</span>
+	}
+	
+	private void writeDetail(String detailFileName,String str) throws Exception {
+<span class="nc" id="L758">		OutputStreamWriter writer = null;</span>
+<span class="nc" id="L759">		OutputStream readOut = null;</span>
+		try {
+<span class="nc" id="L761">			readOut = new FileOutputStream(new File(detailFileName), false);</span>
+<span class="nc" id="L762">			writer = new OutputStreamWriter(readOut);</span>
+<span class="nc" id="L763">			writer.write(str);</span>
+<span class="nc" id="L764">			writer.flush();</span>
+		} finally {
+			
+<span class="nc bnc" id="L767" title="All 4 branches missed.">			if(null != writer){</span>
+<span class="nc" id="L768">				writer.close();</span>
+			}
+<span class="nc bnc" id="L770" title="All 4 branches missed.">			if(readOut != null){</span>
+<span class="nc" id="L771">				readOut.close();</span>
+			}
+			
+<span class="nc" id="L774">		}</span>
+
+<span class="nc" id="L776">	}</span>
+	
+
+	private void appendLine(LinkedHashMap&lt;String, String&gt; nameAndValue,BufferedOutputStream  bos) {
+<span class="nc" id="L780">		StringBuilder lineDatas =  new StringBuilder();</span>
+		
+<span class="nc bnc" id="L782" title="All 2 branches missed.">		for (String key : nameAndValue.keySet()) {</span>
+<span class="nc" id="L783">			lineDatas.append(nameAndValue.get(key)).append(&quot;|&quot;);</span>
+<span class="nc" id="L784">		}</span>
+		try {
+<span class="nc" id="L786">			bos.write(lineDatas.toString().getBytes());</span>
+<span class="nc" id="L787">			bos.write(&quot;\n&quot;.getBytes());</span>
+<span class="nc" id="L788">		} catch (IOException e) {</span>
+<span class="nc" id="L789">			log.error(&quot;appendLine error &quot;+StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L790">		}</span>
+<span class="nc" id="L791">	}</span>
+	
+//	private void appendLine(List&lt;String&gt; values,BufferedOutputStream  bos) {
+//		StringBuilder lineDatas =  new StringBuilder();
+//		
+//		for (String value : values) {
+//			lineDatas.append(value).append(&quot;|&quot;);
+//		}
+//		try {
+//			bos.write(lineDatas.toString().getBytes());
+//			bos.write(&quot;\n&quot;.getBytes());
+//		} catch (IOException e) {
+//			log.error(&quot;appendLine error &quot;+StringUtil.getStackTrace(e));
+//		}
+//	}
+
+	public List&lt;File&gt; decompressed(String fileName){
+<span class="fc" id="L808">	    List&lt;File&gt; filelist = new ArrayList&lt;File&gt;();</span>
+	
+<span class="pc bpc" id="L810" title="1 of 2 branches missed.">	    if (fileName.indexOf(&quot;.gz&quot;) &gt; 1)</span>
+	    {
+	    	try {
+<span class="fc" id="L813">				File decompressFile = deGz(fileName);</span>
+<span class="fc" id="L814">				filelist.add(decompressFile);</span>
+<span class="fc" id="L815">				new File(fileName).delete();</span>
+<span class="nc" id="L816">			} catch (IOException e) {</span>
+<span class="nc" id="L817">				log.error(&quot;decompressed is fail &quot;+StringUtil.getStackTrace(e));</span>
+<span class="pc" id="L818">			}</span>
+<span class="nc bnc" id="L819" title="All 2 branches missed.">	    } else if (fileName.indexOf(&quot;.zip&quot;) &gt; 1)</span>
+	    {
+	    	try {
+<span class="nc" id="L822">				File[] files = deZip(new File(fileName));</span>
+<span class="nc" id="L823">				new File(fileName).delete();</span>
+<span class="nc bnc" id="L824" title="All 2 branches missed.">				for(File temp :files){</span>
+<span class="nc" id="L825">					filelist.add(temp);</span>
+				}
+<span class="nc" id="L827">			} catch (Exception e) {</span>
+<span class="nc" id="L828">				log.error(&quot;decompressed is fail &quot;+StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L829">			}</span>
+	    }
+	    else {
+<span class="nc" id="L832">	    	filelist.add(new File(fileName));</span>
+	    }
+	
+<span class="fc" id="L835">	    return filelist;</span>
+	}
+
+	private File deGz(String gzFileName) throws IOException {
+<span class="fc" id="L839">		Gunzip gunzip = new Gunzip();</span>
+<span class="fc" id="L840">		String orgFile = gzFileName.replace(&quot;.gz&quot;, &quot;&quot;);</span>
+<span class="fc" id="L841">		gunzip.unCompress(gzFileName, orgFile);</span>
+<span class="fc" id="L842">		return new File(orgFile);</span>
+	}
+
+	public File[] deZip(File file) throws Exception{
+		  
+<span class="nc" id="L847">		String regx = &quot;(.*).zip&quot;;</span>
+<span class="nc" id="L848">	      Pattern p = Pattern.compile(regx);</span>
+<span class="nc" id="L849">	      Matcher m = p.matcher(file.getName());</span>
+<span class="nc bnc" id="L850" title="All 2 branches missed.">	      if (m.find())</span>
+	      {
+<span class="nc" id="L852">	        String orgFile = localPath + m.group(1) + &quot;/&quot;;</span>
+<span class="nc" id="L853">	        UnZip unzip = new UnZip(file.getAbsolutePath(), orgFile);</span>
+<span class="nc" id="L854">            unzip.deCompress();</span>
+<span class="nc" id="L855">	        file = new File(orgFile);</span>
+	      }
+<span class="nc" id="L857">	      File[] files = file.listFiles();</span>
+	      
+<span class="nc" id="L859">	      return files;</span>
+	     
+	}
+
+	private List&lt;String&gt; ftpDownload(CollectVo collectVo) {
+		
+<span class="nc" id="L865">		List&lt;String&gt; fileList = new ArrayList&lt;String&gt;();</span>
+		//IP
+<span class="nc" id="L867">		String ip = collectVo.getIP();</span>
+		//port
+<span class="nc" id="L869">		String port = collectVo.getPort();</span>
+		//user
+<span class="nc" id="L871">		String user = collectVo.getUser();</span>
+		//password
+<span class="nc" id="L873">		String password = collectVo.getPassword();</span>
+		//isPassiveMode
+<span class="nc" id="L875">		String passivemode = collectVo.getPassive();</span>
+		
+<span class="nc" id="L877">		FTPInterface ftpClient = new FTPSrv();</span>
+		
+		//login
+		try {
+<span class="nc" id="L881">			log.info(&quot;ftp login ,ip=[&quot;+ip+&quot;] port=[&quot;+port+&quot;] user=[&quot;+user+&quot;]password=[&quot;+password+&quot;]&quot;);</span>
+<span class="nc" id="L882">			ftpClient.login(ip, Integer.parseInt(port), user, password, &quot;GBK&quot;, Boolean.parseBoolean(passivemode), 5*60*1000);</span>
+<span class="nc" id="L883">		} catch (Exception e) {</span>
+<span class="nc" id="L884">			log.error(&quot;login fail,ip=[&quot;+ip+&quot;] port=[&quot;+port+&quot;] user=[&quot;+user+&quot;]password=[&quot;+password+&quot;]&quot;+StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L885">		    return fileList;</span>
+<span class="nc" id="L886">		} </span>
+		
+		//download
+<span class="nc" id="L889">		String dir = collectVo.getRemotepath();</span>
+<span class="nc" id="L890">		List&lt;String&gt; searchExprList = new ArrayList&lt;String&gt;();</span>
+<span class="nc" id="L891">		String []FPath = dir.split(&quot;;&quot;);</span>
+<span class="nc bnc" id="L892" title="All 2 branches missed.">		for(int i=0;i&lt;FPath.length;i++){</span>
+<span class="nc" id="L893">			int oldSize = searchExprList.size();</span>
+<span class="nc" id="L894">			String conpath = FPath[i] + collectVo.getMatch();</span>
+<span class="nc" id="L895">			Hashtable&lt;String,String&gt; varMap = new Hashtable&lt;String,String&gt;();</span>
+<span class="nc" id="L896">			long collectPeriod = 900;</span>
+			try {
+<span class="nc" id="L898">				collectPeriod = Long.parseLong(collectVo.getGranularity())*60;</span>
+<span class="nc" id="L899">				log.info(&quot;collectPeriod =[&quot;+collectPeriod+&quot;]&quot;);</span>
+<span class="nc" id="L900">			} catch (NumberFormatException e) {</span>
+<span class="nc" id="L901">				e.printStackTrace();</span>
+<span class="nc" id="L902">			}</span>
+<span class="nc" id="L903">			long[] d = DateUtil.getScanScope(new Date(), collectPeriod);</span>
+<span class="nc" id="L904">			searchExprList.add(VarExprParser.replaceVar(conpath,d[0],d[1]));</span>
+			
+<span class="nc" id="L906">			varMap.clear();</span>
+<span class="nc" id="L907">			varMap = null;</span>
+<span class="nc" id="L908">			log.info(&quot;[&quot;+conpath+&quot;] result[&quot;+(searchExprList.size()-oldSize)+&quot;] path&quot;);</span>
+<span class="nc" id="L909">			conpath = null;</span>
+		}
+<span class="nc" id="L911">		String nowdir = null;</span>
+		try {
+<span class="nc" id="L913">			nowdir = ftpClient.pwd();</span>
+<span class="nc" id="L914">			searchExprList =getPathNoRegular(searchExprList,ftpClient);</span>
+<span class="nc" id="L915">		} catch (Exception e1) {</span>
+<span class="nc" id="L916">			log.error(&quot; collect fail &quot;,e1);</span>
+<span class="nc" id="L917">			return fileList;</span>
+<span class="nc" id="L918">		}</span>
+<span class="nc" id="L919">		List&lt;AFtpRemoteFile&gt; remoteFiles = new ArrayList&lt;AFtpRemoteFile&gt;();</span>
+<span class="nc bnc" id="L920" title="All 2 branches missed.">		for(String expr :searchExprList){</span>
+<span class="nc" id="L921">			ftpClient.chdir(nowdir);</span>
+<span class="nc" id="L922">			String keys[] = parseExprKeys(expr);</span>
+<span class="nc" id="L923">			String ftpRegular = keys[1];</span>
+<span class="nc" id="L924">			String ftpDir = keys[0];</span>
+			
+<span class="nc" id="L926">			boolean cdsucess = ftpClient.chdir(ftpDir);</span>
+<span class="nc bnc" id="L927" title="All 2 branches missed.">			if(cdsucess){</span>
+<span class="nc" id="L928">				AFtpRemoteFile[] arf = (AFtpRemoteFile[]) ftpClient.list();</span>
+<span class="nc bnc" id="L929" title="All 2 branches missed.">				log.info(&quot; list [&quot;+ftpDir+&quot;] result[&quot;+(arf==null?&quot;null&quot;:arf.length)+&quot;] files&quot;);</span>
+				//filter
+				
+<span class="nc" id="L932">				rfileFilter(remoteFiles,arf,ftpRegular);</span>
+				
+<span class="nc" id="L934">				keys = null;</span>
+<span class="nc" id="L935">				ftpRegular=ftpDir = null;</span>
+				
+<span class="nc bnc" id="L937" title="All 2 branches missed.">				for(AFtpRemoteFile ftpRemoteFile: remoteFiles){</span>
+<span class="nc bnc" id="L938" title="All 2 branches missed.">					if(!new File(localPath).exists()){</span>
+						try {
+<span class="nc" id="L940">							new File(localPath).mkdir();</span>
+<span class="nc" id="L941">						} catch (Exception e) {</span>
+<span class="nc" id="L942">							log.error(&quot;create localPath is fail localPath=&quot;+localPath+&quot; &quot;+StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L943">						}</span>
+					}
+					
+<span class="nc bnc" id="L946" title="All 2 branches missed.">					if(!new File(localPath).exists()){</span>
+<span class="nc" id="L947">						new File(localPath).mkdirs();</span>
+					}
+					
+<span class="nc" id="L950">					String localFileName = localPath + ftpRemoteFile.getFileName();</span>
+<span class="nc" id="L951">					File loaclFile = new File(localFileName);</span>
+<span class="nc bnc" id="L952" title="All 2 branches missed.">					if (loaclFile.exists()) {</span>
+<span class="nc" id="L953">						loaclFile.delete();</span>
+					}
+					
+<span class="nc" id="L956">					boolean flag = ftpClient.downloadFile(ftpRemoteFile.getAbsFileName(), localFileName);</span>
+					
+<span class="nc bnc" id="L958" title="All 2 branches missed.">					if(flag){</span>
+<span class="nc" id="L959">						fileList.add(localFileName);</span>
+					}else{
+<span class="nc" id="L961">						log.error(&quot;download file fail fileName=&quot;+ftpRemoteFile.getAbsFileName());</span>
+					}
+<span class="nc" id="L963">				}</span>
+				
+<span class="nc" id="L965">			}else{</span>
+<span class="nc" id="L966">				log.error(&quot;cd dir is faill dir =[&quot;+ftpDir+&quot;]&quot;);</span>
+			}
+<span class="nc" id="L968">		}</span>
+		
+		
+		
+<span class="nc" id="L972">		return fileList;</span>
+	}
+	
+	private void rfileFilter(List&lt;AFtpRemoteFile&gt; fileContainer, AFtpRemoteFile[] arfs, String ftpRegular) {
+<span class="nc bnc" id="L976" title="All 4 branches missed.">		if (ftpRegular!=null &amp;&amp; ftpRegular.length()&gt;0) {</span>
+<span class="nc" id="L977">			Pattern pattern = null;</span>
+			try {
+<span class="nc" id="L979">				pattern = Pattern.compile(ftpRegular, Pattern.CASE_INSENSITIVE);</span>
+<span class="nc" id="L980">			} catch (Exception e) {</span>
+<span class="nc" id="L981">				log.info(&quot;[&quot;+ftpRegular+&quot;]Pattern.compile exception:&quot;+e.getMessage());</span>
+<span class="nc" id="L982">			}</span>
+<span class="nc" id="L983">			int hisSize = fileContainer.size();</span>
+<span class="nc bnc" id="L984" title="All 4 branches missed.">			for (int j=0; arfs!=null&amp;&amp;j&lt;arfs.length; j++) {</span>
+<span class="nc" id="L985">				String fileName = parseFileName(arfs[j].getFileName());</span>
+<span class="nc" id="L986">				Matcher matcher = pattern.matcher(fileName);</span>
+<span class="nc bnc" id="L987" title="All 2 branches missed.">				if (matcher.find()) </span>
+<span class="nc" id="L988">					fileContainer.add(arfs[j]);</span>
+			}
+<span class="nc" id="L990">			log.info(&quot;[&quot;+ftpRegular+&quot;]filter[&quot;+(fileContainer.size()-hisSize)+&quot;]filse&quot;);</span>
+<span class="nc" id="L991">			pattern = null;</span>
+<span class="nc" id="L992">		}else {</span>
+<span class="nc bnc" id="L993" title="All 4 branches missed.">			for (int j=0; arfs!=null&amp;&amp;j&lt;arfs.length; j++) </span>
+<span class="nc" id="L994">				fileContainer.add(arfs[j]);</span>
+		}
+		
+<span class="nc" id="L997">	}</span>
+	
+	private String parseFileName(String fileName) {
+<span class="nc" id="L1000">		int idx = fileName.lastIndexOf(&quot;/&quot;);</span>
+<span class="nc bnc" id="L1001" title="All 2 branches missed.">		if (idx == -1)</span>
+<span class="nc" id="L1002">			return fileName;</span>
+<span class="nc" id="L1003">		return fileName.substring(idx+1, fileName.length());</span>
+	}
+	
+	private String[] parseExprKeys(String source) {
+		
+<span class="nc bnc" id="L1008" title="All 2 branches missed.">		if(source.indexOf(&quot;;&quot;) &gt; -1){</span>
+<span class="nc" id="L1009">			source = source.substring(0, source.indexOf(&quot;;&quot;));</span>
+		}
+<span class="nc bnc" id="L1011" title="All 2 branches missed.">		if (source.endsWith(&quot;/&quot;)) </span>
+<span class="nc" id="L1012">			return new String[]{source,&quot;&quot;};</span>
+
+<span class="nc" id="L1014">		int idx = source.lastIndexOf(&quot;/&quot;);</span>
+<span class="nc" id="L1015">		String[] dirkeys = new String[2];</span>
+<span class="nc" id="L1016">		dirkeys[0] = source.substring(0, idx+1);</span>
+<span class="nc" id="L1017">		dirkeys[1] = source.substring(idx+1, source.length());</span>
+<span class="nc" id="L1018">		return dirkeys;</span>
+	}
+	
+	
+	public  List&lt;String&gt; getPathNoRegular(List&lt;String&gt; searchExprList,FTPInterface ftpCache)  throws Exception{
+<span class="nc" id="L1023">		boolean isregular = false;</span>
+<span class="nc" id="L1024">		List&lt;String&gt; regularList = new ArrayList&lt;String&gt;();</span>
+<span class="nc bnc" id="L1025" title="All 2 branches missed.">		for(String regular : searchExprList){</span>
+<span class="nc" id="L1026">			Pattern lpattern = null;</span>
+			try{
+<span class="nc" id="L1028">				lpattern = Pattern.compile(&quot;(.*/)&lt;([^/]+)&gt;(/.*)&quot;); </span>
+<span class="nc" id="L1029">			}catch (Exception e) {</span>
+<span class="nc" id="L1030">				log.error(&quot;[&quot;+regular+&quot;]compile fails:&quot;+e.getMessage());</span>
+<span class="nc" id="L1031">				e.printStackTrace();</span>
+<span class="nc" id="L1032">			}</span>
+			
+<span class="nc" id="L1034">			Matcher  matcher = lpattern.matcher(regular);</span>
+<span class="nc bnc" id="L1035" title="All 2 branches missed.">			if(matcher.find()){</span>
+<span class="nc" id="L1036">				isregular = true;</span>
+<span class="nc" id="L1037">				String parpath  = matcher.group(1);</span>
+				try{
+<span class="nc" id="L1039">					boolean isin = ftpCache.chdir(parpath);</span>
+<span class="nc bnc" id="L1040" title="All 2 branches missed.">				    if(isin){</span>
+<span class="nc" id="L1041">				    	log.info(&quot;cd dir [&quot; + parpath + &quot;] sucess&quot;);</span>
+				    }else{
+<span class="nc" id="L1043">				    	log.error(&quot;cd dir [&quot; + parpath + &quot;] fail&quot;);</span>
+				    }
+<span class="nc" id="L1045">				}catch(Exception e){</span>
+<span class="nc" id="L1046">					log.error(&quot; cd dir [&quot;+parpath+&quot;]fail&quot;,e);</span>
+<span class="nc" id="L1047">					throw e;</span>
+<span class="nc" id="L1048">				}</span>
+<span class="nc" id="L1049">				RemoteFile[] remotef = ftpCache.list();</span>
+<span class="nc bnc" id="L1050" title="All 2 branches missed.">				for(RemoteFile aremote :remotef){</span>
+<span class="nc bnc" id="L1051" title="All 4 branches missed.">					if(aremote.isDirectory()&amp;&amp;aremote.getFileName().matches(matcher.group(2))){</span>
+<span class="nc" id="L1052">						regularList.add(matcher.group(1)+aremote.getFileName()+matcher.group(3));</span>
+					}	
+				}
+<span class="nc" id="L1055">			}else{</span>
+<span class="nc" id="L1056">				regularList.add(regular);</span>
+			}		
+<span class="nc" id="L1058">		}</span>
+<span class="nc bnc" id="L1059" title="All 2 branches missed.">		if(isregular==true){</span>
+<span class="nc" id="L1060">			getPathNoRegular(regularList,ftpCache);</span>
+		}
+<span class="nc" id="L1062">		return regularList;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

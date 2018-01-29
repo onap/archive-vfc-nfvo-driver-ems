@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CollectVo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.commons.model</a> &gt; <span class="el_source">CollectVo.java</span></div><h1>CollectVo.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.commons.model;
+
+/**
+ * @author boco
+ *
+ */
+<span class="fc" id="L22">public class CollectVo {</span>
+	
+	private String emsName;
+	
+	private String type;
+	
+	private String crontab;
+	
+	private String IP;
+	
+	private String port;
+	
+	private String user;
+	
+	private String password;
+	
+	private String remotepath;
+	
+	private String match;
+	
+	private String passive;
+	
+	private String ftptype;
+	
+	private String granularity;
+	
+<span class="fc" id="L48">	private boolean iscollect = false;</span>
+	
+	private String read_timeout;
+	
+	
+
+	/**
+	 * @return the iscollect
+	 */
+	public boolean isIscollect() {
+<span class="nc" id="L58">		return iscollect;</span>
+	}
+
+	/**
+	 * @param iscollect the iscollect to set
+	 */
+	public void setIscollect(boolean iscollect) {
+<span class="nc" id="L65">		this.iscollect = iscollect;</span>
+<span class="nc" id="L66">	}</span>
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+<span class="nc" id="L72">		return type;</span>
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+<span class="fc" id="L79">		this.type = type;</span>
+<span class="fc" id="L80">	}</span>
+
+	/**
+	 * @return the crontab
+	 */
+	public String getCrontab() {
+<span class="nc" id="L86">		return crontab;</span>
+	}
+
+	/**
+	 * @param crontab the crontab to set
+	 */
+	public void setCrontab(String crontab) {
+<span class="fc" id="L93">		this.crontab = crontab;</span>
+<span class="fc" id="L94">	}</span>
+
+	/**
+	 * @return the iP
+	 */
+	public String getIP() {
+<span class="fc" id="L100">		return IP;</span>
+	}
+
+	/**
+	 * @param ip the iP to set
+	 */
+	public void setIP(String ip) {
+<span class="fc" id="L107">		IP = ip;</span>
+<span class="fc" id="L108">	}</span>
+
+	/**
+	 * @return the port
+	 */
+	public String getPort() {
+<span class="fc" id="L114">		return port;</span>
+	}
+
+	/**
+	 * @param port the port to set
+	 */
+	public void setPort(String port) {
+<span class="fc" id="L121">		this.port = port;</span>
+<span class="fc" id="L122">	}</span>
+
+	/**
+	 * @return the user
+	 */
+	public String getUser() {
+<span class="fc" id="L128">		return user;</span>
+	}
+
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(String user) {
+<span class="fc" id="L135">		this.user = user;</span>
+<span class="fc" id="L136">	}</span>
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+<span class="fc" id="L142">		return password;</span>
+	}
+
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+<span class="fc" id="L149">		this.password = password;</span>
+<span class="fc" id="L150">	}</span>
+
+	/**
+	 * @return the remotepath
+	 */
+	public String getRemotepath() {
+<span class="nc" id="L156">		return remotepath;</span>
+	}
+
+	/**
+	 * @param remotepath the remotepath to set
+	 */
+	public void setRemotepath(String remotepath) {
+<span class="fc" id="L163">		this.remotepath = remotepath;</span>
+<span class="fc" id="L164">	}</span>
+
+	/**
+	 * @return the match
+	 */
+	public String getMatch() {
+<span class="nc" id="L170">		return match;</span>
+	}
+
+	/**
+	 * @param match the match to set
+	 */
+	public void setMatch(String match) {
+<span class="fc" id="L177">		this.match = match;</span>
+<span class="fc" id="L178">	}</span>
+
+	/**
+	 * @return the passive
+	 */
+	public String getPassive() {
+<span class="nc" id="L184">		return passive;</span>
+	}
+
+	/**
+	 * @param passive the passive to set
+	 */
+	public void setPassive(String passive) {
+<span class="fc" id="L191">		this.passive = passive;</span>
+<span class="fc" id="L192">	}</span>
+
+	/**
+	 * @return the ftptype
+	 */
+	public String getFtptype() {
+<span class="nc" id="L198">		return ftptype;</span>
+	}
+
+	/**
+	 * @param ftptype the ftptype to set
+	 */
+	public void setFtptype(String ftptype) {
+<span class="fc" id="L205">		this.ftptype = ftptype;</span>
+<span class="fc" id="L206">	}</span>
+
+	/**
+	 * @return the granularity
+	 */
+	public String getGranularity() {
+<span class="nc" id="L212">		return granularity;</span>
+	}
+
+	/**
+	 * @param granularity the granularity to set
+	 */
+	public void setGranularity(String granularity) {
+<span class="fc" id="L219">		this.granularity = granularity;</span>
+<span class="fc" id="L220">	}</span>
+	
+	
+	@Override
+	public String toString() {
+<span class="fc" id="L225">		return &quot;CollectVo [emsName=&quot; + emsName + &quot;, type=&quot; + type</span>
+				+ &quot;, crontab=&quot; + crontab + &quot;, IP=&quot; + IP + &quot;, port=&quot; + port
+				+ &quot;, user=&quot; + user + &quot;, password=&quot; + password + &quot;, remotepath=&quot;
+				+ remotepath + &quot;, match=&quot; + match + &quot;, passive=&quot; + passive
+				+ &quot;, ftptype=&quot; + ftptype + &quot;, granularity=&quot; + granularity
+				+ &quot;, iscollect=&quot; + iscollect + &quot;, read_timeout=&quot; + read_timeout
+				+ &quot;]&quot;;
+	}
+
+	/**
+	 * @return the emsName
+	 */
+	public String getEmsName() {
+<span class="nc" id="L238">		return emsName;</span>
+	}
+
+	/**
+	 * @param emsName the emsName to set
+	 */
+	public void setEmsName(String emsName) {
+<span class="fc" id="L245">		this.emsName = emsName;</span>
+<span class="fc" id="L246">	}</span>
+
+	/**
+	 * @return the read_timeout
+	 */
+	public String getRead_timeout() {
+<span class="fc" id="L252">		return read_timeout;</span>
+	}
+
+	/**
+	 * @param read_timeout the read_timeout to set
+	 */
+	public void setRead_timeout(String read_timeout) {
+<span class="nc" id="L259">		this.read_timeout = read_timeout;</span>
+<span class="nc" id="L260">	}</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

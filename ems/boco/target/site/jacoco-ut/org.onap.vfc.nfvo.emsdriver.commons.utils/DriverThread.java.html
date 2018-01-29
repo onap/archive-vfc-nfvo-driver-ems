@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DriverThread.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.commons.utils</a> &gt; <span class="el_source">DriverThread.java</span></div><h1>DriverThread.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.commons.utils;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+<span class="fc" id="L21">public abstract class DriverThread implements Runnable{</span>
+<span class="fc" id="L22">	protected Log log = LogFactory.getLog(this.getClass());</span>
+<span class="fc" id="L23">	private String name = null;</span>
+<span class="fc" id="L24">	private Thread t = null;</span>
+<span class="fc" id="L25">	private boolean run = false;</span>
+<span class="fc" id="L26">	private boolean end = false;</span>
+	
+	public synchronized void start() {
+<span class="nc" id="L29">		t = new Thread(this);</span>
+<span class="nc" id="L30">		t.start();</span>
+<span class="nc" id="L31">	}</span>
+	public void setName(String name) {
+<span class="nc" id="L33">		this.name = name;</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">		if (t != null)</span>
+<span class="nc" id="L35">			t.setName(name);</span>
+<span class="nc" id="L36">	}</span>
+
+	public String getName() {
+<span class="nc bnc" id="L39" title="All 2 branches missed.">		if (t != null)</span>
+<span class="nc" id="L40">			return t.getName();</span>
+<span class="nc" id="L41">		return name;</span>
+	}
+	
+	public abstract void dispose();
+
+	final public void run() {
+<span class="nc" id="L47">		t = Thread.currentThread();</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">		if (name != null)</span>
+<span class="nc" id="L49">			t.setName(name);</span>
+
+		try {
+<span class="nc" id="L52">			dispose();</span>
+<span class="nc" id="L53">		} catch (Throwable e) {</span>
+<span class="nc" id="L54">			e.printStackTrace();</span>
+<span class="nc" id="L55">		}</span>
+<span class="nc" id="L56">		this.setEnd(true);</span>
+		
+<span class="nc" id="L58">	}</span>
+
+	public boolean stop(){
+		
+<span class="nc" id="L62">		this.setRun(false);</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">		while(!isEnd()){</span>
+			try {
+<span class="nc" id="L65">				Thread.sleep(1);</span>
+<span class="nc" id="L66">			} catch (InterruptedException e) {</span>
+<span class="nc" id="L67">				log.error(&quot;InterruptedException :&quot;+StringUtil.getStackTrace(e));</span>
+<span class="nc" id="L68">			}</span>
+		}
+<span class="nc" id="L70">		return end;</span>
+	}
+	
+	public void interrupt() {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">		if (t != null)</span>
+<span class="nc" id="L75">			t.interrupt();</span>
+<span class="nc" id="L76">	}</span>
+
+	public void setRun(boolean run) {
+<span class="fc" id="L79">		this.run = run;</span>
+<span class="fc" id="L80">	}</span>
+
+	public boolean isRun() {
+<span class="fc" id="L83">		return run;</span>
+	}
+	public void setEnd(boolean end) {
+<span class="nc" id="L86">		this.end = end;</span>
+<span class="nc" id="L87">	}</span>
+	public boolean isEnd() {
+<span class="nc" id="L89">		return end;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MsbRestServiceProxy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.serviceregister</a> &gt; <span class="el_source">MsbRestServiceProxy.java</span></div><h1>MsbRestServiceProxy.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.serviceregister;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
+import org.onap.vfc.nfvo.emsdriver.northbound.client.HttpClientUtil;
+import org.onap.vfc.nfvo.emsdriver.serviceregister.model.MsbRegisterVo;
+import org.onap.vfc.nfvo.emsdriver.serviceregister.model.ServiceNodeVo;
+
+import com.alibaba.fastjson.JSON;
+
+<span class="nc" id="L29">public class MsbRestServiceProxy {</span>
+
+    public static String registerService(MsbRegisterVo registerInfo){
+<span class="fc" id="L32">    	String url = MsbConfiguration.getMsbAddress()+Constant.MSBAPIROOTDOMAIN;</span>
+<span class="fc" id="L33">    	String registerObj = JSON.toJSONString(registerInfo);</span>
+    	
+<span class="fc" id="L35">    	String registerResponse = HttpClientUtil.doPost(url, registerObj, Constant.ENCODING_UTF8);</span>
+<span class="fc" id="L36">        return registerResponse;</span>
+    }
+
+    public static void unRegiserService(String serviceName,String version,String ip,String port){
+<span class="fc" id="L40">        String url = MsbConfiguration.getMsbAddress()+Constant.MSBAPIROOTDOMAIN+&quot;/&quot;+serviceName+&quot;/version/&quot;+version+&quot;/nodes/&quot;+ip+&quot;/&quot;+port;</span>
+<span class="fc" id="L41">        HttpClientUtil.doDelete(url, Constant.ENCODING_UTF8);</span>
+<span class="fc" id="L42">    }</span>
+    
+    public static List&lt;String&gt; queryService(String serviceName,String version){
+<span class="fc" id="L45">    	List&lt;String&gt; ipList = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L46">    	String url = MsbConfiguration.getMsbAddress()+Constant.MSBAPIROOTDOMAIN+&quot;/&quot;+serviceName+&quot;/version/&quot;+version;</span>
+<span class="fc" id="L47">    	String response = HttpClientUtil.doGet(url, Constant.ENCODING_UTF8);</span>
+<span class="pc bpc" id="L48" title="3 of 4 branches missed.">    	if(response !=null &amp;&amp; !&quot;&quot;.equals(response)){</span>
+<span class="nc" id="L49">        	MsbRegisterVo msbRegisterVo = JSON.parseObject(response,MsbRegisterVo.class);</span>
+<span class="nc" id="L50">    		List&lt;ServiceNodeVo&gt; nodeList = msbRegisterVo.getNodes();</span>
+    		
+<span class="nc bnc" id="L52" title="All 2 branches missed.">    		for(ServiceNodeVo node :nodeList){</span>
+<span class="nc" id="L53">    			String ip = node.getIp();</span>
+<span class="nc" id="L54">    			ipList.add(ip);</span>
+<span class="nc" id="L55">    		}</span>
+    	}
+<span class="fc" id="L57">		return ipList;</span>
+		
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

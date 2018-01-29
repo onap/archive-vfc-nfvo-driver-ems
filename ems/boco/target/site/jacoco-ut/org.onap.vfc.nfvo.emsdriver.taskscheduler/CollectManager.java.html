@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CollectManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vfc-nfvo-driver-ems-ems-boco</a> &gt; <a href="index.source.html" class="el_package">org.onap.vfc.nfvo.emsdriver.taskscheduler</a> &gt; <span class="el_source">CollectManager.java</span></div><h1>CollectManager.java</h1><pre class="source lang-java linenums">/**
+ * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.onap.vfc.nfvo.emsdriver.taskscheduler;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
+import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
+import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationInterface;
+import org.quartz.Job;
+
+
+<span class="nc" id="L29">public class CollectManager  extends DriverThread{</span>
+
+	private ConfigurationInterface configurationInterface;
+	public void dispose() {
+<span class="nc bnc" id="L33" title="All 2 branches missed.">		if(configurationInterface != null){</span>
+<span class="nc" id="L34">			List&lt;EMSInfo&gt; emsInfos = configurationInterface.getAllEMSInfo();</span>
+<span class="nc bnc" id="L35" title="All 4 branches missed.">			while(isRun() &amp;&amp; emsInfos.size() == 0){</span>
+				
+<span class="nc" id="L37">				emsInfos = configurationInterface.getAllEMSInfo();</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">				if(emsInfos.size() == 0){</span>
+					try {
+<span class="nc" id="L40">						Thread.sleep(1000);</span>
+<span class="nc" id="L41">					} catch (InterruptedException e) {</span>
+<span class="nc" id="L42">					}</span>
+				}
+				
+			}
+			
+<span class="nc" id="L47">			List&lt;CollectVo&gt; collectVos = new ArrayList&lt;CollectVo&gt;();</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">			for(EMSInfo emsInfo : emsInfos){</span>
+				//cm
+<span class="nc" id="L50">				CollectVo CollectVoCm = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_CM);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">				if(CollectVoCm != null){</span>
+<span class="nc" id="L52">					CollectVoCm.setEmsName(emsInfo.getName());</span>
+<span class="nc" id="L53">					collectVos.add(CollectVoCm);</span>
+				}
+				
+				//pm
+<span class="nc" id="L57">				CollectVo CollectVoPm = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_PM);</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">				if(CollectVoPm != null){</span>
+<span class="nc" id="L59">					CollectVoPm.setEmsName(emsInfo.getName());</span>
+<span class="nc" id="L60">					collectVos.add(CollectVoPm);</span>
+				}
+				
+<span class="nc" id="L63">			}</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">			if(collectVos.size() &gt; 0){</span>
+<span class="nc" id="L65">				this.addCollectJob(collectVos);</span>
+<span class="nc" id="L66">				log.info(&quot;1 addCollectJob is OK &quot;);</span>
+			}else{
+<span class="nc" id="L68">				log.error(&quot;collectVos size is 0&quot;);</span>
+			}
+			
+<span class="nc" id="L71">		}else{</span>
+<span class="nc" id="L72">			log.error(&quot;configurationInterface = null,check spring.xml&quot;);</span>
+		}
+<span class="nc" id="L74">	}</span>
+	
+	private void addCollectJob(List&lt;CollectVo&gt; collectVos) {
+<span class="nc bnc" id="L77" title="All 2 branches missed.">		for(CollectVo collectVo : collectVos){</span>
+			try {
+<span class="nc" id="L79">				String jobName = collectVo.getEmsName()+&quot;_&quot;+collectVo.getType()+collectVo.getIP();</span>
+<span class="nc" id="L80">				Job job = new CollectOderJob();</span>
+<span class="nc" id="L81">				String jobClass = job.getClass().getName();</span>
+<span class="nc" id="L82">				String time = collectVo.getCrontab();</span>
+<span class="nc bnc" id="L83" title="All 4 branches missed.">				if(time != null &amp;&amp; !&quot;&quot;.equals(time)){</span>
+<span class="nc" id="L84">					QuartzManager.addJob(jobName, jobClass, time,collectVo);</span>
+				}else{
+<span class="nc" id="L86">					log.error(&quot;type =[&quot;+collectVo.getType()+&quot;]ip=[&quot;+collectVo.getIP()+&quot;] crontab is null,check EMSInfo.xml&quot;);</span>
+				}
+			
+<span class="nc" id="L89">			} catch (Exception e) {</span>
+<span class="nc" id="L90">				log.error(&quot;addJob is error&quot;,e);</span>
+<span class="nc" id="L91">			}</span>
+<span class="nc" id="L92">		}</span>
+<span class="nc" id="L93">	}</span>
+
+	/**
+	 * @return the configurationInterface
+	 */
+	public ConfigurationInterface getConfigurationInterface() {
+<span class="nc" id="L99">		return configurationInterface;</span>
+	}
+
+	/**
+	 * @param configurationInterface the configurationInterface to set
+	 */
+	public void setConfigurationInterface(
+			ConfigurationInterface configurationInterface) {
+<span class="nc" id="L107">		this.configurationInterface = configurationInterface;</span>
+<span class="nc" id="L108">	}</span>
+
+	
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
