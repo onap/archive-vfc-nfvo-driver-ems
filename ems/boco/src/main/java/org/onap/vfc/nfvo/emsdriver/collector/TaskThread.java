@@ -1035,10 +1035,17 @@ public class TaskThread implements Runnable{
 				lpattern = Pattern.compile("(.*/)<([^/]+)>(/.*)"); 
 			}catch (Exception e) {
 				log.error("["+regular+"]compile fails:"+e.getMessage());
+				//return from here or rethrow exception
 				e.printStackTrace();
 			}
-			
-			Matcher  matcher = lpattern.matcher(regular);
+		
+                        Matcher matcher=null;
+
+                        if(lpattern!=null)
+			matcher = lpattern.matcher(regular);
+			else{
+			// define logic when lpattern is null.
+			}
 			if(matcher.find()){
 				isregular = true;
 				String parpath  = matcher.group(1);
