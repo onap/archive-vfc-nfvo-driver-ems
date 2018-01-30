@@ -979,11 +979,18 @@ public class TaskThread implements Runnable{
 				pattern = Pattern.compile(ftpRegular, Pattern.CASE_INSENSITIVE);
 			} catch (Exception e) {
 				log.info("["+ftpRegular+"]Pattern.compile exception:"+e.getMessage());
+				//should rethrow exception or return from here
 			}
 			int hisSize = fileContainer.size();
 			for (int j=0; arfs!=null&&j<arfs.length; j++) {
 				String fileName = parseFileName(arfs[j].getFileName());
-				Matcher matcher = pattern.matcher(fileName);
+                                Matcher matcher=null;
+				if(pattern!=null)
+				matcher = pattern.matcher(fileName);
+				else{
+				 //define the flow when pattern is null
+				}
+				
 				if (matcher.find()) 
 					fileContainer.add(arfs[j]);
 			}
