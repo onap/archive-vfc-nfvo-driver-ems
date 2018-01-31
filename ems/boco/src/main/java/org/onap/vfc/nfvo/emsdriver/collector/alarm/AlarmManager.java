@@ -30,14 +30,14 @@ public class AlarmManager  extends DriverThread{
 	@Override
 	public void dispose() {
 		log.debug("AlarmManager is start");
-		//get alarm config
+		//get alarm CONFIG_PROPERTIES_LOCATION
 		List<EMSInfo> emsInfos = configurationInterface.getAllEMSInfo();
 		while(isRun() && emsInfos.size() == 0){
 			emsInfos = configurationInterface.getAllEMSInfo();
 			if(emsInfos.size() == 0){
 				try {
 					Thread.sleep(1000);
-					log.debug("config is not load");
+					log.debug("CONFIG_PROPERTIES_LOCATION is not load");
 				} catch (InterruptedException e) {
 				}
 			}

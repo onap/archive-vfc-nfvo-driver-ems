@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -43,25 +44,26 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 
-public class ConfigurationManager extends DriverThread{
+public class ConfigurationManager extends DriverThread {
 	protected static Log log = LogFactory.getLog(ConfigurationManager.class);
+	public final static String CONFIG_PROPERTIES_LOCATION = Constant.SYS_CFG + "config.properties";
 	/**
 	 * ESM Cache
 	 */
-	private static Map<String, EMSInfo> emsInfoCache = new ConcurrentHashMap<String, EMSInfo>();
+	@VisibleForTesting
+	static Map<String, EMSInfo> emsInfoCache = new ConcurrentHashMap<String, EMSInfo>();
 	private static Map<String, CrontabVo> emsCrontab= new ConcurrentHashMap<String, CrontabVo>();
 	private static List<String> emsIdList = new ArrayList<String>();
-	private static Properties properties = null;
-	
-	private final static String  config = Constant.SYS_CFG + "config.properties";
-	
+	@VisibleForTesting
+	static Properties properties = null;
+
 	@Override
 	public void dispose() {
 		
 		//this.log.debug("start loading " + cacheFilePath);
-		File file = new File(config);
+		File file = new File(CONFIG_PROPERTIES_LOCATION);
 	    if(!file.exists() || !file.isFile()){
-	    	log.error("cacheFilePath " + config+" not exist or is not File");
+	    	log.error("cacheFilePath " + CONFIG_PROPERTIES_LOCATION +" not exist or is not File");
 	    	return;
 	    }
 	    InputStream in  = null;
@@ -72,8 +74,7 @@ public class ConfigurationManager extends DriverThread{
 	        Map<String, CrontabVo> emsMap = readCorntab();
 	        
 	        emsCrontab.putAll(emsMap);
-	        
-	        //
+
 			new ReceiveSource().start();
 		}catch(Exception e) {
 			log.error("read ["+file.getAbsolutePath()+"]Exception :",e);
@@ -151,114 +152,6 @@ public class ConfigurationManager extends DriverThread{
 		}
 		return tmpcache;
 	}
-
-
-	public  void readcfg(){
-		String path = Constant.SYS_CFG + "EMSInfo.xml";
-		File cfg = new File(path);
-		log.debug("start loading " + path);
-	    if(!cfg.exists() || !cfg.isFile()){
-	    	log.debug("not exists " + path);
-	    	return;
-	    }
-	   
-        
-	    InputStream is = null;
-	    Map<String, EMSInfo> tmpcache = new HashMap<String, EMSInfo>();
-	    
-	    try {
-			is = new FileInputStream(cfg);
-			Document doc = XmlUtil.getDocument(is);
-			
-			Element root = doc.getRootElement();
-			
-			@SuppressWarnings("unchecked")
-			List<Element> children = root.getChildren();
-			
-			for(Iterator<Element> it = children.iterator();it.hasNext();){
-				EMSInfo emsInfo = new EMSInfo();
-				Element child = it.next();
-				String name = child.getAttributeValue("name");
-				if(StringUtil.isBank(name)){
-					continue;
-				}
-				emsInfo.setName(name);
-				
-//				tmpcache.put(name, emsInfo);
-				
-				@SuppressWarnings("unchecked")
-				List<Element> collectList = child.getChildren();
-				for(Element collect : collectList){
-					
-					CollectVo collectVo = new CollectVo();
-					
-					String type = collect.getAttributeValue("type");
-					if("alarm".equalsIgnoreCase(type)){
-						boolean iscollect =  Boolean.parseBoolean(collect.getAttributeValue("iscollect"));
-						if(iscollect){
-							collectVo.setIscollect(iscollect);
-						}else{
-							continue;
-						}
-						collectVo.setType(type);
-						collectVo.setIP(collect.getChildText("ip"));
-						collectVo.setPort(collect.getChildText("port"));
-						collectVo.setUser(collect.getChildText("user"));
-						collectVo.setPassword(collect.getChildText("password"));
-						collectVo.setRead_timeout(collect.getChildText("readtimeout"));
-					}else{
-						String crontab = collect.getAttributeValue("crontab");
-						if(!StringUtil.isBank(type) && !StringUtil.isBank(crontab)){
-							collectVo.setType(type);
-							collectVo.setCrontab(crontab);
-						}else{
-							continue;
-						}
-						collectVo.setIP(collect.getChildText("ip"));
-						collectVo.setPort(collect.getChildText("port"));
-						collectVo.setUser(collect.getChildText("user"));
-						collectVo.setPassword(collect.getChildText("password"));
-						collectVo.setRemotepath(collect.getChildText("remotepath"));
-						collectVo.setMatch(collect.getChildText("match"));
-						collectVo.setPassive(collect.getChildText("passive"));
-						collectVo.setFtptype(collect.getChildText("ftptype"));
-						collectVo.setGranularity(collect.getChildText("granularity"));
-					}
-				
-					emsInfo.putCollectMap(type, collectVo);
-				}
-				tmpcache.put(name, emsInfo);
-			}
-			emsInfoCache.putAll(tmpcache);
-			
-			File file = new File(config);
-		    if(!file.exists() || !file.isFile()){
-		    	log.error("cacheFilePath " + config+" not exist or is not File");
-		    	return;
-		    }
-		    InputStream in  = null;
-			try{
-				properties = new Properties();
-		        in = new FileInputStream(file);
-		        properties.load(in);
-			}catch (Exception e) {
-				e.printStackTrace();
-			}
-		} catch (Exception e) {
-			log.error("load EMSInfo.xml is error "+StringUtil.getStackTrace(e));
-		}finally{
-			tmpcache.clear();
-			try {
-				if(is != null){
-					is.close();
-					is = null;
-				}
-			} catch (Exception e2) {
-			}
-			cfg = null;
-		}
-	}
-	
 	
 	public static synchronized List<EMSInfo> getAllEMSInfos(){
 		List<EMSInfo> list = new ArrayList<EMSInfo>();
@@ -301,9 +194,6 @@ public class ConfigurationManager extends DriverThread{
 						
 						emsInfoCache.putAll(emsInfoMap);
 					}
-					
-					
-					//
 					if(emsInfoCache.size() > 0){
 						Thread.sleep(30*60*1000);
 					}else{
