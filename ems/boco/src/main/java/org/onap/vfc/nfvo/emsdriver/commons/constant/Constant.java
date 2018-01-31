@@ -29,7 +29,7 @@ public class Constant {
 	public static final String COLLECT_TYPE_PM = "EMS_PERFORMANCE";
 	public static final String COLLECT_TYPE_ALARM = "EMS_ALARM";
 	
-	public static String ENCODING_UTF8 = "UTF-8";
+	public static final String ENCODING_UTF8 = "UTF-8";
 	public static String ENCODING_GBK = "GBK";
 	
 	public static final String COLLECT_CHANNEL_KEY = "COLLECT_CHANNEL_KEY";
