@@ -46,6 +46,9 @@ public class Gunzip {
 			if (fileOutput != null) {
 				fileOutput.close();
 			}
+			if (gzInput != null) {
+				gzInput.close();
+			}
 
 		}
 
@@ -63,7 +66,7 @@ public class Gunzip {
 	public long moveBytes(InputStream input, OutputStream output, long off, long len, int bufsize) throws IOException {
 		if (off > 0) {
 			long skipped = input.skip(off);
-           // need to check actual no of bytes skipped and decide the flow
+			// need to check actual no of bytes skipped and decide the flow
 		}
 		long totalNum = 0;
 		byte[] buf = new byte[bufsize];
