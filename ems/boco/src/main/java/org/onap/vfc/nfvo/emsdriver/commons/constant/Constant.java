@@ -21,7 +21,7 @@ public class Constant {
 	
 	public static final String SYS_HOME = System.getenv("RUNHOME")==null?System.getProperty("user.dir"):System.getenv("RUNHOME");
 	
-	public static String SYS_CFG = SYS_HOME + File.separator + "conf" + File.separator;
+	public static final String SYS_CFG = SYS_HOME + File.separator + "conf" + File.separator;
 	public static String SYS_DATA = SYS_HOME + File.separator  + "data" + File.separator;
 	public static String SYS_DATA_TEMP = SYS_DATA + File.separator + "temp" + File.separator;
 	public static String SYS_DATA_RESULT = SYS_DATA + File.separator + "RESULT" + File.separator;
