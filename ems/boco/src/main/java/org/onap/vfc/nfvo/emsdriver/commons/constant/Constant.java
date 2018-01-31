@@ -30,7 +30,7 @@ public class Constant {
 	public static final String COLLECT_TYPE_ALARM = "EMS_ALARM";
 	
 	public static final String ENCODING_UTF8 = "UTF-8";
-	public static String ENCODING_GBK = "GBK";
+	public static final String ENCODING_GBK = "GBK";
 	
 	public static final String COLLECT_CHANNEL_KEY = "COLLECT_CHANNEL_KEY";
 	public static final String COLLECT_RESULT_CHANNEL_KEY = "COLLECT_RESULT_CHANNEL_KEY";
