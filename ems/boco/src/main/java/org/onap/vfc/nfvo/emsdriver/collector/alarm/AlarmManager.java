@@ -22,6 +22,7 @@ import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
 import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationInterface;
+import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationManager;
 
 public class AlarmManager  extends DriverThread{
 
@@ -30,14 +31,14 @@ public class AlarmManager  extends DriverThread{
 	@Override
 	public void dispose() {
 		log.debug("AlarmManager is start");
-		//get alarm config
+		//get alarm CONFIG_PROPERTIES_LOCATION
 		List<EMSInfo> emsInfos = configurationInterface.getAllEMSInfo();
 		while(isRun() && emsInfos.size() == 0){
 			emsInfos = configurationInterface.getAllEMSInfo();
 			if(emsInfos.size() == 0){
 				try {
 					Thread.sleep(1000);
-					log.debug("config is not load");
+					log.debug("The configuration properties from " + ConfigurationManager.CONFIG_PROPERTIES_LOCATION + " is not load");
 				} catch (InterruptedException e) {
 				}
 			}

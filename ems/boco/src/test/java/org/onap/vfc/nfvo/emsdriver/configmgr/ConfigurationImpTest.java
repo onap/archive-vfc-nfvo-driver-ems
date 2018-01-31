@@ -18,27 +18,142 @@ package org.onap.vfc.nfvo.emsdriver.configmgr;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
+import java.io.InputStream;
+import java.util.*;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
+import org.jdom.Element;
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
-import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationImp;
-import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationManager;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.StringUtil;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.XmlUtil;
 
 public class ConfigurationImpTest {
-
-	
+	//normally an unit test should not log
+	protected static Log log = LogFactory.getLog(ConfigurationImpTest.class);
 	private ConfigurationManager configurationManager;
 	private ConfigurationImp configurationImp;
+
+	public static void readcfg(){
+		String path = Constant.SYS_CFG + "EMSInfo.xml";
+		File cfg = new File(path);
+		log.debug("start loading " + path);
+		if(!cfg.exists() || !cfg.isFile()){
+			log.debug("not exists " + path);
+			return;
+		}
+
+
+		InputStream is = null;
+		Map<String, EMSInfo> tmpcache = new HashMap<String, EMSInfo>();
+
+		try {
+			is = new FileInputStream(cfg);
+			Document doc = XmlUtil.getDocument(is);
+
+			Element root = doc.getRootElement();
+
+			@SuppressWarnings("unchecked")
+			List<Element> children = root.getChildren();
+
+			for(Iterator<Element> it = children.iterator(); it.hasNext();){
+				EMSInfo emsInfo = new EMSInfo();
+				Element child = it.next();
+				String name = child.getAttributeValue("name");
+				if(StringUtil.isBank(name)){
+					continue;
+				}
+				emsInfo.setName(name);
+
+//				tmpcache.put(name, emsInfo);
+
+				@SuppressWarnings("unchecked")
+				List<Element> collectList = child.getChildren();
+				for(Element collect : collectList){
+
+					CollectVo collectVo = new CollectVo();
+
+					String type = collect.getAttributeValue("type");
+					if("alarm".equalsIgnoreCase(type)){
+						boolean iscollect =  Boolean.parseBoolean(collect.getAttributeValue("iscollect"));
+						if(iscollect){
+							collectVo.setIscollect(iscollect);
+						}else{
+							continue;
+						}
+						collectVo.setType(type);
+						collectVo.setIP(collect.getChildText("ip"));
+						collectVo.setPort(collect.getChildText("port"));
+						collectVo.setUser(collect.getChildText("user"));
+						collectVo.setPassword(collect.getChildText("password"));
+						collectVo.setRead_timeout(collect.getChildText("readtimeout"));
+					}else{
+						String crontab = collect.getAttributeValue("crontab");
+						if(!StringUtil.isBank(type) && !StringUtil.isBank(crontab)){
+							collectVo.setType(type);
+							collectVo.setCrontab(crontab);
+						}else{
+							continue;
+						}
+						collectVo.setIP(collect.getChildText("ip"));
+						collectVo.setPort(collect.getChildText("port"));
+						collectVo.setUser(collect.getChildText("user"));
+						collectVo.setPassword(collect.getChildText("password"));
+						collectVo.setRemotepath(collect.getChildText("remotepath"));
+						collectVo.setMatch(collect.getChildText("match"));
+						collectVo.setPassive(collect.getChildText("passive"));
+						collectVo.setFtptype(collect.getChildText("ftptype"));
+						collectVo.setGranularity(collect.getChildText("granularity"));
+					}
+
+					emsInfo.putCollectMap(type, collectVo);
+				}
+				tmpcache.put(name, emsInfo);
+			}
+			ConfigurationManager.emsInfoCache.putAll(tmpcache);
+
+			File file = new File(ConfigurationManager.CONFIG_PROPERTIES_LOCATION);
+			if(!file.exists() || !file.isFile()){
+				log.error("cacheFilePath " + ConfigurationManager.CONFIG_PROPERTIES_LOCATION +" not exist or is not File");
+				return;
+			}
+			InputStream in  = null;
+			try{
+				ConfigurationManager.properties = new Properties();
+				in = new FileInputStream(file);
+				ConfigurationManager.properties.load(in);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			log.error("load EMSInfo.xml is error "+StringUtil.getStackTrace(e));
+		}finally{
+			tmpcache.clear();
+			try {
+				if(is != null){
+					is.close();
+					is = null;
+				}
+			} catch (Exception e2) {
+			}
+			cfg = null;
+		}
+	}
+	
+
 	@Before
     public void setUp() throws IOException {
 		configurationImp = new ConfigurationImp();
 		configurationManager = new ConfigurationManager();
-		configurationManager.readcfg();
+		readcfg();
     }
 	
 	@Test
