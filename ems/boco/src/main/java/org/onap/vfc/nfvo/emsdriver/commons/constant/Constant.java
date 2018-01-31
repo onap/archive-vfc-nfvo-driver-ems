@@ -27,7 +27,7 @@ public class Constant {
 	public static final String SYS_DATA_RESULT = SYS_DATA + File.separator + "RESULT" + File.separator;
 	public static final String COLLECT_TYPE_CM = "EMS_RESOUCE";
 	public static final String COLLECT_TYPE_PM = "EMS_PERFORMANCE";
-	public static String COLLECT_TYPE_ALARM = "EMS_ALARM";
+	public static final String COLLECT_TYPE_ALARM = "EMS_ALARM";
 	
 	public static String ENCODING_UTF8 = "UTF-8";
 	public static String ENCODING_GBK = "GBK";
