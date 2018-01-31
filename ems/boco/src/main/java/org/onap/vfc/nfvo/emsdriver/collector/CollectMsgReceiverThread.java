@@ -54,7 +54,7 @@ public class CollectMsgReceiverThread extends DriverThread{
 					Thread.sleep(10);
 					continue;
 				}
-				if(obj != null && obj instanceof CollectMsg){
+				if(obj instanceof CollectMsg){
 					CollectMsg collectMsg = (CollectMsg)obj;
 					taskService.add(collectMsg);
 					log.debug("receive a CollectMsg id = "+collectMsg.getId());
