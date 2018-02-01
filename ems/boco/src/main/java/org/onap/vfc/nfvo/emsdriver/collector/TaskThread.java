@@ -675,7 +675,7 @@ public class TaskThread implements Runnable {
 
 	}
 
-	private String[] createZipFile(String csvpathAndFileName, String xmlPathAndFileName, String nename) {
+	private String[] createZipFile(String csvpathAndFileName, String xmlPathAndFileName, String nename) throws IOException{
 
 		String zipPath = resultPath + nename + dateFormat.format(new Date()) + "_" + System.nanoTime();
 
@@ -687,6 +687,8 @@ public class TaskThread implements Runnable {
 			FileUtils.copyFileToDirectory(new File(xmlPathAndFileName), destDir);
 		} catch (IOException e) {
 
+			throw  e;
+			//flow should end here in case of exception.
 		}
 
 		String destFilePath = zipPath + ".zip";
