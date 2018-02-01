@@ -404,8 +404,8 @@ public class TaskThread implements Runnable {
 					pmResultChannel.put(resultMap);
 				} catch (InterruptedException e) {
 					log.error("collectResultChannel.put(resultMap) error ", e);
-					 throw new RuntimeException(e);
-					
+					throw new RuntimeException(e);
+
 				}
 				valuelist.clear();
 			}
@@ -675,7 +675,8 @@ public class TaskThread implements Runnable {
 
 	}
 
-	private String[] createZipFile(String csvpathAndFileName, String xmlPathAndFileName, String nename) throws IOException{
+	private String[] createZipFile(String csvpathAndFileName, String xmlPathAndFileName, String nename)
+			throws IOException {
 
 		String zipPath = resultPath + nename + dateFormat.format(new Date()) + "_" + System.nanoTime();
 
@@ -687,8 +688,8 @@ public class TaskThread implements Runnable {
 			FileUtils.copyFileToDirectory(new File(xmlPathAndFileName), destDir);
 		} catch (IOException e) {
 
-			throw  e;
-			//flow should end here in case of exception.
+			throw e;
+			// flow should end here in case of exception.
 		}
 
 		String destFilePath = zipPath + ".zip";
@@ -732,25 +733,16 @@ public class TaskThread implements Runnable {
 		return xmlPathAndFileName;
 	}
 
-	private void writeDetail(String detailFileName, String str) throws Exception {
-		OutputStreamWriter writer = null;
-		OutputStream readOut = null;
-		try {
-			readOut = new FileOutputStream(new File(detailFileName), false);
-			writer = new OutputStreamWriter(readOut);
+	private void writeDetail(String detailFileName, String str) throws IOException {
+	
+		try (
+			OutputStream readOut = new FileOutputStream(new File(detailFileName), false);
+			OutputStreamWriter writer =new OutputStreamWriter(readOut)){
 			writer.write(str);
 			writer.flush();
-		} finally {
-
-			if (null != writer) {
-				writer.close();
-			}
-			if (readOut != null) {
-				readOut.close();
-			}
-
+		}catch(IOException e){
+			throw e;
 		}
-
 	}
 
 	private void appendLine(LinkedHashMap<String, String> nameAndValue, BufferedOutputStream bos) {
