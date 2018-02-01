@@ -732,7 +732,7 @@ public class TaskThread implements Runnable {
 		return xmlPathAndFileName;
 	}
 
-	private void writeDetail(String detailFileName, String str) throws Exception {
+	private void writeDetail(String detailFileName, String str) throws FileNotFoundException {
 		OutputStreamWriter writer = null;
 		OutputStream readOut = null;
 		try {
