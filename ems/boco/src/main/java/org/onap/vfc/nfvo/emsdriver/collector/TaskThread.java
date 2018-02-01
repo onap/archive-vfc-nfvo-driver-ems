@@ -404,6 +404,8 @@ public class TaskThread implements Runnable {
 					pmResultChannel.put(resultMap);
 				} catch (InterruptedException e) {
 					log.error("collectResultChannel.put(resultMap) error ", e);
+					 throw new RuntimeException(e);
+					
 				}
 				valuelist.clear();
 			}
