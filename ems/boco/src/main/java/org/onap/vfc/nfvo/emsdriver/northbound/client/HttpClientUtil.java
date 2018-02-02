@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,118 +15,112 @@
  */
 package org.onap.vfc.nfvo.emsdriver.northbound.client;
 
-import java.io.IOException;
-
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import org.apache.commons.codec.binary.Base64;
+import java.io.IOException;
 
 /*
  * HttpClient post request
  */
 public class HttpClientUtil {
-	
-	private static Log log = LogFactory.getLog(HttpClientUtil.class);
-	
-    public static String doPost(String url,String json,String charset){
-    	CloseableHttpClient httpClient = null;
+
+    private static Log log = LogFactory.getLog(HttpClientUtil.class);
+
+    public static String doPost(String url, String json, String charset) {
+        CloseableHttpClient httpClient = null;
         HttpPost httpPost = null;
         String result = null;
-        try{
+        try {
             httpClient = HttpClientFactory.getSSLClientFactory();
             httpPost = new HttpPost(url);
             if (null != json) {
-				StringEntity s = new StringEntity(json);
-				s.setContentEncoding("UTF-8");
-				s.setContentType("application/json"); // set contentType
-				httpPost.setEntity(s);
-			}
+                StringEntity s = new StringEntity(json);
+                s.setContentEncoding("UTF-8");
+                s.setContentType("application/json"); // set contentType
+                httpPost.setEntity(s);
+            }
             CloseableHttpResponse response = httpClient.execute(httpPost);
             try {
-				if(response != null){
-				    HttpEntity resEntity = response.getEntity();
-				    if(resEntity != null){
-				        result = EntityUtils.toString(resEntity,charset);
-				    }
-				}
-			} catch (Exception e) {
-				log.error("httpClient.execute(httpPost) is fail",e);
-			}finally{
-				if(response != null){
-					response.close();
-				}
-			}
-        }catch(Exception e){
-        	log.error("doPost is fail ",e);
-        }finally{
-        	if(httpClient != null){
-        		try {
-					httpClient.close();
-				} catch (IOException e) {
-				}
-        	}
-        	
-		}
-        return result;
-    }
-    
-    public static String doDelete(String url ,String charset){
-    	CloseableHttpClient httpClient = null;
-        HttpDelete httpDelete = null;
-        String result = null;
-        try{
-            httpClient = HttpClientFactory.getSSLClientFactory();
-            httpDelete = new HttpDelete(url);
-            
-            CloseableHttpResponse response = httpClient.execute(httpDelete);
-            
-            try {
-				if(response != null){
-				    HttpEntity resEntity = response.getEntity();
-				    if(resEntity != null){
-				        result = EntityUtils.toString(resEntity,charset);
-				    }
-				}
-			} catch (Exception e) {
-				log.error("",e);
-			}finally{
-				if(response != null){
-					response.close();
-				}
-			}
-        }catch(Exception e){
-        	log.error("doDelete is fail ",e);
-        }finally{
-        	if(httpClient != null){
-        		try {
-					httpClient.close();
-				} catch (IOException e) {
-				}
-			}
+                if (response != null) {
+                    HttpEntity resEntity = response.getEntity();
+                    if (resEntity != null) {
+                        result = EntityUtils.toString(resEntity, charset);
+                    }
+                }
+            } catch (Exception e) {
+                log.error("httpClient.execute(httpPost) is fail", e);
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        } catch (Exception e) {
+            log.error("doPost is fail ", e);
+        } finally {
+            if (httpClient != null) {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                }
+            }
+
         }
         return result;
     }
-    
-    public static String doGet(String url, String charset){
-    	CloseableHttpClient httpClient = null;
+
+    public static String doDelete(String url, String charset) {
+        CloseableHttpClient httpClient = null;
+        HttpDelete httpDelete = null;
+        String result = null;
+        try {
+            httpClient = HttpClientFactory.getSSLClientFactory();
+            httpDelete = new HttpDelete(url);
+
+            CloseableHttpResponse response = httpClient.execute(httpDelete);
+
+            try {
+                if (response != null) {
+                    HttpEntity resEntity = response.getEntity();
+                    if (resEntity != null) {
+                        result = EntityUtils.toString(resEntity, charset);
+                    }
+                }
+            } catch (Exception e) {
+                log.error("", e);
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        } catch (Exception e) {
+            log.error("doDelete is fail ", e);
+        } finally {
+            if (httpClient != null) {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        return result;
+    }
+
+    public static String doGet(String url, String charset) {
+        CloseableHttpClient httpClient = null;
         HttpGet httpGet = null;
         String result = null;
-        try{
+        try {
             httpClient = HttpClients.createDefault();
             httpGet = new HttpGet(url);
             httpGet.setHeader("Content-Type", "application/json");
@@ -138,30 +132,30 @@ public class HttpClientUtil {
 
             httpGet.setHeader("Authorization", "Basic " + authenticationEncoding);
             CloseableHttpResponse response = httpClient.execute(httpGet);
-            log.info("1 doGet sucess url ="+url);
+            log.info("1 doGet sucess url =" + url);
             try {
-				if(response != null){
-				    HttpEntity resEntity = response.getEntity();
-				    if(resEntity != null){
-				        result = EntityUtils.toString(resEntity,charset);
-				    }
-				}
-			} catch (Exception e) {
-				log.error("",e);
-			}finally{
-				if(response != null){
-					response.close();
-				}
-			}
-        }catch(Exception e){
-        	log.error("doGet is fail ",e);
-        }finally{
-        	if(httpClient != null){
-        		try {
-					httpClient.close();
-				} catch (IOException e) {
-				}
-			}
+                if (response != null) {
+                    HttpEntity resEntity = response.getEntity();
+                    if (resEntity != null) {
+                        result = EntityUtils.toString(resEntity, charset);
+                    }
+                }
+            } catch (Exception e) {
+                log.error("", e);
+            } finally {
+                if (response != null) {
+                    response.close();
+                }
+            }
+        } catch (Exception e) {
+            log.error("doGet is fail ", e);
+        } finally {
+            if (httpClient != null) {
+                try {
+                    httpClient.close();
+                } catch (IOException e) {
+                }
+            }
         }
         return result;
     }

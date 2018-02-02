@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,36 +15,35 @@
  */
 package org.onap.vfc.nfvo.emsdriver.northbound.client;
 
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-
-import javax.net.ssl.SSLContext;
-
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 
+import javax.net.ssl.SSLContext;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
 /**
  * HttpClient
-  */
-public class HttpClientFactory{
-	
-	
-	public static CloseableHttpClient getSSLClientFactory() throws Exception {
-         
-		SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-             //信任所有
-             public boolean isTrusted(X509Certificate[] chain,
-                             String authType) throws CertificateException {
-                 return true;
-             }
-         }).build();
-         SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
-         CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
-         
-         return httpclient;
-	}
-	
+ */
+public class HttpClientFactory {
+
+
+    public static CloseableHttpClient getSSLClientFactory() throws Exception {
+
+        SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+            //信任所有
+            public boolean isTrusted(X509Certificate[] chain,
+                                     String authType) throws CertificateException {
+                return true;
+            }
+        }).build();
+        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
+        CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+
+        return httpclient;
+    }
+
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,112 +17,109 @@ package org.onap.vfc.nfvo.emsdriver.commons.model;
 
 /**
  * @author boco
- *
  */
 public class CrontabVo {
-	
-	private String type;
-	
-	private String crontab;
-	private String match;
-	private String granularity;
-	
-	private boolean iscollect = false;
-	
-	private String read_timeout;
 
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
+    private String type;
 
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    private String crontab;
+    private String match;
+    private String granularity;
 
-	/**
-	 * @return the crontab
-	 */
-	public String getCrontab() {
-		return crontab;
-	}
+    private boolean iscollect = false;
 
-	/**
-	 * @param crontab the crontab to set
-	 */
-	public void setCrontab(String crontab) {
-		this.crontab = crontab;
-	}
+    private String read_timeout;
 
-	/**
-	 * @return the match
-	 */
-	public String getMatch() {
-		return match;
-	}
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * @param match the match to set
-	 */
-	public void setMatch(String match) {
-		this.match = match;
-	}
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	/**
-	 * @return the granularity
-	 */
-	public String getGranularity() {
-		return granularity;
-	}
+    /**
+     * @return the crontab
+     */
+    public String getCrontab() {
+        return crontab;
+    }
 
-	/**
-	 * @param granularity the granularity to set
-	 */
-	public void setGranularity(String granularity) {
-		this.granularity = granularity;
-	}
+    /**
+     * @param crontab the crontab to set
+     */
+    public void setCrontab(String crontab) {
+        this.crontab = crontab;
+    }
 
-	/**
-	 * @return the iscollect
-	 */
-	public boolean isIscollect() {
-		return iscollect;
-	}
+    /**
+     * @return the match
+     */
+    public String getMatch() {
+        return match;
+    }
 
-	/**
-	 * @param iscollect the iscollect to set
-	 */
-	public void setIscollect(boolean iscollect) {
-		this.iscollect = iscollect;
-	}
+    /**
+     * @param match the match to set
+     */
+    public void setMatch(String match) {
+        this.match = match;
+    }
 
-	/**
-	 * @return the read_timeout
-	 */
-	public String getRead_timeout() {
-		return read_timeout;
-	}
+    /**
+     * @return the granularity
+     */
+    public String getGranularity() {
+        return granularity;
+    }
 
-	/**
-	 * @param read_timeout the read_timeout to set
-	 */
-	public void setRead_timeout(String read_timeout) {
-		this.read_timeout = read_timeout;
-	}
+    /**
+     * @param granularity the granularity to set
+     */
+    public void setGranularity(String granularity) {
+        this.granularity = granularity;
+    }
 
-	@Override
-	public String toString() {
-		return "CrontabVo [type=" + type + ", crontab=" + crontab + ", match="
-				+ match + ", granularity=" + granularity + ", iscollect="
-				+ iscollect + ", read_timeout=" + read_timeout + "]";
-	}
-	
-	
+    /**
+     * @return the iscollect
+     */
+    public boolean isIscollect() {
+        return iscollect;
+    }
 
-	
+    /**
+     * @param iscollect the iscollect to set
+     */
+    public void setIscollect(boolean iscollect) {
+        this.iscollect = iscollect;
+    }
+
+    /**
+     * @return the read_timeout
+     */
+    public String getRead_timeout() {
+        return read_timeout;
+    }
+
+    /**
+     * @param read_timeout the read_timeout to set
+     */
+    public void setRead_timeout(String read_timeout) {
+        this.read_timeout = read_timeout;
+    }
+
+    @Override
+    public String toString() {
+        return "CrontabVo [type=" + type + ", crontab=" + crontab + ", match="
+                + match + ", granularity=" + granularity + ", iscollect="
+                + iscollect + ", read_timeout=" + read_timeout + "]";
+    }
+
+
 }

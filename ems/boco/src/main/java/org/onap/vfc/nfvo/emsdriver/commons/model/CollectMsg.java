@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,61 +16,60 @@
 package org.onap.vfc.nfvo.emsdriver.commons.model;
 
 public class CollectMsg {
-	
-	private long id;
-	
-	private String emsName;
-	
-	private String type;
 
-	/**
-	 * @return the id
-	 */
-	public long getId() {
-		return id;
-	}
+    private long id;
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(long id) {
-		this.id = id;
-	}
+    private String emsName;
 
-	/**
-	 * @return the emsName
-	 */
-	public String getEmsName() {
-		return emsName;
-	}
+    private String type;
 
-	/**
-	 * @param emsName the emsName to set
-	 */
-	public void setEmsName(String emsName) {
-		this.emsName = emsName;
-	}
+    /**
+     * @return the id
+     */
+    public long getId() {
+        return id;
+    }
 
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * @param id the id to set
+     */
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * @return the emsName
+     */
+    public String getEmsName() {
+        return emsName;
+    }
 
-	@Override
-	public String toString() {
-		return "CollectMsg [id=" + id + ", emsName=" + emsName + ", type="
-				+ type + "]";
-	}
-	
-	
+    /**
+     * @param emsName the emsName to set
+     */
+    public void setEmsName(String emsName) {
+        this.emsName = emsName;
+    }
+
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "CollectMsg [id=" + id + ", emsName=" + emsName + ", type="
+                + type + "]";
+    }
+
 
 }

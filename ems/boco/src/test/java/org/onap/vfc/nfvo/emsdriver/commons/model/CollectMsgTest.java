@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,26 +15,25 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.model;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
+
+import static org.junit.Assert.assertNotNull;
 
 public class CollectMsgTest {
-	
-	private CollectMsg collectMsg;
+
+    private CollectMsg collectMsg;
 
     @Before
     public void setUp() {
-    	collectMsg = new CollectMsg();
+        collectMsg = new CollectMsg();
     }
 
     @Test
     public void testCollectMsg() {
-    	collectMsg.setEmsName("emsName");
-    	collectMsg.setId(100L);
-    	collectMsg.setType("PM");
+        collectMsg.setEmsName("emsName");
+        collectMsg.setId(100L);
+        collectMsg.setType("PM");
         assertNotNull(collectMsg.toString());
     }
 

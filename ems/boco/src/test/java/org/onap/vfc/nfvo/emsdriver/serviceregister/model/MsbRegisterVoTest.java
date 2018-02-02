@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,37 +15,37 @@
  */
 package org.onap.vfc.nfvo.emsdriver.serviceregister.model;
 
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 public class MsbRegisterVoTest {
 
-	private MsbRegisterVo msbRegisterVo;
+    private MsbRegisterVo msbRegisterVo;
 
     @Before
     public void setUp() {
-    	msbRegisterVo = new MsbRegisterVo();
+        msbRegisterVo = new MsbRegisterVo();
     }
-    
+
     @Test
-    public void testMsbRegisterVo(){
-    	msbRegisterVo.setProtocol("REST");
-    	msbRegisterVo.setServiceName("serviceName");
-    	msbRegisterVo.setUrl("http://");
-    	msbRegisterVo.setVersion("version");
-    	msbRegisterVo.setVisualRange("vr");
-    	ArrayList<ServiceNodeVo> list = new ArrayList<ServiceNodeVo>();
-    	list.add(new ServiceNodeVo());
-    	msbRegisterVo.setNodes(list);
-    	msbRegisterVo.getNodes();
-    	msbRegisterVo.getProtocol();
-    	msbRegisterVo.getServiceName();
-    	msbRegisterVo.getUrl();
-    	msbRegisterVo.getVersion();
-    	msbRegisterVo.getVisualRange();
-    	
+    public void testMsbRegisterVo() {
+        msbRegisterVo.setProtocol("REST");
+        msbRegisterVo.setServiceName("serviceName");
+        msbRegisterVo.setUrl("http://");
+        msbRegisterVo.setVersion("version");
+        msbRegisterVo.setVisualRange("vr");
+        ArrayList<ServiceNodeVo> list = new ArrayList<ServiceNodeVo>();
+        list.add(new ServiceNodeVo());
+        msbRegisterVo.setNodes(list);
+        msbRegisterVo.getNodes();
+        msbRegisterVo.getProtocol();
+        msbRegisterVo.getServiceName();
+        msbRegisterVo.getUrl();
+        msbRegisterVo.getVersion();
+        msbRegisterVo.getVisualRange();
+
     }
 
 }

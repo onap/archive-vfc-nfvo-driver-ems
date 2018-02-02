@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,42 +15,41 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.utils;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.commons.utils.Gunzip;
+import static org.junit.Assert.assertTrue;
 
 public class GunzipTest {
-	private String csvPath = System.getProperty("user.dir")+"/data/" +"PM-ENB-EUTRANCELLNB-test.csv";
-	private String gzPath = System.getProperty("user.dir")+"/data/" +"PM-ENB-EUTRANCELLNB-test.csv.gz";
-	private Gunzip gunzip = null;
-	private String gunzipfile;
-	
-	
-	@Before
+    private String csvPath = System.getProperty("user.dir") + "/data/" + "PM-ENB-EUTRANCELLNB-test.csv";
+    private String gzPath = System.getProperty("user.dir") + "/data/" + "PM-ENB-EUTRANCELLNB-test.csv.gz";
+    private Gunzip gunzip = null;
+    private String gunzipfile;
+
+
+    @Before
     public void setUp() throws IOException {
-		gunzip = new Gunzip();
-		Gzip gzip = new Gzip();
-		gzip.compress(csvPath, gzPath);
+        gunzip = new Gunzip();
+        Gzip gzip = new Gzip();
+        gzip.compress(csvPath, gzPath);
     }
-	
-	@Test
-	public void deCompress() throws IOException{
-		gunzipfile = gzPath.replace(".gz", "file");
-		gunzip.unCompress(gzPath, gunzipfile);
-		assertTrue(new File(gunzipfile).length() > 0);
-		
-	}
-	
-	@After
+
+    @Test
+    public void deCompress() throws IOException {
+        gunzipfile = gzPath.replace(".gz", "file");
+        gunzip.unCompress(gzPath, gunzipfile);
+        assertTrue(new File(gunzipfile).length() > 0);
+
+    }
+
+    @After
     public void setDown() throws IOException {
-		new File(gunzipfile).delete();
-		new File(gzPath).delete();
-		
+        new File(gunzipfile).delete();
+        new File(gzPath).delete();
+
     }
 }

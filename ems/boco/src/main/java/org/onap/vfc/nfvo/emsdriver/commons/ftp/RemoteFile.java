@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,9 @@ package org.onap.vfc.nfvo.emsdriver.commons.ftp;
 
 public interface RemoteFile {
 
-	public String getFileName();
-	
-	public String getAbsFileName();
-	
-	public boolean isDirectory();
+    public String getFileName();
+
+    public String getAbsFileName();
+
+    public boolean isDirectory();
 }

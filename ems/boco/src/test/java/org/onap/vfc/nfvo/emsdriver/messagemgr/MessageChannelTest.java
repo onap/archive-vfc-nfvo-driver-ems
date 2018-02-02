@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,58 +15,59 @@
  */
 package org.onap.vfc.nfvo.emsdriver.messagemgr;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class MessageChannelTest {
 
-	private MessageChannel messageChannel;
-	@Before
+    private MessageChannel messageChannel;
+
+    @Before
     public void setUp() {
-		messageChannel = new MessageChannel();
-	}
-	
-	@Test
-	public void MessageChannel(){
-		MessageChannel messageChannel = new MessageChannel(10);
-		assertNotNull(messageChannel.getQueue());
-		MessageChannel messageChannel1 = new MessageChannel(0);
-		assertNotNull(messageChannel1.getQueue());
-	}
-	
-	@Test
-	public void put() throws Exception{
-		Object obj = new Object();
-		messageChannel.put(obj);
-		
-		assertEquals(1, messageChannel.size());
-	}
-	
-	@Test
-	public void get() throws Exception{
-		Object obj = new Object();
-		messageChannel.put(obj);
-		Object objr = messageChannel.get();
-		assertNotNull(objr);
-	}
-	
-	@Test
-	public void poll() throws Exception{
-		Object obj = new Object();
-		messageChannel.put(obj);
-		Object objr = messageChannel.poll();
-		assertNotNull(objr);
-	}
-	
-	@Test
-	public void clear() throws Exception{
-		Object obj = new Object();
-		messageChannel.put(obj);
-		messageChannel.clear();
-		assertEquals(0, messageChannel.size());
-	}
-	
+        messageChannel = new MessageChannel();
+    }
+
+    @Test
+    public void MessageChannel() {
+        MessageChannel messageChannel = new MessageChannel(10);
+        assertNotNull(messageChannel.getQueue());
+        MessageChannel messageChannel1 = new MessageChannel(0);
+        assertNotNull(messageChannel1.getQueue());
+    }
+
+    @Test
+    public void put() throws Exception {
+        Object obj = new Object();
+        messageChannel.put(obj);
+
+        assertEquals(1, messageChannel.size());
+    }
+
+    @Test
+    public void get() throws Exception {
+        Object obj = new Object();
+        messageChannel.put(obj);
+        Object objr = messageChannel.get();
+        assertNotNull(objr);
+    }
+
+    @Test
+    public void poll() throws Exception {
+        Object obj = new Object();
+        messageChannel.put(obj);
+        Object objr = messageChannel.poll();
+        assertNotNull(objr);
+    }
+
+    @Test
+    public void clear() throws Exception {
+        Object obj = new Object();
+        messageChannel.put(obj);
+        messageChannel.clear();
+        assertEquals(0, messageChannel.size());
+    }
+
 }

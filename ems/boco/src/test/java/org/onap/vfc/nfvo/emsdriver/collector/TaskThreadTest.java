@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,75 +15,76 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.collector.TaskThread;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.Gzip;
 import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
 
-public class TaskThreadTest {
-	private String csvPath = System.getProperty("user.dir")+"/data/" +"PM-ENB-EUTRANCELLNB-test.csv";
-	private String xmlPath = System.getProperty("user.dir")+"/data/" +"PM-test.xml";
-	private String gzPath = System.getProperty("user.dir")+"/data/" +"PM-ENB-EUTRANCELLNB-testa.csv.gz";
-	private TaskThread taskThread;
-	private List<File> list = null;
-	@Before
-    public void setUp() throws IOException {
-		taskThread = new TaskThread();
-		taskThread.pmResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_PM_CHANNEL_KEY);
-		Gzip gzip = new Gzip();
-		gzip.compress(csvPath, gzPath);
-    }
-	
-	@Test
-	public void decompressed(){
-		list = taskThread.decompressed(gzPath);
-		assertTrue(list.size() > 0);
-		new File(gzPath).delete();
-	}
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
-	@Test
-	public void processPMCsv(){
-		list = taskThread.decompressed(gzPath);
-		for(File file : list){
-			boolean re = taskThread.processPMCsv(file);
-			assertTrue(re);
-		}
-	}
-	@Test
-	public void processPMXml(){
-		File file = new File(xmlPath);
-		boolean re = taskThread.processPMXml(file);
-		assertTrue(re);
-		System.out.println(taskThread.pmResultChannel.size()); 
-	}
-	
-	@Test
-	public void parseFtpAndSendMessage(){
-		CollectVo collectVo = new CollectVo();
-		collectVo.setType("ems-p");
-		taskThread.parseFtpAndSendMessage(gzPath,collectVo);
-	}
-	
-	@Test
-	public void createMessage(){
-		CollectVo collectVo = new CollectVo();
-		collectVo.setType("ems-p");
-		taskThread.createMessage("zipName", "user", "pwd", "ip", "port", 122, "nename");
-	}
-	
-	@After
+import static org.junit.Assert.assertTrue;
+
+public class TaskThreadTest {
+    private String csvPath = System.getProperty("user.dir") + "/data/" + "PM-ENB-EUTRANCELLNB-test.csv";
+    private String xmlPath = System.getProperty("user.dir") + "/data/" + "PM-test.xml";
+    private String gzPath = System.getProperty("user.dir") + "/data/" + "PM-ENB-EUTRANCELLNB-testa.csv.gz";
+    private TaskThread taskThread;
+    private List<File> list = null;
+
+    @Before
+    public void setUp() throws IOException {
+        taskThread = new TaskThread();
+        taskThread.pmResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_PM_CHANNEL_KEY);
+        Gzip gzip = new Gzip();
+        gzip.compress(csvPath, gzPath);
+    }
+
+    @Test
+    public void decompressed() {
+        list = taskThread.decompressed(gzPath);
+        assertTrue(list.size() > 0);
+        new File(gzPath).delete();
+    }
+
+    @Test
+    public void processPMCsv() {
+        list = taskThread.decompressed(gzPath);
+        for (File file : list) {
+            boolean re = taskThread.processPMCsv(file);
+            assertTrue(re);
+        }
+    }
+
+    @Test
+    public void processPMXml() {
+        File file = new File(xmlPath);
+        boolean re = taskThread.processPMXml(file);
+        assertTrue(re);
+        System.out.println(taskThread.pmResultChannel.size());
+    }
+
+    @Test
+    public void parseFtpAndSendMessage() {
+        CollectVo collectVo = new CollectVo();
+        collectVo.setType("ems-p");
+        taskThread.parseFtpAndSendMessage(gzPath, collectVo);
+    }
+
+    @Test
+    public void createMessage() {
+        CollectVo collectVo = new CollectVo();
+        collectVo.setType("ems-p");
+        taskThread.createMessage("zipName", "user", "pwd", "ip", "port", 122, "nename");
+    }
+
+    @After
     public void setDown() throws IOException {
-		new File(gzPath).delete();
-		new File(gzPath.replace(".gz", "")).delete();
+        new File(gzPath).delete();
+        new File(gzPath.replace(".gz", "")).delete();
     }
 }

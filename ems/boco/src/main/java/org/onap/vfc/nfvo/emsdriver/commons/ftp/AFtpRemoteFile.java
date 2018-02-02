@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,27 +18,27 @@ package org.onap.vfc.nfvo.emsdriver.commons.ftp;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
-public class AFtpRemoteFile implements RemoteFile{
-	protected FTPClient ftpClient = null;
-	protected FTPFile ftpFile = null;
-	protected String currDir = null;
-	
-	public AFtpRemoteFile(FTPFile rfile, FTPClient ftpClient, String currDir){
-		this.ftpClient = ftpClient;
-		this.ftpFile = rfile;
-		this.currDir = currDir;
-	}
-	
-	
-	public String getFileName() {
-		return ftpFile.getName();
-	}
-	
-	public String getAbsFileName() {
-		return currDir.concat(getFileName());
-	}
-	
-	public boolean isDirectory() {
-		return ftpFile.isDirectory();
-	}
+public class AFtpRemoteFile implements RemoteFile {
+    protected FTPClient ftpClient = null;
+    protected FTPFile ftpFile = null;
+    protected String currDir = null;
+
+    public AFtpRemoteFile(FTPFile rfile, FTPClient ftpClient, String currDir) {
+        this.ftpClient = ftpClient;
+        this.ftpFile = rfile;
+        this.currDir = currDir;
+    }
+
+
+    public String getFileName() {
+        return ftpFile.getName();
+    }
+
+    public String getAbsFileName() {
+        return currDir.concat(getFileName());
+    }
+
+    public boolean isDirectory() {
+        return ftpFile.isDirectory();
+    }
 }

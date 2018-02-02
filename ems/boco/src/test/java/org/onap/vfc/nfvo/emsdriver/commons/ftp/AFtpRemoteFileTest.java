@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,32 +15,34 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.ftp;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
+
 public class AFtpRemoteFileTest {
 
-	 AFtpRemoteFile aFtpRemoteFile = null;
-	 @Before
-     public void setUp() {
-		 FTPFile f = new FTPFile();
-		 f.setName("aaa/bb.txt");
-		 aFtpRemoteFile = new AFtpRemoteFile(f , new FTPClient(), "aaa/");
-     }
+    AFtpRemoteFile aFtpRemoteFile = null;
 
-	 @Test
-	 public void getFileName() {
-		String fileName =  aFtpRemoteFile.getFileName();
-		assertNotNull(fileName);
-	 }
-	 @Test
-	 public void getAbsFileName() {
-		 String absFileName = aFtpRemoteFile.getAbsFileName();
-		 assertNotNull(absFileName);
-	 }
-	 
+    @Before
+    public void setUp() {
+        FTPFile f = new FTPFile();
+        f.setName("aaa/bb.txt");
+        aFtpRemoteFile = new AFtpRemoteFile(f, new FTPClient(), "aaa/");
+    }
+
+    @Test
+    public void getFileName() {
+        String fileName = aFtpRemoteFile.getFileName();
+        assertNotNull(fileName);
+    }
+
+    @Test
+    public void getAbsFileName() {
+        String absFileName = aFtpRemoteFile.getAbsFileName();
+        assertNotNull(absFileName);
+    }
+
 }

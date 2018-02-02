@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,18 @@
  */
 package org.onap.vfc.nfvo.emsdriver.configmgr;
 
-import java.util.List;
-import java.util.Properties;
-
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
 
+import java.util.List;
+import java.util.Properties;
+
 
 public interface ConfigurationInterface {
-	
-	public List<EMSInfo> getAllEMSInfo();
-	public CollectVo getCollectVoByEmsNameAndType(String emsName,String type);
 
-	public Properties getProperties();
+    public List<EMSInfo> getAllEMSInfo();
+
+    public CollectVo getCollectVoByEmsNameAndType(String emsName, String type);
+
+    public Properties getProperties();
 }

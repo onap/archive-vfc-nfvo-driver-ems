@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,48 +16,52 @@
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
 public enum MsgType {
-	
-	reqLoginAlarm("reqLoginAlarm",1,"all"),
-	ackLoginAlarm("ackLoginAlarm",2,"all"),
-	reqSyncAlarmMsg("reqSyncAlarmMsg",3,"msg"),
-	ackSyncAlarmMsg("ackSyncAlarmMsg",4,"msg"),
-	reqSyncAlarmFile("reqSyncAlarmFile",5,"file"),
-	ackSyncAlarmFile("ackSyncAlarmFile",6,"file"),
-	ackSyncAlarmFileResult("ackSyncAlarmFileResult",7,"file"),
-	reqHeartBeat("reqHeartBeat",8,"all"),
-	ackHeartBeat("ackHeartBeat",9,"all"),
-	closeConnAlarm("closeConnAlarm",10,"all"),
-	realTimeAlarm("realTimeAlarm",0,"all"),
-	undefined("undefined",-1,"all");
-	
-	public int value = -1;
-	public String name = null;
-	public String type = null;
-	
-	MsgType(String name,int value,String type){this.name = name;this.value = value;this.type = type;}
-	
-	public static MsgType getMsgTypeValue(int msgTypeValue){
-		
-		for(MsgType msgType : MsgType.values()){
-			if(msgType.value == msgTypeValue){
-				return msgType;
-			}
-		}
-		return undefined;
-	}
-	
-	public static MsgType getMsgTypeName(String msgTypeName){
-		
-		for(MsgType msgType : MsgType.values()){
-			if(msgType.name.toLowerCase().equals(msgTypeName.toLowerCase())){
-				return msgType;
-			}
-		}
-		return undefined;
-	}
-	
-	public String toString(){
-		return this.name;
-	}
-	
+
+    reqLoginAlarm("reqLoginAlarm", 1, "all"),
+    ackLoginAlarm("ackLoginAlarm", 2, "all"),
+    reqSyncAlarmMsg("reqSyncAlarmMsg", 3, "msg"),
+    ackSyncAlarmMsg("ackSyncAlarmMsg", 4, "msg"),
+    reqSyncAlarmFile("reqSyncAlarmFile", 5, "file"),
+    ackSyncAlarmFile("ackSyncAlarmFile", 6, "file"),
+    ackSyncAlarmFileResult("ackSyncAlarmFileResult", 7, "file"),
+    reqHeartBeat("reqHeartBeat", 8, "all"),
+    ackHeartBeat("ackHeartBeat", 9, "all"),
+    closeConnAlarm("closeConnAlarm", 10, "all"),
+    realTimeAlarm("realTimeAlarm", 0, "all"),
+    undefined("undefined", -1, "all");
+
+    public int value = -1;
+    public String name = null;
+    public String type = null;
+
+    MsgType(String name, int value, String type) {
+        this.name = name;
+        this.value = value;
+        this.type = type;
+    }
+
+    public static MsgType getMsgTypeValue(int msgTypeValue) {
+
+        for (MsgType msgType : MsgType.values()) {
+            if (msgType.value == msgTypeValue) {
+                return msgType;
+            }
+        }
+        return undefined;
+    }
+
+    public static MsgType getMsgTypeName(String msgTypeName) {
+
+        for (MsgType msgType : MsgType.values()) {
+            if (msgType.name.toLowerCase().equals(msgTypeName.toLowerCase())) {
+                return msgType;
+            }
+        }
+        return undefined;
+    }
+
+    public String toString() {
+        return this.name;
+    }
+
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,20 +15,18 @@
  */
 package org.onap.vfc.nfvo.emsdriver;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
-
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+public class EmsDriverConfiguration extends Configuration {
 
-public class EmsDriverConfiguration  extends Configuration{
-
-	@NotEmpty
+    @NotEmpty
     private String msbAddress;
-	
-	private String autoServiceRegister="true";
 
-	@NotEmpty
+    private String autoServiceRegister = "true";
+
+    @NotEmpty
     private String defaultName = "EmsDriver-Stranger";
 
     @JsonProperty
@@ -40,16 +38,16 @@ public class EmsDriverConfiguration  extends Configuration{
     public void setMsbAddress(String msbAddress) {
         this.msbAddress = msbAddress;
     }
-    
+
     @JsonProperty
     public String getAutoServiceRegister() {
-		return autoServiceRegister;
-	}
-    
+        return autoServiceRegister;
+    }
+
     @JsonProperty
-	public void setAutoServiceRegister(String autoServiceRegister) {
-		this.autoServiceRegister = autoServiceRegister;
-	}
+    public void setAutoServiceRegister(String autoServiceRegister) {
+        this.autoServiceRegister = autoServiceRegister;
+    }
 
     @JsonProperty
     public String getDefaultName() {

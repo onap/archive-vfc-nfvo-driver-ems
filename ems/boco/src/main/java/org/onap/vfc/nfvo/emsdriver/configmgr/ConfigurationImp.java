@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,43 +15,43 @@
  */
 package org.onap.vfc.nfvo.emsdriver.configmgr;
 
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
 
+import java.util.List;
+import java.util.Properties;
 
-public class ConfigurationImp implements ConfigurationInterface{
-	
-	private  Log log = LogFactory.getLog(ConfigurationImp.class);
-	
-	@Override
-	public List<EMSInfo> getAllEMSInfo() {
-		List<EMSInfo> emsInfos = ConfigurationManager.getAllEMSInfos();
-		return emsInfos;
-	}
-	
-	@Override
-	public CollectVo getCollectVoByEmsNameAndType(String emsName, String type) {
-		CollectVo collectVo = null;
-		
-		EMSInfo emsInfo = ConfigurationManager.getEMSInfoByName(emsName);
-		if(emsInfo != null){
-			collectVo = emsInfo.getCollectVoByType(type);
-		}else{
-			log.error("ConfigurationManager.getEMSInfoByName return null");
-		}
-		return collectVo;
-	}
 
-	@Override
-	public Properties getProperties() {
-		Properties p = ConfigurationManager.getProperties();
-		return p;
-	}
+public class ConfigurationImp implements ConfigurationInterface {
 
-	
+    private Log log = LogFactory.getLog(ConfigurationImp.class);
+
+    @Override
+    public List<EMSInfo> getAllEMSInfo() {
+        List<EMSInfo> emsInfos = ConfigurationManager.getAllEMSInfos();
+        return emsInfos;
+    }
+
+    @Override
+    public CollectVo getCollectVoByEmsNameAndType(String emsName, String type) {
+        CollectVo collectVo = null;
+
+        EMSInfo emsInfo = ConfigurationManager.getEMSInfoByName(emsName);
+        if (emsInfo != null) {
+            collectVo = emsInfo.getCollectVoByType(type);
+        } else {
+            log.error("ConfigurationManager.getEMSInfoByName return null");
+        }
+        return collectVo;
+    }
+
+    @Override
+    public Properties getProperties() {
+        Properties p = ConfigurationManager.getProperties();
+        return p;
+    }
+
+
 }

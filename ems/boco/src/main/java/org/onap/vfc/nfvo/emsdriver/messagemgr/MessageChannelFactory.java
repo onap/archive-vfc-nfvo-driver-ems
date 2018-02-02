@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,43 +19,43 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MessageChannelFactory {
-	
-	public static Map<String, MessageChannel> map = new HashMap<String, MessageChannel>();
 
-	public synchronized static MessageChannel getMessageChannel(String key,Integer size){
-		if(map.get(key) != null){
-			return map.get(key);
-		}
-		MessageChannel mc = null;
-		if(size != null && size > 0){
-			mc = new MessageChannel(size);
-		}else{
-			mc = new MessageChannel();
-		}
-		
-		map.put(key, mc);
-		return mc;
-	}
-	
-	public synchronized static MessageChannel getMessageChannel(String key){
-		if(map.get(key) != null){
-			return map.get(key);
-		}
-		MessageChannel mc = new MessageChannel();
-		
-		map.put(key, mc);
-		return mc;
-	}
-	
-	public synchronized static boolean destroyMessageChannel(String key){
-		if(map.get(key) != null){
-			map.remove(key);
-			return true;
-		}
-		return false;
-	}
-	
-	public synchronized static void clean(){
-		map.clear();
-	}
+    public static Map<String, MessageChannel> map = new HashMap<String, MessageChannel>();
+
+    public synchronized static MessageChannel getMessageChannel(String key, Integer size) {
+        if (map.get(key) != null) {
+            return map.get(key);
+        }
+        MessageChannel mc = null;
+        if (size != null && size > 0) {
+            mc = new MessageChannel(size);
+        } else {
+            mc = new MessageChannel();
+        }
+
+        map.put(key, mc);
+        return mc;
+    }
+
+    public synchronized static MessageChannel getMessageChannel(String key) {
+        if (map.get(key) != null) {
+            return map.get(key);
+        }
+        MessageChannel mc = new MessageChannel();
+
+        map.put(key, mc);
+        return mc;
+    }
+
+    public synchronized static boolean destroyMessageChannel(String key) {
+        if (map.get(key) != null) {
+            map.remove(key);
+            return true;
+        }
+        return false;
+    }
+
+    public synchronized static void clean() {
+        map.clear();
+    }
 }

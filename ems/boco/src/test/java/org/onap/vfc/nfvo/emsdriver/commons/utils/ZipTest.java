@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,39 +15,39 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.utils;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.commons.utils.Zip;
+import static org.junit.Assert.assertTrue;
 
 public class ZipTest {
-	
-	private String file = "./test.txt";
-	private String tofile1 = "./test.zip";
-	private Zip zip = null;
-	@Before
-    public void setUp() throws IOException {
-		new File(file).createNewFile();
-		zip = new Zip(file,tofile1);
-    }
-	
-	@Test
-	public void compress() throws IOException{
-		zip.compress();
-		
-		assertTrue(tofile1.endsWith(".zip"));
-	}
-	
 
-	@After
+    private String file = "./test.txt";
+    private String tofile1 = "./test.zip";
+    private Zip zip = null;
+
+    @Before
+    public void setUp() throws IOException {
+        new File(file).createNewFile();
+        zip = new Zip(file, tofile1);
+    }
+
+    @Test
+    public void compress() throws IOException {
+        zip.compress();
+
+        assertTrue(tofile1.endsWith(".zip"));
+    }
+
+
+    @After
     public void setDown() throws IOException {
-		new File(file).delete();
-		new File(tofile1).delete();
-		
+        new File(file).delete();
+        new File(tofile1).delete();
+
     }
 }

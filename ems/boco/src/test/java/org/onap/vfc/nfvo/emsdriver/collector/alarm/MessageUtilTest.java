@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,57 +15,53 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
+
 public class MessageUtilTest {
-	
-	@Test
-	public void putLoginFtp(){
-		Msg msg = MessageUtil.putLoginFtp("user", "passwd");
-		
-		assertNotNull(msg);
-	}
-	@Test
-	public void putSyncMsg(){
-		Msg msg = MessageUtil.putSyncMsg(1, 10);
-		
-		assertNotNull(msg);
-	}
-	
-	@Test
-	public void reqSyncAlarmFile(){
-		Msg msg = MessageUtil.reqSyncAlarmFile(1, "2017-10-7","2017-10-7");
-		
-		assertNotNull(msg);
-	}
-	@Test
-	public void reqSyncAlarmFileByAlarmSeq(){
-		Msg msg = MessageUtil.reqSyncAlarmFileByAlarmSeq(1, 12);
-		
-		assertNotNull(msg);
-	}
-	@Test
-	public void reqSyncAlarmFileByTime(){
-		Msg msg = MessageUtil.reqSyncAlarmFileByTime(1, "2017-10-7","2017-10-7");
-		
-		assertNotNull(msg);
-	}
-	
-	@Test
-	public void closeConnAlarmMsg(){
-		Msg msg = MessageUtil.closeConnAlarmMsg();
-		
-		assertNotNull(msg);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
+
+    @Test
+    public void putLoginFtp() {
+        Msg msg = MessageUtil.putLoginFtp("user", "passwd");
+
+        assertNotNull(msg);
+    }
+
+    @Test
+    public void putSyncMsg() {
+        Msg msg = MessageUtil.putSyncMsg(1, 10);
+
+        assertNotNull(msg);
+    }
+
+    @Test
+    public void reqSyncAlarmFile() {
+        Msg msg = MessageUtil.reqSyncAlarmFile(1, "2017-10-7", "2017-10-7");
+
+        assertNotNull(msg);
+    }
+
+    @Test
+    public void reqSyncAlarmFileByAlarmSeq() {
+        Msg msg = MessageUtil.reqSyncAlarmFileByAlarmSeq(1, 12);
+
+        assertNotNull(msg);
+    }
+
+    @Test
+    public void reqSyncAlarmFileByTime() {
+        Msg msg = MessageUtil.reqSyncAlarmFileByTime(1, "2017-10-7", "2017-10-7");
+
+        assertNotNull(msg);
+    }
+
+    @Test
+    public void closeConnAlarmMsg() {
+        Msg msg = MessageUtil.closeConnAlarmMsg();
+
+        assertNotNull(msg);
+    }
+
 
 }

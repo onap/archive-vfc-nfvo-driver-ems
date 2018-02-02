@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,23 +15,21 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-
-import javax.xml.stream.XMLStreamException;
-
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.io.InputStream;
+
 
 public class XmlUtil {
 
-	public static Document getDocument(InputStream is) throws XMLStreamException, JDOMException, IOException{
-		
-		SAXBuilder builder = new SAXBuilder();
-		Document doc = builder.build(is);
-		return doc;
-	}
+    public static Document getDocument(InputStream is) throws XMLStreamException, JDOMException, IOException {
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = builder.build(is);
+        return doc;
+    }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,74 +18,77 @@ package org.onap.vfc.nfvo.emsdriver.commons.utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public abstract class DriverThread implements Runnable{
-	protected Log log = LogFactory.getLog(this.getClass());
-	private String name = null;
-	private Thread t = null;
-	private boolean run = false;
-	private boolean end = false;
-	
-	public synchronized void start() {
-		t = new Thread(this);
-		t.start();
-	}
-	public void setName(String name) {
-		this.name = name;
-		if (t != null)
-			t.setName(name);
-	}
+public abstract class DriverThread implements Runnable {
+    protected Log log = LogFactory.getLog(this.getClass());
+    private String name = null;
+    private Thread t = null;
+    private boolean run = false;
+    private boolean end = false;
 
-	public String getName() {
-		if (t != null)
-			return t.getName();
-		return name;
-	}
-	
-	public abstract void dispose();
+    public synchronized void start() {
+        t = new Thread(this);
+        t.start();
+    }
 
-	final public void run() {
-		t = Thread.currentThread();
-		if (name != null)
-			t.setName(name);
+    public String getName() {
+        if (t != null)
+            return t.getName();
+        return name;
+    }
 
-		try {
-			dispose();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		this.setEnd(true);
-		
-	}
+    public void setName(String name) {
+        this.name = name;
+        if (t != null)
+            t.setName(name);
+    }
 
-	public boolean stop(){
-		
-		this.setRun(false);
-		while(!isEnd()){
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				log.error("InterruptedException :"+StringUtil.getStackTrace(e));
-			}
-		}
-		return end;
-	}
-	
-	public void interrupt() {
-		if (t != null)
-			t.interrupt();
-	}
+    public abstract void dispose();
 
-	public void setRun(boolean run) {
-		this.run = run;
-	}
+    final public void run() {
+        t = Thread.currentThread();
+        if (name != null)
+            t.setName(name);
 
-	public boolean isRun() {
-		return run;
-	}
-	public void setEnd(boolean end) {
-		this.end = end;
-	}
-	public boolean isEnd() {
-		return end;
-	}
+        try {
+            dispose();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        this.setEnd(true);
+
+    }
+
+    public boolean stop() {
+
+        this.setRun(false);
+        while (!isEnd()) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                log.error("InterruptedException :" + StringUtil.getStackTrace(e));
+            }
+        }
+        return end;
+    }
+
+    public void interrupt() {
+        if (t != null)
+            t.interrupt();
+    }
+
+    public boolean isRun() {
+        return run;
+    }
+
+    public void setRun(boolean run) {
+        this.run = run;
+    }
+
+    public boolean isEnd() {
+        return end;
+    }
+
+    public void setEnd(boolean end) {
+        this.end = end;
+    }
 }

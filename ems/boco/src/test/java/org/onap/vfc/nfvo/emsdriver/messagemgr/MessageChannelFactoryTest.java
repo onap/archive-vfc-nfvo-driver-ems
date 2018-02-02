@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,38 +15,36 @@
  */
 package org.onap.vfc.nfvo.emsdriver.messagemgr;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
-import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
+
+import static org.junit.Assert.assertNotNull;
 
 public class MessageChannelFactoryTest {
 
-	@Test
-	public void getMessageChannel(){
-		MessageChannel messageChannel = MessageChannelFactory.getMessageChannel("aaa", 100);
-		
-		assertNotNull(messageChannel);
-	}
-	
-	@Test
-	public void getMessageChannelTest(){
-		MessageChannel messageChannel = MessageChannelFactory.getMessageChannel("aaa");
-		
-		assertNotNull(messageChannel);
-	}
-	
-	@Test
-	public void destroyMessageChannel(){
-		boolean result = MessageChannelFactory.destroyMessageChannel("aaa");
-		
-		assertNotNull(result);
-	}
-	
-	@Test
-	public void clean(){
-		MessageChannelFactory.clean();
-		
-	}
+    @Test
+    public void getMessageChannel() {
+        MessageChannel messageChannel = MessageChannelFactory.getMessageChannel("aaa", 100);
+
+        assertNotNull(messageChannel);
+    }
+
+    @Test
+    public void getMessageChannelTest() {
+        MessageChannel messageChannel = MessageChannelFactory.getMessageChannel("aaa");
+
+        assertNotNull(messageChannel);
+    }
+
+    @Test
+    public void destroyMessageChannel() {
+        boolean result = MessageChannelFactory.destroyMessageChannel("aaa");
+
+        assertNotNull(result);
+    }
+
+    @Test
+    public void clean() {
+        MessageChannelFactory.clean();
+
+    }
 }

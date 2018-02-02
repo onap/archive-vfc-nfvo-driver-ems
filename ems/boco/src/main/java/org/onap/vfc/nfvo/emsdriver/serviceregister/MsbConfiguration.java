@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +16,14 @@
 package org.onap.vfc.nfvo.emsdriver.serviceregister;
 
 public class MsbConfiguration {
-	protected static String msbAddress;
+    protected static String msbAddress;
 
-	public static String getMsbAddress() {
-		return msbAddress;
-	}
+    public static String getMsbAddress() {
+        return msbAddress;
+    }
 
-	public static void setMsbAddress(String msbAddress) {
-		MsbConfiguration.msbAddress ="http://"+ msbAddress;
-	}
-	
+    public static void setMsbAddress(String msbAddress) {
+        MsbConfiguration.msbAddress = "http://" + msbAddress;
+    }
+
 }

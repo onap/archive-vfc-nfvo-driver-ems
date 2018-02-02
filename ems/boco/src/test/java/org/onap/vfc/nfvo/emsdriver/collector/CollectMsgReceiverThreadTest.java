@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,35 +17,35 @@ package org.onap.vfc.nfvo.emsdriver.collector;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
 
 public class CollectMsgReceiverThreadTest {
 
-	CollectMsgReceiverThread col = null;
-	@Before
-	public void setUp() {
-		col = new CollectMsgReceiverThread();
-	}
-	
-	
-	@Test
-	public void dispose() {
-		new Thread(){
-			public void run() {
-				try {
-					Thread.sleep(10);
-					col.setRun(false);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}.start();
-		col.setRun(true);
-		col.dispose();
-		col.getTaskService().stopTask();
-		col.getThread_max_num();
-		col.setThread_max_num(1);
-		
-	}
+    CollectMsgReceiverThread col = null;
+
+    @Before
+    public void setUp() {
+        col = new CollectMsgReceiverThread();
+    }
+
+
+    @Test
+    public void dispose() {
+        new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(10);
+                    col.setRun(false);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+        col.setRun(true);
+        col.dispose();
+        col.getTaskService().stopTask();
+        col.getThread_max_num();
+        col.setThread_max_num(1);
+
+    }
 }

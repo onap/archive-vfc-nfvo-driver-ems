@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation. CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
@@ -24,61 +22,63 @@ import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
 import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationInterface;
 import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationManager;
 
-public class AlarmManager  extends DriverThread{
+import java.util.ArrayList;
+import java.util.List;
 
-	private ConfigurationInterface configurationInterface;
-	
-	@Override
-	public void dispose() {
-		log.debug("AlarmManager is start");
-		//get alarm CONFIG_PROPERTIES_LOCATION
-		List<EMSInfo> emsInfos = configurationInterface.getAllEMSInfo();
-		while(isRun() && emsInfos.size() == 0){
-			emsInfos = configurationInterface.getAllEMSInfo();
-			if(emsInfos.size() == 0){
-				try {
-					Thread.sleep(1000);
-					log.debug("The configuration properties from " + ConfigurationManager.CONFIG_PROPERTIES_LOCATION + " is not load");
-				} catch (InterruptedException e) {
-				}
-			}
-		}
-		List<CollectVo> collectVos = new ArrayList<CollectVo>();
-		for(EMSInfo emsInfo : emsInfos){
-			//alarm
-			CollectVo CollectVo = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_ALARM);
-			if(CollectVo != null){
-				CollectVo.setEmsName(emsInfo.getName());
-				collectVos.add(CollectVo);
-			}else{
-				log.error("emsInfo.getCollectVoByType(EMS_RESOUCE) result CollectVo = null emsInfo ="+emsInfo);
-			}
-		}
-		
-		for(CollectVo collectVo : collectVos){
-			AlarmTaskThread alarm = new AlarmTaskThread(collectVo);
-			alarm.setName(collectVo.getIP()+collectVo.getPort());
-			alarm.start();
-			log.info("AlarmTaskThread is start");
-		}
-		
-	}
+public class AlarmManager extends DriverThread {
 
-	/**
-	 * @return the configurationInterface
-	 */
-	public ConfigurationInterface getConfigurationInterface() {
-		return configurationInterface;
-	}
+    private ConfigurationInterface configurationInterface;
 
-	/**
-	 * @param configurationInterface the configurationInterface to set
-	 */
-	public void setConfigurationInterface(
-			ConfigurationInterface configurationInterface) {
-		this.configurationInterface = configurationInterface;
-	}
-	
-	
+    @Override
+    public void dispose() {
+        log.debug("AlarmManager is start");
+        //get alarm CONFIG_PROPERTIES_LOCATION
+        List<EMSInfo> emsInfos = configurationInterface.getAllEMSInfo();
+        while (isRun() && emsInfos.size() == 0) {
+            emsInfos = configurationInterface.getAllEMSInfo();
+            if (emsInfos.size() == 0) {
+                try {
+                    Thread.sleep(1000);
+                    log.debug("The configuration properties from " + ConfigurationManager.CONFIG_PROPERTIES_LOCATION + " is not load");
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+        List<CollectVo> collectVos = new ArrayList<CollectVo>();
+        for (EMSInfo emsInfo : emsInfos) {
+            //alarm
+            CollectVo CollectVo = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_ALARM);
+            if (CollectVo != null) {
+                CollectVo.setEmsName(emsInfo.getName());
+                collectVos.add(CollectVo);
+            } else {
+                log.error("emsInfo.getCollectVoByType(EMS_RESOUCE) result CollectVo = null emsInfo =" + emsInfo);
+            }
+        }
+
+        for (CollectVo collectVo : collectVos) {
+            AlarmTaskThread alarm = new AlarmTaskThread(collectVo);
+            alarm.setName(collectVo.getIP() + collectVo.getPort());
+            alarm.start();
+            log.info("AlarmTaskThread is start");
+        }
+
+    }
+
+    /**
+     * @return the configurationInterface
+     */
+    public ConfigurationInterface getConfigurationInterface() {
+        return configurationInterface;
+    }
+
+    /**
+     * @param configurationInterface the configurationInterface to set
+     */
+    public void setConfigurationInterface(
+            ConfigurationInterface configurationInterface) {
+        this.configurationInterface = configurationInterface;
+    }
+
 
 }

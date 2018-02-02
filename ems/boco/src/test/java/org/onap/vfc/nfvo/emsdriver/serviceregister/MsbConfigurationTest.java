@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@ package org.onap.vfc.nfvo.emsdriver.serviceregister;
 import org.junit.Test;
 
 public class MsbConfigurationTest {
-	
-	@Test
-	public void testSetMsbAddress(){
-		MsbConfiguration.setMsbAddress("aaa/bnn");
-	}
-	
-	@Test
-	public void testGetMsbAddress(){
-		MsbConfiguration.getMsbAddress();
-	}
+
+    @Test
+    public void testSetMsbAddress() {
+        MsbConfiguration.setMsbAddress("aaa/bnn");
+    }
+
+    @Test
+    public void testGetMsbAddress() {
+        MsbConfiguration.getMsbAddress();
+    }
 
 }

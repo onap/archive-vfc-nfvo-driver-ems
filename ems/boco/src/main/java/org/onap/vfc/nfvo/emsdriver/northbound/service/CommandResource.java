@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
  */
 package org.onap.vfc.nfvo.emsdriver.northbound.service;
 
+import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -23,9 +24,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import com.codahale.metrics.annotation.Timed;
 
 @Path("/ems-driver")
 @Produces(MediaType.APPLICATION_JSON)
@@ -38,8 +36,8 @@ public class CommandResource {
     @ApiOperation(value = "get ems-driver Info")
     public String executeCommand(@QueryParam("command") String command) {
 
-        System.out.println("receiver command = "+command);
+        System.out.println("receiver command = " + command);
         return command;
     }
-    
+
 }

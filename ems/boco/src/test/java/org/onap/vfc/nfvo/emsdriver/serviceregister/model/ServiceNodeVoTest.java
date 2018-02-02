@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,28 +15,28 @@
  */
 package org.onap.vfc.nfvo.emsdriver.serviceregister.model;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
+
 public class ServiceNodeVoTest {
-	
-	private ServiceNodeVo serviceNodeVo;
+
+    private ServiceNodeVo serviceNodeVo;
 
     @Before
     public void setUp() {
-    	serviceNodeVo = new ServiceNodeVo();
+        serviceNodeVo = new ServiceNodeVo();
     }
-    
+
     @Test
-    public void testServiceNodeVo(){
-    	serviceNodeVo.setIp("127.0.0.1");
-    	serviceNodeVo.setPort("100");
-    	serviceNodeVo.setTtl(1);
-    	assertNotNull(serviceNodeVo.getIp());
-    	assertNotNull(serviceNodeVo.getPort());
-    	assertNotNull(serviceNodeVo.getTtl());
+    public void testServiceNodeVo() {
+        serviceNodeVo.setIp("127.0.0.1");
+        serviceNodeVo.setPort("100");
+        serviceNodeVo.setTtl(1);
+        assertNotNull(serviceNodeVo.getIp());
+        assertNotNull(serviceNodeVo.getPort());
+        assertNotNull(serviceNodeVo.getTtl());
     }
 
 }

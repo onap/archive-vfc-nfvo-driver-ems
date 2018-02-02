@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,44 +15,43 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.utils;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.commons.utils.StringUtil;
+import static org.junit.Assert.*;
 
 public class StringUtilTest {
-	
-	private Throwable throwable;
+
+    private Throwable throwable;
 
     @Before
     public void setUp() {
-    	throwable = new Exception("test");
-    }
-    
-    @Test
-    public void testGetStackTrace() {
-    	String str = StringUtil.getStackTrace(throwable);
-    	
-    	assertNotNull(str);
-    }
-    
-    @Test
-    public void testAddSlash(){
-    	String str = StringUtil.addSlash("aa/bb");
-    	
-    	assertTrue(str.endsWith(File.separator));
+        throwable = new Exception("test");
     }
 
     @Test
-    public void testIsBank(){
-    	boolean str = StringUtil.isBank("aa/bb");
-    	boolean str1 = StringUtil.isBank("");
-    	boolean str2 = StringUtil.isBank(null);
-    	assertFalse(str);
-    	assertTrue(str1);
-    	assertTrue(str2);
+    public void testGetStackTrace() {
+        String str = StringUtil.getStackTrace(throwable);
+
+        assertNotNull(str);
+    }
+
+    @Test
+    public void testAddSlash() {
+        String str = StringUtil.addSlash("aa/bb");
+
+        assertTrue(str.endsWith(File.separator));
+    }
+
+    @Test
+    public void testIsBank() {
+        boolean str = StringUtil.isBank("aa/bb");
+        boolean str1 = StringUtil.isBank("");
+        boolean str2 = StringUtil.isBank(null);
+        assertFalse(str);
+        assertTrue(str1);
+        assertTrue(str2);
     }
 }

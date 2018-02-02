@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,34 +15,32 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.model;
 
-import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
-import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
+import static org.junit.Assert.assertNotNull;
 
 public class EMSInfoTest {
-	
-	private EMSInfo EMSInfo;
+
+    private EMSInfo EMSInfo;
 
     @Before
     public void setUp() {
-    	EMSInfo = new EMSInfo();
+        EMSInfo = new EMSInfo();
     }
 
     @Test
     public void testEMSInfo() {
-    	EMSInfo.setName("emsName");
-    	Map<String,CollectVo> collectMap = new HashMap<String,CollectVo>();
-    	CollectVo collectVo = new CollectVo();
-    	collectVo.setEmsName("emsName");
-    	collectMap.put("pm", collectVo);
-    	EMSInfo.putCollectMap("pm", collectVo);
-    	
+        EMSInfo.setName("emsName");
+        Map<String, CollectVo> collectMap = new HashMap<String, CollectVo>();
+        CollectVo collectVo = new CollectVo();
+        collectVo.setEmsName("emsName");
+        collectMap.put("pm", collectVo);
+        EMSInfo.putCollectMap("pm", collectVo);
+
         assertNotNull(EMSInfo.toString());
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,94 +15,91 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
-import java.io.UnsupportedEncodingException;
-
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
+
+import java.io.UnsupportedEncodingException;
 
 
 public class Msg {
 
-	public static short StartSign = (short)0xffff;
-	
-	public final static String reqLoginAlarm = "reqLoginAlarm;user=%s;key=%s;type=%s";
-	
-	public final static String reqHeartBeat = "reqHeartBeat;reqId=%s";
-	public final static String disconnectMsg = "closeConnAlarm";
-	
-	public final static String syncAlarmMessageMsg = "reqSyncAlarmMsg;reqID=%s;alarmSeq=%s";
-	public final static String syncAlarmMessageByalarmSeq = "reqSyncAlarmFile;reqID=%s;alarmSeq=%s;syncSource=1";
-	public final static String syncActiveAlarmFileMsg = "reqSyncAlarmFile;reqID=%s;startTime=%s;endTime=%s;syncSource=0";
-	public final static String syncAlarmFileMsg = "reqSyncAlarmFile;reqID=%s;startTime=%s;endTime=%s;syncSource=1";
-	
-	
-	
-	private MsgType msgType;
-	private int timeStamp = 0;
-	private int lenOfBody = 0;
-	private String body = null;
-	public Msg(){}
-	public Msg(String body,MsgType msgType ){
-		this.body = body;
-		this.setMsgType(msgType);
-	}
-	
-	public void newBodyfromBytes(byte b[]) throws UnsupportedEncodingException{
-		this.body = new String(b,Constant.ENCODING_UTF8);
-	}
-	public static int creatMsgTimeStamp(){
-		return (int)System.currentTimeMillis()/1000;
-	}
-	
-	public int getBodyLenNow(){
-		return getBody().getBytes().length;
-	} 
-	
+    public final static String reqLoginAlarm = "reqLoginAlarm;user=%s;key=%s;type=%s";
+    public final static String reqHeartBeat = "reqHeartBeat;reqId=%s";
+    public final static String disconnectMsg = "closeConnAlarm";
+    public final static String syncAlarmMessageMsg = "reqSyncAlarmMsg;reqID=%s;alarmSeq=%s";
+    public final static String syncAlarmMessageByalarmSeq = "reqSyncAlarmFile;reqID=%s;alarmSeq=%s;syncSource=1";
+    public final static String syncActiveAlarmFileMsg = "reqSyncAlarmFile;reqID=%s;startTime=%s;endTime=%s;syncSource=0";
+    public final static String syncAlarmFileMsg = "reqSyncAlarmFile;reqID=%s;startTime=%s;endTime=%s;syncSource=1";
+    public static short StartSign = (short) 0xffff;
+    private MsgType msgType;
+    private int timeStamp = 0;
+    private int lenOfBody = 0;
+    private String body = null;
 
-	public void setTimeStamp(int timeStamp) {
-		this.timeStamp = timeStamp;
-	}
+    public Msg() {
+    }
 
-	public int getTimeStamp() {
-		return timeStamp;
-	}
+    public Msg(String body, MsgType msgType) {
+        this.body = body;
+        this.setMsgType(msgType);
+    }
 
-	public void setLenOfBody(int lenOfBody) {
-		this.lenOfBody = lenOfBody;
-	}
-	
-	public int getLenOfBody() {
-		return lenOfBody;
-	}
+    public static int creatMsgTimeStamp() {
+        return (int) System.currentTimeMillis() / 1000;
+    }
 
-	public byte[] getBodyBytes() throws UnsupportedEncodingException {
-		return getBody().getBytes(Constant.ENCODING_UTF8);
-	}
+    public void newBodyfromBytes(byte b[]) throws UnsupportedEncodingException {
+        this.body = new String(b, Constant.ENCODING_UTF8);
+    }
 
-	public void setBody(String body) {
-		this.body = body;
-	}
+    public int getBodyLenNow() {
+        return getBody().getBytes().length;
+    }
 
-	public String getBody() {
-		return body;
-	}
+    public int getTimeStamp() {
+        return timeStamp;
+    }
 
-	public void setMsgType(MsgType msgType) {
-		this.msgType = msgType;
-	}
+    public void setTimeStamp(int timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 
-	public MsgType getMsgType() {
-		return msgType;
-	}
-	
-	public String toString(boolean isRead){
-		StringBuilder sb = new StringBuilder();
-		sb.append("StartSign[").append(StartSign).append("]msgType[").append(msgType.value).append("]timeStamp[");
-		if(isRead){
-			sb.append(timeStamp).append("]lenOfBody[").append(lenOfBody);
-		}else{
-			sb.append(creatMsgTimeStamp()).append("]lenOfBody[").append(getBodyLenNow());
-		}
-		sb.append("]body[").append(body).append("]");
-		return sb.toString();
-	}
+    public int getLenOfBody() {
+        return lenOfBody;
+    }
+
+    public void setLenOfBody(int lenOfBody) {
+        this.lenOfBody = lenOfBody;
+    }
+
+    public byte[] getBodyBytes() throws UnsupportedEncodingException {
+        return getBody().getBytes(Constant.ENCODING_UTF8);
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public MsgType getMsgType() {
+        return msgType;
+    }
+
+    public void setMsgType(MsgType msgType) {
+        this.msgType = msgType;
+    }
+
+    public String toString(boolean isRead) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("StartSign[").append(StartSign).append("]msgType[").append(msgType.value).append("]timeStamp[");
+        if (isRead) {
+            sb.append(timeStamp).append("]lenOfBody[").append(lenOfBody);
+        } else {
+            sb.append(creatMsgTimeStamp()).append("]lenOfBody[").append(getBodyLenNow());
+        }
+        sb.append("]body[").append(body).append("]");
+        return sb.toString();
+    }
 }

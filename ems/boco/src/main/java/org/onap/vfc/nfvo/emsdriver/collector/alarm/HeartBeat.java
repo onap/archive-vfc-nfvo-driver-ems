@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,46 +15,48 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
-import java.io.BufferedOutputStream;
-import java.net.Socket;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 
-public class HeartBeat extends Thread{
-	public  Log log = LogFactory.getLog(HeartBeat.class);
-	private BufferedOutputStream out = null;
-	private Socket socket=null;
-	private Msg heartStr ;
-	private boolean stop = false;
-	public boolean isStop(){
-		return this.stop;
-	}
-	public void setStop(boolean stop){
-		this.stop = stop;
-	}
-	
-	public HeartBeat( Socket socket,Msg heatMessage){
-		this.socket=socket;	
-		this.heartStr = heatMessage;
-	}
-	
-	public void run(){
-		log.info("HeartBeat start heartStr:"+heartStr.toString(false));
-		this.stop=false;
-		try {
-			while(!this.isStop()){
-				out = new BufferedOutputStream(socket.getOutputStream());
-				MessageUtil.writeMsg(heartStr,out);
-				log.info("send HeartBeat heartStr:"+heartStr.toString(false));
-				Thread.sleep(Constant.ONEMINUTE);
-			}
-		} catch (Exception e) {
-			log.error("send HeartBeat fail ",e);
-		} 
-		log.info("HeartBeat thread stop");
-	}
-	
+import java.io.BufferedOutputStream;
+import java.net.Socket;
+
+public class HeartBeat extends Thread {
+    public Log log = LogFactory.getLog(HeartBeat.class);
+    private BufferedOutputStream out = null;
+    private Socket socket = null;
+    private Msg heartStr;
+    private boolean stop = false;
+
+    public HeartBeat(Socket socket, Msg heatMessage) {
+        this.socket = socket;
+        this.heartStr = heatMessage;
+    }
+
+    public boolean isStop() {
+        return this.stop;
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
+    }
+
+    public void run() {
+        log.info("HeartBeat start heartStr:" + heartStr.toString(false));
+        this.stop = false;
+        try {
+            while (!this.isStop()) {
+                out = new BufferedOutputStream(socket.getOutputStream());
+                MessageUtil.writeMsg(heartStr, out);
+                log.info("send HeartBeat heartStr:" + heartStr.toString(false));
+                Thread.sleep(Constant.ONEMINUTE);
+            }
+        } catch (Exception e) {
+            log.error("send HeartBeat fail ", e);
+        }
+        log.info("HeartBeat thread stop");
+    }
+
 
 }

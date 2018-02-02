@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,45 +21,46 @@ import java.util.concurrent.TimeUnit;
 
 
 public class MessageChannel {
-	
-	private BlockingQueue<Object> queue = null;
-	
-	public MessageChannel(int size){
-		if(size>0){
-			queue = new  LinkedBlockingQueue<Object>(size);
-		}else{
-			queue = new  LinkedBlockingQueue<Object>();
-		}
-	}
-	
-	public MessageChannel(){
-		queue = new  LinkedBlockingQueue<Object>();
-	}
-	public  void put(Object msg) throws InterruptedException{
-		while(!queue.offer(msg)){
-			queue.poll();
-		}
-	}
-	
-	public  Object get() throws InterruptedException{
-		return queue.take();
-	}
-	
-	public  Object poll() throws InterruptedException{
-		return queue.poll(100, TimeUnit.MILLISECONDS);
-	}
-	
-	public  int size(){
-		return queue.size();
-	}
 
-	public  void clear(){
-		queue.clear();
-	}
+    private BlockingQueue<Object> queue = null;
 
-	public BlockingQueue<Object> getQueue() {
-		return queue;
-	}
-	
-	
+    public MessageChannel(int size) {
+        if (size > 0) {
+            queue = new LinkedBlockingQueue<Object>(size);
+        } else {
+            queue = new LinkedBlockingQueue<Object>();
+        }
+    }
+
+    public MessageChannel() {
+        queue = new LinkedBlockingQueue<Object>();
+    }
+
+    public void put(Object msg) throws InterruptedException {
+        while (!queue.offer(msg)) {
+            queue.poll();
+        }
+    }
+
+    public Object get() throws InterruptedException {
+        return queue.take();
+    }
+
+    public Object poll() throws InterruptedException {
+        return queue.poll(100, TimeUnit.MILLISECONDS);
+    }
+
+    public int size() {
+        return queue.size();
+    }
+
+    public void clear() {
+        queue.clear();
+    }
+
+    public BlockingQueue<Object> getQueue() {
+        return queue;
+    }
+
+
 }

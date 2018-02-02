@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,46 +17,51 @@ package org.onap.vfc.nfvo.emsdriver.serviceregister.model;
 
 
 public class ServiceNodeVo {
-	private String ip;
-	private String port;
-	private int ttl;
-	
-	/**
-	 * @return the ip
-	 */
-	public String getIp() {
-		return ip;
-	}
-	/**
-	 * @param ip the ip to set
-	 */
-	public void setIp(String ip) {
-		this.ip = ip;
-	}
-	/**
-	 * @return the port
-	 */
-	public String getPort() {
-		return port;
-	}
-	/**
-	 * @param port the port to set
-	 */
-	public void setPort(String port) {
-		this.port = port;
-	}
-	/**
-	 * @return the ttl
-	 */
-	public int getTtl() {
-		return ttl;
-	}
-	/**
-	 * @param ttl the ttl to set
-	 */
-	public void setTtl(int ttl) {
-		this.ttl = ttl;
-	}
-	
-	
+    private String ip;
+    private String port;
+    private int ttl;
+
+    /**
+     * @return the ip
+     */
+    public String getIp() {
+        return ip;
+    }
+
+    /**
+     * @param ip the ip to set
+     */
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    /**
+     * @return the port
+     */
+    public String getPort() {
+        return port;
+    }
+
+    /**
+     * @param port the port to set
+     */
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    /**
+     * @return the ttl
+     */
+    public int getTtl() {
+        return ttl;
+    }
+
+    /**
+     * @param ttl the ttl to set
+     */
+    public void setTtl(int ttl) {
+        this.ttl = ttl;
+    }
+
+
 }

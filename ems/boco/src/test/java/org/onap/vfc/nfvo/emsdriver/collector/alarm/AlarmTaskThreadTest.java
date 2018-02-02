@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,65 +15,64 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
-import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
+import org.junit.Test;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.collector.alarm.AlarmTaskThread;
-import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
+import static org.junit.Assert.assertNotNull;
 
 public class AlarmTaskThreadTest {
 
-	private AlarmTaskThread taskThread;
-	private AlarmSocketServer server;
-	
-	@Before
+    private AlarmTaskThread taskThread;
+    private AlarmSocketServer server;
+
+    @Before
     public void setUp() throws IOException {
-		new Thread(){
-			public void run(){
-				server = new AlarmSocketServer();
-				server.socketServer();
-			}
-		}.start();
-		
-		CollectVo collectVo = new CollectVo();
-		collectVo.setIP("127.0.0.1");
-		collectVo.setPort("12345");
-		collectVo.setUser("user");
-		collectVo.setPassword("12345");
-		taskThread = new AlarmTaskThread(collectVo);
+        new Thread() {
+            public void run() {
+                server = new AlarmSocketServer();
+                server.socketServer();
+            }
+        }.start();
+
+        CollectVo collectVo = new CollectVo();
+        collectVo.setIP("127.0.0.1");
+        collectVo.setPort("12345");
+        collectVo.setUser("user");
+        collectVo.setPassword("12345");
+        taskThread = new AlarmTaskThread(collectVo);
     }
-	
-	@Test
-	public void build120Alarm(){
-		String alarm = "{\"alarmSeq\":495,\"alarmTitle\":\"LTE cell outage\",\"alarmStatus\":1,\"alarmType\":\"processingErrorAlarm\"}";
-		try {
-			new Thread(){
-				public void run(){
-					try {
-						Thread.sleep(3000);
-						
-						server.stop();
-						taskThread.setStop(true);
-						taskThread.close();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}.start();
-			
-			taskThread.init();
-			taskThread.receive();
-			
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		assertNotNull(alarm);
-	}
-		
+
+    @Test
+    public void build120Alarm() {
+        String alarm = "{\"alarmSeq\":495,\"alarmTitle\":\"LTE cell outage\",\"alarmStatus\":1,\"alarmType\":\"processingErrorAlarm\"}";
+        try {
+            new Thread() {
+                public void run() {
+                    try {
+                        Thread.sleep(3000);
+
+                        server.stop();
+                        taskThread.setStop(true);
+                        taskThread.close();
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+
+            taskThread.init();
+            taskThread.receive();
+
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        assertNotNull(alarm);
+    }
+
 }

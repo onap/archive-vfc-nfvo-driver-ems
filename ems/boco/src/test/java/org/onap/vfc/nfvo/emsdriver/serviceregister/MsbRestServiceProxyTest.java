@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,32 +15,34 @@
  */
 package org.onap.vfc.nfvo.emsdriver.serviceregister;
 
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.vfc.nfvo.emsdriver.serviceregister.model.MsbRegisterVo;
 
+import java.util.List;
+
 public class MsbRestServiceProxyTest {
 
-	@Before
-	public void upSet(){
-		MsbConfiguration.setMsbAddress("");
-	}
-	@Test
-	public void testRegisterService(){
-		MsbRegisterVo registerInfo = new MsbRegisterVo();
-		registerInfo.setServiceName("ems-driver");
-		registerInfo.setUrl("/api/emsdriver/v1");
-		MsbRestServiceProxy.registerService(registerInfo);
-	}
-	@Test
-	public void testunRegiserService(){
-		MsbRestServiceProxy.unRegiserService("emsdriver","v1","172.0.0.1","9999");
-	}
-	
-	@Test
-	public void testqueryService(){
-		 List<String> queryService = MsbRestServiceProxy.queryService("emsdriver","v1");
-	}
+    @Before
+    public void upSet() {
+        MsbConfiguration.setMsbAddress("");
+    }
+
+    @Test
+    public void testRegisterService() {
+        MsbRegisterVo registerInfo = new MsbRegisterVo();
+        registerInfo.setServiceName("ems-driver");
+        registerInfo.setUrl("/api/emsdriver/v1");
+        MsbRestServiceProxy.registerService(registerInfo);
+    }
+
+    @Test
+    public void testunRegiserService() {
+        MsbRestServiceProxy.unRegiserService("emsdriver", "v1", "172.0.0.1", "9999");
+    }
+
+    @Test
+    public void testqueryService() {
+        List<String> queryService = MsbRestServiceProxy.queryService("emsdriver", "v1");
+    }
 }

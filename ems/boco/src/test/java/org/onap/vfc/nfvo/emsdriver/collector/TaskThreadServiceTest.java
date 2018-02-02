@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,51 +15,49 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.collector.TaskThreadService;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
 
-public class TaskThreadServiceTest {
-	
-	private TaskThreadService taskThreadService;
-	private CollectMsg collectMsg;
-	
-	@Before
-	public void setUp() {
-		collectMsg = new CollectMsg();
-		taskThreadService = TaskThreadService.getInstance(1);
-	}
-	
-	@Test
-	public void add() {
-		taskThreadService.add(collectMsg);
-		taskThreadService.size();
-		new Thread(){
-			public void run() { 
-			    try {
-					Thread.sleep(10);
-					taskThreadService.stopTask();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}.start();
-		taskThreadService.run();
-		
-	}
+import static org.junit.Assert.assertNotNull;
 
-	@Test
-	public void receive() {
-		taskThreadService.add(collectMsg);
-		CollectMsg collectMsg = taskThreadService.receive();
-		
-		assertNotNull(collectMsg);
-	}
-	
-	
-	
+public class TaskThreadServiceTest {
+
+    private TaskThreadService taskThreadService;
+    private CollectMsg collectMsg;
+
+    @Before
+    public void setUp() {
+        collectMsg = new CollectMsg();
+        taskThreadService = TaskThreadService.getInstance(1);
+    }
+
+    @Test
+    public void add() {
+        taskThreadService.add(collectMsg);
+        taskThreadService.size();
+        new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(10);
+                    taskThreadService.stopTask();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+        taskThreadService.run();
+
+    }
+
+    @Test
+    public void receive() {
+        taskThreadService.add(collectMsg);
+        CollectMsg collectMsg = taskThreadService.receive();
+
+        assertNotNull(collectMsg);
+    }
+
+
 }

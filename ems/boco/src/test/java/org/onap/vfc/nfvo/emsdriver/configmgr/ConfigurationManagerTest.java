@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,59 +15,59 @@
  */
 package org.onap.vfc.nfvo.emsdriver.configmgr;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CrontabVo;
+import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.commons.model.CrontabVo;
-import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
-import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationManager;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class ConfigurationManagerTest {
 
-	private ConfigurationManager configurationManager;
-	@Before
+    private ConfigurationManager configurationManager;
+
+    @Before
     public void setUp() throws IOException {
-		configurationManager = new ConfigurationManager();
-		ConfigurationImpTest.readcfg();
+        configurationManager = new ConfigurationManager();
+        ConfigurationImpTest.readcfg();
     }
-	
-	@Test
-	public void getAllEMSInfos() {
-		
-		List<EMSInfo> list = ConfigurationManager.getAllEMSInfos();
-		
-		assertTrue(list.size() >0);
-	}
-	
-	@Test
-	public void getEMSInfoByName() {
-		
-		EMSInfo eMSInfo = ConfigurationManager.getEMSInfoByName("1234");
-		
-		assertNotNull(eMSInfo);
-	}
-	
-	@Test
-	public void getProperties() {
-		
-		Properties properties = ConfigurationManager.getProperties();
-		
-		assertNotNull(properties);
-	}
-	
-	@Test
-	public void readCorntab() {
-		
-		Map<String, CrontabVo> list = configurationManager.readCorntab();
-		System.out.println(list);
-		assertTrue(list.size() >0);
-	}
-	
+
+    @Test
+    public void getAllEMSInfos() {
+
+        List<EMSInfo> list = ConfigurationManager.getAllEMSInfos();
+
+        assertTrue(list.size() > 0);
+    }
+
+    @Test
+    public void getEMSInfoByName() {
+
+        EMSInfo eMSInfo = ConfigurationManager.getEMSInfoByName("1234");
+
+        assertNotNull(eMSInfo);
+    }
+
+    @Test
+    public void getProperties() {
+
+        Properties properties = ConfigurationManager.getProperties();
+
+        assertNotNull(properties);
+    }
+
+    @Test
+    public void readCorntab() {
+
+        Map<String, CrontabVo> list = configurationManager.readCorntab();
+        System.out.println(list);
+        assertTrue(list.size() > 0);
+    }
+
 }

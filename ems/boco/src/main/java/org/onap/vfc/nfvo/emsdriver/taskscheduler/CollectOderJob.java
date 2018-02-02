@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,30 +28,30 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 
-public class CollectOderJob  implements Job {
-	
-	private Log log = LogFactory.getLog(DriverThread.class);
-	private MessageChannel collectChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);
-	
-	public void execute(JobExecutionContext context) throws JobExecutionException {
-		// TODO Auto-generated method stub
-		CollectVo  collectVo = (CollectVo)context.getJobDetail().getJobDataMap().get("collectVo");
-		if(collectVo != null){
-			CollectMsg collectMsg = new CollectMsg();
-			collectMsg.setEmsName(collectVo.getEmsName());
-			collectMsg.setId(System.nanoTime());
-			collectMsg.setType(collectVo.getType());
-			
-			try {
-				collectChannel.put(collectMsg);
-			} catch (InterruptedException e) {
-				log.error("collectChannel.put is error ",e);
-			}
-		}else{
-			log.error("collectVo is null, collectMsg is not created! ");
-		}
-		
-		
-	}
+public class CollectOderJob implements Job {
+
+    private Log log = LogFactory.getLog(DriverThread.class);
+    private MessageChannel collectChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);
+
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        // TODO Auto-generated method stub
+        CollectVo collectVo = (CollectVo) context.getJobDetail().getJobDataMap().get("collectVo");
+        if (collectVo != null) {
+            CollectMsg collectMsg = new CollectMsg();
+            collectMsg.setEmsName(collectVo.getEmsName());
+            collectMsg.setId(System.nanoTime());
+            collectMsg.setType(collectVo.getType());
+
+            try {
+                collectChannel.put(collectMsg);
+            } catch (InterruptedException e) {
+                log.error("collectChannel.put is error ", e);
+            }
+        } else {
+            log.error("collectVo is null, collectMsg is not created! ");
+        }
+
+
+    }
 
 }

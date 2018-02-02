@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,42 +21,42 @@ import java.io.StringWriter;
 
 public class StringUtil {
 
-	public static String getStackTrace(Throwable t){
-		
-		StringWriter sw = null;
-		PrintWriter pw = null;
-		try {
-			sw = new StringWriter();
-			pw = new PrintWriter(sw);
-			t.printStackTrace(pw);
-			pw.flush();
-			sw.flush();
-			return sw.getBuffer().toString();
-		} catch (Exception e) {
-			
-		}finally{
-			try {
-				if(pw != null) pw.close();
-				if(sw != null) sw.close();
-			} catch (Exception e2) {
-				
-			}
-		}
-		return null;
-	}
+    public static String getStackTrace(Throwable t) {
 
-	public static String addSlash(String dirName) {
-		if (dirName.endsWith(File.separator))
-			return dirName;
-		return dirName + File.separator;
-	}
-	
-	public static  boolean isBank(String str){
-		
-		if(str == null || str.trim().length() == 0){
-			
-			return true;
-		}
-		return false;
-	}
+        StringWriter sw = null;
+        PrintWriter pw = null;
+        try {
+            sw = new StringWriter();
+            pw = new PrintWriter(sw);
+            t.printStackTrace(pw);
+            pw.flush();
+            sw.flush();
+            return sw.getBuffer().toString();
+        } catch (Exception e) {
+
+        } finally {
+            try {
+                if (pw != null) pw.close();
+                if (sw != null) sw.close();
+            } catch (Exception e2) {
+
+            }
+        }
+        return null;
+    }
+
+    public static String addSlash(String dirName) {
+        if (dirName.endsWith(File.separator))
+            return dirName;
+        return dirName + File.separator;
+    }
+
+    public static boolean isBank(String str) {
+
+        if (str == null || str.trim().length() == 0) {
+
+            return true;
+        }
+        return false;
+    }
 }

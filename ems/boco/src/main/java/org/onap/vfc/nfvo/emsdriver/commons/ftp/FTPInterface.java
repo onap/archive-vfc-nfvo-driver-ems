@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,32 +18,34 @@ package org.onap.vfc.nfvo.emsdriver.commons.ftp;
 import java.io.IOException;
 
 public interface FTPInterface {
-	
-    /** 
+
+    /**
      * login ftp
-     * @throws Exception 
-     */  
-    public  void login(String host, int port, String user, String pwd, String encode,boolean isPassiveMode, int timeout) throws Exception;
-    
-    /** 
+     *
+     * @throws Exception
+     */
+    public void login(String host, int port, String user, String pwd, String encode, boolean isPassiveMode, int timeout) throws Exception;
+
+    /**
      * close ftp
-     */  
-    public  void logout();
-    
-    /** 
+     */
+    public void logout();
+
+    /**
      * download file
-     * @return  
-     */  
-    public  boolean downloadFile(String remoteFile,String localFile);
-    
+     *
+     * @return
+     */
+    public boolean downloadFile(String remoteFile, String localFile);
+
     public boolean chdir(String dir);
-    
+
     public RemoteFile[] list();
-    
+
     public String pwd() throws IOException;
-    
+
 //    public RemoteFile[] list(String dir);
-    
+
 //    public boolean store(String localFile,String remoteFile);
-   
+
 }
