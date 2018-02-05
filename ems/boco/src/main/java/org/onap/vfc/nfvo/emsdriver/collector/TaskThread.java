@@ -1010,8 +1010,13 @@ public class TaskThread implements Runnable {
                 log.error("[" + regular + "]compile fails:" + e.getMessage());
                 e.printStackTrace();
             }
-
-            Matcher matcher = lpattern.matcher(regular);
+            Matcher matcher=null;
+            if(lpattern!=null)
+           matcher = lpattern.matcher(regular);
+            else{
+            	//define flow in case lpattern is null
+            }
+            
             if (matcher.find()) {
                 isregular = true;
                 String parpath = matcher.group(1);
