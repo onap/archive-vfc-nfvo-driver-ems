@@ -339,17 +339,12 @@ public class TaskThread implements Runnable {
 
 	public boolean processPMCsv(File tempfile) {
 
-		FileInputStream brs = null;
-		InputStreamReader isr = null;
-		BufferedReader br = null;
-
 		List<String> columnNames = new ArrayList<String>();
 		List<String> commonValues = new ArrayList<String>();
-		try {
+		try (FileInputStream brs = new FileInputStream(tempfile);
+				InputStreamReader isr = new InputStreamReader(brs, Constant.ENCODING_UTF8);
+				BufferedReader br = new BufferedReader(isr)) {
 
-			brs = new FileInputStream(tempfile);
-			isr = new InputStreamReader(brs, Constant.ENCODING_UTF8);
-			br = new BufferedReader(isr);
 			// common field
 			String commonField = br.readLine();
 			String[] fields = commonField.split("\\|", -1);
@@ -386,25 +381,12 @@ public class TaskThread implements Runnable {
 					pmResultChannel.put(resultMap);
 				} catch (InterruptedException e) {
 					log.error("collectResultChannel.put(resultMap) error ", e);
-					throw new RuntimeException(e);
 				}
 				valuelist.clear();
 			}
 		} catch (IOException e) {
 			log.error("processPMCsv is fail ", e);
 			return false;
-		} finally {
-			try {
-				if (br != null)
-					br.close();
-				if (isr != null)
-					isr.close();
-				if (brs != null)
-					brs.close();
-
-			} catch (Exception e) {
-				log.error(e);
-			}
 		}
 		return true;
 
