@@ -15,43 +15,39 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.utils;
 
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+
+import org.jdom.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
+public class XmlUtilTest {
 
-import static org.junit.Assert.assertTrue;
+	private InputStream is;
+	
+	@Before
+	public void setUp() throws Exception {
+		is = new FileInputStream("conf/spring.xml");
+		//is = new FileInputStream("/opt/gframe/jenkins/workspace/ems0206/logback.xml");
+		
+	}
 
-public class ZipTest {
-
-    private String file = "./test.txt";
-    private String file1 = "./";
-    private String tofile1 = "./test.zip";
-    private Zip zip = null;
-    private Zip zip1 = null;
-
-    @Before
-    public void setUp() throws IOException {
-        new File(file).createNewFile();
-        zip = new Zip(file, tofile1);
-        zip1 = new Zip(file1, null);
-    }
-
-    @Test
-    public void compress() throws IOException {
-    	zip1.compress();
-        zip.compress();
-        
-        assertTrue(tofile1.endsWith(".zip"));
-    }
-
-
-    @After
+	@Test
+	public void testGetDocument() throws Exception {
+		Document doc = XmlUtil.getDocument(is);
+		assertTrue(doc!=null);
+	}
+	
+	@After
     public void setDown() throws IOException {
-        new File(file).delete();
-        new File(tofile1).delete();
-
+		is.close();
     }
+
 }
