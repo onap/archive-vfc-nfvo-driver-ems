@@ -69,5 +69,10 @@ public class ConfigurationManagerTest {
         System.out.println(list);
         assertTrue(list.size() > 0);
     }
+    
+    @Test
+    public void testDispose() {
+    	configurationManager.dispose();
+    }
 
 }

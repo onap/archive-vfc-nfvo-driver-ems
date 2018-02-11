@@ -17,13 +17,15 @@ package org.onap.vfc.nfvo.emsdriver.collector;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
 
 public class CollectMsgReceiverThreadTest {
 
     CollectMsgReceiverThread col = null;
-
+    
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         col = new CollectMsgReceiverThread();
     }
 
@@ -34,6 +36,27 @@ public class CollectMsgReceiverThreadTest {
             public void run() {
                 try {
                     Thread.sleep(10);
+                    col.setRun(false);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+        col.setRun(true);
+        col.dispose();
+        col.getTaskService().stopTask();
+        col.getThread_max_num();
+        col.setThread_max_num(1);
+
+    }
+    
+    @Test
+    public void dispose1() {
+        new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(61000);
                     col.setRun(false);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
