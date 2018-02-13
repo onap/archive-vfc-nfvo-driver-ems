@@ -45,13 +45,13 @@ public class Zip {
         this.zipFilePath = zipFilePath;
         this.compressPath = compressFile.getAbsolutePath();
 
-        if (this.zipFilePath == null) {
+        /*if (this.zipFilePath == null) {
             StringBuffer zipFilePathBuf = new StringBuffer(this.compressPath);
             int bufLen = zipFilePathBuf.length();
             if (zipFilePathBuf.charAt(bufLen - 1) == '/')
                 zipFilePathBuf.deleteCharAt(bufLen - 1);
             this.zipFilePath = zipFilePathBuf.append(".zip").toString();
-        }
+        }*/
         relativeAddrIdx = this.compressPath.lastIndexOf(File.separator) + 1;
     }
 

@@ -34,15 +34,17 @@ public class StringUtilTest {
     @Test
     public void testGetStackTrace() {
         String str = StringUtil.getStackTrace(throwable);
-
+        
         assertNotNull(str);
     }
 
     @Test
     public void testAddSlash() {
         String str = StringUtil.addSlash("aa/bb");
+        String str1 = StringUtil.addSlash("aa/bb"+File.separator);
 
         assertTrue(str.endsWith(File.separator));
+        assertTrue(str1.endsWith(File.separator));
     }
 
     @Test
