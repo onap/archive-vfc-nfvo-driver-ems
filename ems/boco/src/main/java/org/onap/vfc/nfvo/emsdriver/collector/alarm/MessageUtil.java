@@ -19,8 +19,8 @@ import java.io.*;
 
 
 public class MessageUtil {
-    public static String MSG_BODY_ENCODE_CHARSET = "UTF-8";
-    public static int MSG_BUF_SIZE = 8096;
+    public static final String MSG_BODY_ENCODE_CHARSET = "UTF-8";
+    public static final int MSG_BUF_SIZE = 8096;
 
     public static Msg putLoginMsg(String user, String passwd) {
         String body = String.format(Msg.reqLoginAlarm, user, passwd, "msg");
