@@ -24,6 +24,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 import javax.net.ssl.SSLContext;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.security.GeneralSecurityException;
 
 /**
  * HttpClient
@@ -31,10 +32,10 @@ import java.security.cert.X509Certificate;
 public class HttpClientFactory {
 
 
-    public static CloseableHttpClient getSSLClientFactory() throws Exception {
+    public static CloseableHttpClient getSSLClientFactory() throws GeneralSecurityException {
 
         SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-            //信任所有
+            //Trust all
             public boolean isTrusted(X509Certificate[] chain,
                                      String authType) throws CertificateException {
                 return true;
