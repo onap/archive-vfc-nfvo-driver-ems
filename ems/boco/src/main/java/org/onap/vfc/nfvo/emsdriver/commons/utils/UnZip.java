@@ -56,7 +56,8 @@ public class UnZip {
         try {
             Enumeration<ZipEntry> e = zipFile.getEntries();
             for (ZipEntry entry; e.hasMoreElements(); ) {
-                if (!(entry = e.nextElement()).isDirectory()) {
+		entry = e.nextElement();
+                if (!entry.isDirectory()) {
                     String toPath = new StringBuffer(
                             deCompressPath).append(entry.getName()).toString();
                     toPath = toPath.replace("\\", File.separator);
