@@ -42,7 +42,7 @@ public class FTPSrv implements FTPInterface {
      * @param timeout
      * @throws Exception
      */
-    public void login(String host, int port, String user, String pwd, String encode, boolean isPassiveMode, int timeout) throws Exception {
+    public void login(String host, int port, String user, String pwd, String encode, boolean isPassiveMode, int timeout) throws IOException {
         ftpClient = new FTPClient();
 
         FTPClientConfig ftpClientConfig = new FTPClientConfig();

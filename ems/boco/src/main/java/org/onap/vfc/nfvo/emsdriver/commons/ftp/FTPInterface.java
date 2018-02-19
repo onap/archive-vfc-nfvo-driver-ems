@@ -24,7 +24,7 @@ public interface FTPInterface {
      *
      * @throws Exception
      */
-    public void login(String host, int port, String user, String pwd, String encode, boolean isPassiveMode, int timeout) throws Exception;
+    public void login(String host, int port, String user, String pwd, String encode, boolean isPassiveMode, int timeout) throws IOException;
 
     /**
      * close ftp
