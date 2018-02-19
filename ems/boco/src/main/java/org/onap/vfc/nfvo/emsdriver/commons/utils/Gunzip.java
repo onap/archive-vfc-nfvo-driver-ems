@@ -24,24 +24,22 @@ public class Gunzip {
 	 *
 	 */
 	public void unCompress(String gzFileName, String toFile) throws IOException {
-		GZIPInputStream gzIn = null;
-		FileOutputStream fileOutput = null;
-		FileInputStream gzInput = new FileInputStream(gzFileName);
 		try {
-			gzIn = new GZIPInputStream(gzInput);
+			FileInputStream gzInput = new FileInputStream(gzFileName);
+			GZIPInputStream	gzIn = new GZIPInputStream(gzInput);
 			File tofile = new File(toFile);
 			enable(tofile);
-			fileOutput = new FileOutputStream(tofile, false);
-
-			moveBytes(gzIn, fileOutput, -1, -1, 1024);
-		} finally {
-			if (gzIn != null) {
+			FileOutputStream fileOutput = new FileOutputStream(tofile, false);
+			try{
+				moveBytes(gzIn, fileOutput, -1, -1, 1024);
+			} finally {
+				gzInput.close();
 				gzIn.close();
-			}
-			if (fileOutput != null) {
 				fileOutput.close();
 			}
 
+		}catch(IOException e){
+		throw e;
 		}
 
 	}
