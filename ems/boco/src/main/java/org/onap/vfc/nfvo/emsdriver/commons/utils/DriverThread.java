@@ -52,7 +52,8 @@ public abstract class DriverThread implements Runnable {
         try {
             dispose();
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+	    log.error(" printStackTrace :", e);
         }
         this.setEnd(true);
 
