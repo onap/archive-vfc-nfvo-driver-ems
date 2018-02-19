@@ -197,7 +197,8 @@ public class ConfigurationManager extends DriverThread {
                     try {
                         Thread.sleep(60 * 1000);
                     } catch (InterruptedException e1) {
-                        e1.printStackTrace();
+                        //e1.printStackTrace();
+                        log.error("InterruptedException :" + StringUtil.getStackTrace(e1));
                     }
                     log.error("ReceiveSource exception", e);
                 }
