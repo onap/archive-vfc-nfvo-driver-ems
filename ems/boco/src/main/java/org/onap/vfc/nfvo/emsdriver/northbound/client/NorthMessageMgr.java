@@ -68,7 +68,7 @@ public class NorthMessageMgr extends DriverThread {
             //login north
             event_api_url = "http://" + event_api_url;
             log.info("AgentMain.evel_initialize start event_api_url=[" + event_api_url + "]port=[" + port + "]path=[" + path + "]"
-                    + "topic=[" + topic + "]username=[" + username + "]password=[" + password + "]level=[" + level + "]");
+                    + "topic=[" + topic + "]username=[" + username + /*"]password=[" + password +*/ "]level=[" + level + "]");
             try {
                 EVEL_ERR_CODES evecode = AgentMain.evel_initialize(event_api_url, Integer.parseInt(port),
                         path, topic,
@@ -78,9 +78,9 @@ public class NorthMessageMgr extends DriverThread {
                 log.info("AgentMain.evel_initialize sucess EVEL_ERR_CODES=" + evecode);
             } catch (Exception e) {
                 log.error("AgentMain.evel_initialize fail ", e);
-            } catch (Error e1) {
+            }/* catch (Error e1) {
                 log.error("AgentMain.evel_initialize Error ", e1);
-            }
+            }*/
         } catch (Exception e2) {
             log.error("NorthMessageMgr start fail ", e2);
         }
@@ -126,7 +126,8 @@ public class NorthMessageMgr extends DriverThread {
                     try {
                         Thread.sleep(60 * 1000);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                    //    e.printStackTrace();
+                    log.error("Unable to sleep the HB thread ", e);
                     }
                 } catch (Exception e) {
                     log.error("HeatBeatTread exception", e);
@@ -224,7 +225,8 @@ public class NorthMessageMgr extends DriverThread {
                 eventTimeD = format.parse(eventTime);
             } catch (ParseException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                //e.printStackTrace();
+                log.error("ParseException ", e);
             }
             flt.evel_start_epoch_set(eventTimeD.getTime());
             flt.evel_last_epoch_set(eventTimeD.getTime());
@@ -314,9 +316,9 @@ public class NorthMessageMgr extends DriverThread {
 
                 } catch (Exception e) {
                     log.error("CollectMessageRecv exception", e);
-                } catch (Error e) {
+                } /*catch (Error e) {
                     log.error("CollectMessageRecv Error", e);
-                }
+                }*/
             }
         }
 
