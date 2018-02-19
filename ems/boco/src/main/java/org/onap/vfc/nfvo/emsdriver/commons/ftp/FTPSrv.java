@@ -63,7 +63,7 @@ public class FTPSrv implements FTPInterface {
         }
 
         if (!ftpClient.login(user, pwd)) {
-            throw new Exception("login[" + host + "],port[" + port + "] fail, please check user and password");
+            throw new IOException("login[" + host + "],port[" + port + "] fail, please check user and password");
         }
         if (isPassiveMode) {
             ftpClient.enterLocalPassiveMode();
@@ -76,7 +76,8 @@ public class FTPSrv implements FTPInterface {
         try {
             this.ftpClient.setSoTimeout(timeout);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            log.error(" StackTrace :", e);
         }
     }
 
