@@ -46,8 +46,8 @@ public class CollectMsgReceiverThreadTest {
         col.setRun(true);
         col.dispose();
         col.getTaskService().stopTask();
-        col.getThread_max_num();
-        col.setThread_max_num(1);
+        col.getThreadMaxNum();
+        col.setThreadMaxNum(1);
 
     }
     
@@ -67,8 +67,8 @@ public class CollectMsgReceiverThreadTest {
         col.setRun(true);
         col.dispose();
         col.getTaskService().stopTask();
-        col.getThread_max_num();
-        col.setThread_max_num(1);
+        col.getThreadMaxNum();
+        col.setThreadMaxNum(1);
 
     }
 }

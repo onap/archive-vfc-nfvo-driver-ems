@@ -29,14 +29,14 @@ public class CollectMsgReceiverThread extends DriverThread {
 
     private TaskThreadService taskService;
 
-    private int thread_max_num = 100;
+    private int threadMaxNum = 100;
 
 
     @Override
     public void dispose() {
         collectChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);
 
-        taskService = TaskThreadService.getInstance(thread_max_num);
+        taskService = TaskThreadService.getInstance(threadMaxNum);
         taskService.start();
 
         while (isRun()) {
@@ -71,18 +71,18 @@ public class CollectMsgReceiverThread extends DriverThread {
 
 
     /**
-     * @return the thread_max_num
+     * @return the threadMaxNum
      */
-    public int getThread_max_num() {
-        return thread_max_num;
+    public int getThreadMaxNum() {
+        return threadMaxNum;
     }
 
 
     /**
-     * @param thread_max_num the thread_max_num to set
+     * @param threadMaxNum the threadMaxNum to set
      */
-    public void setThread_max_num(int thread_max_num) {
-        this.thread_max_num = thread_max_num;
+    public void setThreadMaxNum(int threadMaxNum) {
+        this.threadMaxNum = threadMaxNum;
     }
 
 
