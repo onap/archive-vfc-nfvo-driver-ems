@@ -15,17 +15,24 @@
  */
 package org.onap.vfc.nfvo.emsdriver.northbound.client;
 
+import java.io.FileInputStream;
+import java.util.List;
+import java.util.Properties;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
+import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
+import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationInterface;
 
 public class NorthMessageMgrTest {
 
-	/*private NorthMessageMgr northMessageMgr;
-	private ConfigurationInterface configurationInterface;*/
+	private NorthMessageMgr northMessageMgr;
+	private ConfigurationInterface configurationInterface;
 	
 	@Before
 	public void setUp() throws Exception {
-		/*configurationInterface = new ConfigurationInterface() {
+		configurationInterface = new ConfigurationInterface() {
 			
 			public Properties getProperties() {
 				Properties pps = new Properties();
@@ -49,13 +56,13 @@ public class NorthMessageMgrTest {
 		northMessageMgr = new NorthMessageMgr();
 		northMessageMgr.setConfigurationInterface(configurationInterface);
 		northMessageMgr.dispose();
-	*/
+	
 	}
 
 	@Test
 	public void test() {
-		/*Thread t = new Thread(northMessageMgr);
-		t.start();*/
+		Thread t = new Thread(northMessageMgr);
+		t.start();
 	}
 
 }
