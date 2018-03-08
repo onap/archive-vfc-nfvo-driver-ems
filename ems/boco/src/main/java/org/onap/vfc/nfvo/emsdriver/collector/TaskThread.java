@@ -56,10 +56,6 @@ public class TaskThread implements Runnable {
 
 	private SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	// private String csvpathAndFileName;
-	// private String xmlPathAndFileName;
-	// private int countNum = 0 ;
-
 	public TaskThread(CollectMsg data) {
 		this.data = data;
 	}
@@ -76,7 +72,7 @@ public class TaskThread implements Runnable {
 		try {
 			collectMsgHandle(data);
 		} catch (Exception e) {
-			log.error("", e);
+			log.error(" collectMsgHandle", e);
 		}
 	}
 
@@ -128,16 +124,11 @@ public class TaskThread implements Runnable {
 	}
 
 	public boolean processPMXml(File file) {
-
-		FileInputStream fis = null;
-		InputStreamReader isr = null;
-		XMLStreamReader reader = null;
-		try {
-			fis = new FileInputStream(file);
-			isr = new InputStreamReader(fis, Constant.ENCODING_UTF8);
+		try (	FileInputStream	fis = new FileInputStream(file);
+			InputStreamReader isr = new InputStreamReader(fis, Constant.ENCODING_UTF8)){
 
 			XMLInputFactory fac = XMLInputFactory.newInstance();
-			reader = fac.createXMLStreamReader(isr);
+			XMLStreamReader	reader = fac.createXMLStreamReader(isr);
 
 			boolean fileHeaderStart = false;
 			boolean measurementStart = false;
@@ -276,6 +267,7 @@ public class TaskThread implements Runnable {
 								pmResultChannel.put(pmDatas);
 
 							} catch (InterruptedException e) {
+								pmResultChannel.clear();	
 								log.error("collectResultChannel.put(resultMap) error ", e);
 							}
 							// System.out.println(pmDatas);
@@ -303,22 +295,11 @@ public class TaskThread implements Runnable {
 					event = reader.next();
 				}
 			}
-
+		reader.close();
 		} catch (Exception e) {
 			log.error("processPMXml is Exception ", e);
 			return false;
-		} finally {
-			try {
-				if (reader != null)
-					reader.close();
-				if (isr != null)
-					isr.close();
-				if (fis != null)
-					fis.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		} 
 		return true;
 	}
 
@@ -380,6 +361,7 @@ public class TaskThread implements Runnable {
 				try {
 					pmResultChannel.put(resultMap);
 				} catch (InterruptedException e) {
+					pmResultChannel.clear();	
 					log.error("collectResultChannel.put(resultMap) error ", e);
 				}
 				valuelist.clear();
@@ -414,153 +396,124 @@ public class TaskThread implements Runnable {
 		}
 		String csvFileName = nename + dateFormat.format(new Date()) + System.nanoTime();
 		String csvpathAndFileName = csvpath + csvFileName + ".csv";
-		BufferedOutputStream bos = null;
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(csvpathAndFileName, false);
-			bos = new BufferedOutputStream(fos, 10240);
-		} catch (FileNotFoundException e1) {
-			log.error("FileNotFoundException " + StringUtil.getStackTrace(e1));
-		}
+		try( 	FileOutputStream fos = new FileOutputStream(csvpathAndFileName, false);
+			BufferedOutputStream	bos = new BufferedOutputStream(fos, 10240)){
 
-		boolean FieldNameFlag = false;
-		boolean FieldValueFlag = false;
-		// line num
-		int countNum = 0;
-		String xmlPathAndFileName = null;
-		String localName = null;
-		String endLocalName = null;
-		String rmUID = null;
-		int index = -1;
-		ArrayList<String> names = new ArrayList<String>();// colname
-		LinkedHashMap<String, String> nameAndValue = new LinkedHashMap<String, String>();
+			boolean FieldNameFlag = false;
+			boolean FieldValueFlag = false;
+			// line num
+			int countNum = 0;
+			String xmlPathAndFileName = null;
+			String localName = null;
+			String endLocalName = null;
+			String rmUID = null;
+			int index = -1;
+			ArrayList<String> names = new ArrayList<String>();// colname
+			LinkedHashMap<String, String> nameAndValue = new LinkedHashMap<String, String>();
 
-		FileInputStream fis = null;
-		InputStreamReader isr = null;
-		XMLStreamReader reader = null;
-		try {
-			fis = new FileInputStream(tempfile);
-			isr = new InputStreamReader(fis, Constant.ENCODING_UTF8);
-			XMLInputFactory fac = XMLInputFactory.newInstance();
-			reader = fac.createXMLStreamReader(isr);
-			int event = -1;
-			boolean setcolum = true;
-			while (reader.hasNext()) {
-				try {
-					event = reader.next();
-					switch (event) {
-					case XMLStreamConstants.START_ELEMENT:
-						localName = reader.getLocalName();
-						if ("FieldName".equalsIgnoreCase(localName)) {
-							FieldNameFlag = true;
-						}
-						if (FieldNameFlag) {
-							if ("N".equalsIgnoreCase(localName)) {
-								String colName = reader.getElementText().trim();
-								names.add(colName);
-							}
-						}
-						if ("FieldValue".equalsIgnoreCase(localName)) {
-							FieldValueFlag = true;
+			try(	FileInputStream	fis = new FileInputStream(tempfile);
+				InputStreamReader isr = new InputStreamReader(fis, Constant.ENCODING_UTF8)){
 
-						}
-						if (FieldValueFlag) {
-							if (setcolum) {
-								xmlPathAndFileName = this.setColumnNames(nename, names, type);
-								setcolum = false;
-							}
-
-							if ("Object".equalsIgnoreCase(localName)) {
-								int ac = reader.getAttributeCount();
-								for (int i = 0; i < ac; i++) {
-									if ("rmUID".equalsIgnoreCase(reader.getAttributeLocalName(i))) {
-										rmUID = reader.getAttributeValue(i).trim();
+				XMLInputFactory fac = XMLInputFactory.newInstance();
+				XMLStreamReader	reader = fac.createXMLStreamReader(isr);
+				int event = -1;
+				boolean setcolum = true;
+				while (reader.hasNext()) {
+					try {
+						event = reader.next();
+						switch (event) {
+							case XMLStreamConstants.START_ELEMENT:
+								localName = reader.getLocalName();
+								if ("FieldName".equalsIgnoreCase(localName)) {
+									FieldNameFlag = true;
+								}
+								if (FieldNameFlag) {
+									if ("N".equalsIgnoreCase(localName)) {
+										String colName = reader.getElementText().trim();
+										names.add(colName);
 									}
 								}
-								nameAndValue.put("rmUID", rmUID);
-							}
-							if ("V".equalsIgnoreCase(localName)) {
-								index = Integer.parseInt(reader.getAttributeValue(0)) - 1;
-								String currentName = names.get(index);
-								String v = reader.getElementText().trim();
-								nameAndValue.put(currentName, v);
-							}
-						}
-						break;
-					case XMLStreamConstants.CHARACTERS:
-						break;
-					case XMLStreamConstants.END_ELEMENT:
-						endLocalName = reader.getLocalName();
+								if ("FieldValue".equalsIgnoreCase(localName)) {
+									FieldValueFlag = true;
 
-						if ("FieldName".equalsIgnoreCase(endLocalName)) {
-							FieldNameFlag = false;
+								}
+								if (FieldValueFlag) {
+									if (setcolum) {
+										xmlPathAndFileName = this.setColumnNames(nename, names, type);
+										setcolum = false;
+									}
+
+									if ("Object".equalsIgnoreCase(localName)) {
+										int ac = reader.getAttributeCount();
+										for (int i = 0; i < ac; i++) {
+											if ("rmUID".equalsIgnoreCase(reader.getAttributeLocalName(i))) {
+												rmUID = reader.getAttributeValue(i).trim();
+											}
+										}
+										nameAndValue.put("rmUID", rmUID);
+									}
+									if ("V".equalsIgnoreCase(localName)) {
+										index = Integer.parseInt(reader.getAttributeValue(0)) - 1;
+										String currentName = names.get(index);
+										String v = reader.getElementText().trim();
+										nameAndValue.put(currentName, v);
+									}
+								}
+								break;
+							case XMLStreamConstants.CHARACTERS:
+								break;
+							case XMLStreamConstants.END_ELEMENT:
+								endLocalName = reader.getLocalName();
+
+								if ("FieldName".equalsIgnoreCase(endLocalName)) {
+									FieldNameFlag = false;
+								}
+								if ("FieldValue".equalsIgnoreCase(endLocalName)) {
+									FieldValueFlag = false;
+								}
+								if ("Object".equalsIgnoreCase(endLocalName)) {
+									countNum++;
+									this.appendLine(nameAndValue, bos);
+									nameAndValue.clear();
+								}
+								break;
 						}
-						if ("FieldValue".equalsIgnoreCase(endLocalName)) {
-							FieldValueFlag = false;
-						}
-						if ("Object".equalsIgnoreCase(endLocalName)) {
-							countNum++;
-							this.appendLine(nameAndValue, bos);
-							nameAndValue.clear();
-						}
-						break;
+					} catch (Exception e) {
+						log.error("" + StringUtil.getStackTrace(e));
+						event = reader.next();
 					}
-				} catch (Exception e) {
-					log.error("" + StringUtil.getStackTrace(e));
-					event = reader.next();
-				}
-			}
-
-			if (bos != null) {
-				bos.close();
-				bos = null;
-			}
-			if (fos != null) {
-				fos.close();
-				fos = null;
-			}
-
-			String[] fileKeys = this.createZipFile(csvpathAndFileName, xmlPathAndFileName, nename);
-			// ftp store
-			Properties ftpPro = configurationInterface.getProperties();
-			String ip = ftpPro.getProperty("ftp_ip");
-			String port = ftpPro.getProperty("ftp_port");
-			String ftp_user = ftpPro.getProperty("ftp_user");
-			String ftp_password = ftpPro.getProperty("ftp_password");
-
-			String ftp_passive = ftpPro.getProperty("ftp_passive");
-			String ftp_type = ftpPro.getProperty("ftp_type");
-			String remoteFile = ftpPro.getProperty("ftp_remote_path");
-			this.ftpStore(fileKeys, ip, port, ftp_user, ftp_password, ftp_passive, ftp_type, remoteFile);
-			// create Message
-			String message = this.createMessage(fileKeys[1], ftp_user, ftp_password, ip, port, countNum, nename);
-
-			// set message
-			this.setMessage(message);
-		} catch (Exception e) {
-			log.error("" + StringUtil.getStackTrace(e));
-			return false;
-		} finally {
-			try {
-				if (reader != null) {
-					reader.close();
-				}
-				if (isr != null) {
-					isr.close();
-				}
-				if (fis != null) {
-					fis.close();
-				}
-				if (bos != null) {
-					bos.close();
 				}
 
-				if (fos != null) {
-					fos.close();
-				}
+				String[] fileKeys = this.createZipFile(csvpathAndFileName, xmlPathAndFileName, nename);
+				// ftp store
+				Properties ftpPro = configurationInterface.getProperties();
+				String ip = ftpPro.getProperty("ftp_ip");
+				String port = ftpPro.getProperty("ftp_port");
+				String ftp_user = ftpPro.getProperty("ftp_user");
+				String ftp_password = ftpPro.getProperty("ftp_password");
+
+				String ftp_passive = ftpPro.getProperty("ftp_passive");
+				String ftp_type = ftpPro.getProperty("ftp_type");
+				String remoteFile = ftpPro.getProperty("ftp_remote_path");
+				this.ftpStore(fileKeys, ip, port, ftp_user, ftp_password, ftp_passive, ftp_type, remoteFile);
+				// create Message
+				String message = this.createMessage(fileKeys[1], ftp_user, ftp_password, ip, port, countNum, nename);
+
+				// set message
+				this.setMessage(message);
+
+			reader.close();
 			} catch (Exception e) {
-				log.error(e);
+				log.error("" + StringUtil.getStackTrace(e));
+				return false;
 			}
+
+		} catch (FileNotFoundException e1) {
+			log.error("FileNotFoundException " + StringUtil.getStackTrace(e1));
+			return false;
+		}catch (Exception e) {
+                                log.error("" + StringUtil.getStackTrace(e));
+				return false;
 		}
 		return true;
 	}
@@ -639,7 +592,7 @@ public class TaskThread implements Runnable {
 			ftpClient.login(ip, Integer.parseInt(port), ftp_user, ftp_password, "GBK",
 					Boolean.parseBoolean(ftp_passive), 5 * 60 * 1000);
 		} catch (Exception e) {
-			log.error("login fail,ip=[" + ip + "] port=[" + port + "] user=[" + ftp_user + "]pwd=[" + ftp_password + "]"
+			log.error("login fail,ip=[" + ip + "] port=[" + port + "] user=[" + ftp_user + /*"]pwd=[" + ftp_password + */"]"
 					+ StringUtil.getStackTrace(e));
 			return;
 		}
@@ -707,7 +660,7 @@ public class TaskThread implements Runnable {
 		return xmlPathAndFileName;
 	}
 
-	private void writeDetail(String detailFileName, String str) throws Exception {
+	private void writeDetail(String detailFileName, String str) throws IOException {
 
 		try (OutputStream readOut = new FileOutputStream(new File(detailFileName), false);
 				OutputStreamWriter writer = new OutputStreamWriter(readOut)) {
@@ -781,7 +734,7 @@ public class TaskThread implements Runnable {
 		return new File(orgFile);
 	}
 
-	public File[] deZip(File file) throws Exception {
+	public File[] deZip(File file) throws IOException {
 
 		String regx = "(.*).zip";
 		Pattern p = Pattern.compile(regx);
@@ -816,11 +769,11 @@ public class TaskThread implements Runnable {
 
 		// login
 		try {
-			log.info("ftp login ,ip=[" + ip + "] port=[" + port + "] user=[" + user + "]password=[" + password + "]");
+			log.info("ftp login ,ip=[" + ip + "] port=[" + port + "] user=[" + user + /*"]password=[" + password +*/ "]");
 			ftpClient.login(ip, Integer.parseInt(port), user, password, "GBK", Boolean.parseBoolean(passivemode),
 					5 * 60 * 1000);
 		} catch (Exception e) {
-			log.error("login fail,ip=[" + ip + "] port=[" + port + "] user=[" + user + "]password=[" + password + "]"
+			log.error("login fail,ip=[" + ip + "] port=[" + port + "] user=[" + user + /*"]password=[" + password +*/ "]"
 					+ StringUtil.getStackTrace(e));
 			return fileList;
 		}
@@ -838,7 +791,8 @@ public class TaskThread implements Runnable {
 				collectPeriod = Long.parseLong(collectVo.getGranularity()) * 60;
 				log.info("collectPeriod =[" + collectPeriod + "]");
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				log.error("NumberFormatException" ,e);
 			}
 			long[] d = DateUtil.getScanScope(new Date(), collectPeriod);
 			searchExprList.add(VarExprParser.replaceVar(conpath, d[0], d[1]));
@@ -973,7 +927,7 @@ public class TaskThread implements Runnable {
 				lpattern = Pattern.compile("(.*/)<([^/]+)>(/.*)");
 			} catch (Exception e) {
 				log.error("[" + regular + "]compile fails:" + e.getMessage());
-				e.printStackTrace();
+			//	e.printStackTrace();
 			}
 			Matcher matcher = null;
 			if (lpattern != null)
