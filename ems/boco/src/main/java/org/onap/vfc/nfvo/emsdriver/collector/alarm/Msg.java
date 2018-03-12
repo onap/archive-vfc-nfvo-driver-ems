@@ -29,7 +29,7 @@ public class Msg {
     public final static String syncAlarmMessageByalarmSeq = "reqSyncAlarmFile;reqID=%s;alarmSeq=%s;syncSource=1";
     public final static String syncActiveAlarmFileMsg = "reqSyncAlarmFile;reqID=%s;startTime=%s;endTime=%s;syncSource=0";
     public final static String syncAlarmFileMsg = "reqSyncAlarmFile;reqID=%s;startTime=%s;endTime=%s;syncSource=1";
-    public static short StartSign = (short) 0xffff;
+    public final static short StartSign = (short) 0xffff;
     private MsgType msgType;
     private int timeStamp = 0;
     private int lenOfBody = 0;

@@ -124,7 +124,7 @@ public class NorthMessageMgr extends DriverThread {
                     AgentMain.evel_post_event(header);
                     log.info("HeatBeat send!");
                     try {
-                        Thread.sleep(60 * 1000);
+                        Thread.sleep(60000);//60 secs
                     } catch (Exception e) {
                     //    e.printStackTrace();
                     log.error("Unable to sleep the HB thread ", e);

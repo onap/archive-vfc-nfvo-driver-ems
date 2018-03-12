@@ -75,7 +75,7 @@ public class TaskThreadService extends Thread {
     public CollectMsg receive() {
         try {
             return queue.poll(100, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             log.error("queue.poll is error" + StringUtil.getStackTrace(e));
         }
         return null;
@@ -85,7 +85,7 @@ public class TaskThreadService extends Thread {
     public void add(CollectMsg data) {
         try {
             queue.put(data);
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             log.error("queue.put is error" + StringUtil.getStackTrace(e));
         }
     }
