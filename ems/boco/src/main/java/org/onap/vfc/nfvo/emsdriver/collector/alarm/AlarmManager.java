@@ -40,7 +40,8 @@ public class AlarmManager extends DriverThread {
                 try {
                     Thread.sleep(1000);
                     log.debug("The configuration properties from " + ConfigurationManager.CONFIG_PROPERTIES_LOCATION + " is not load");
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
+			log.error("Exception",e);
                 }
             }
         }

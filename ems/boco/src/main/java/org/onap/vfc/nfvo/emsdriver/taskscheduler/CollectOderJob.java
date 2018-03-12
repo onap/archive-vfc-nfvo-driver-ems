@@ -44,7 +44,7 @@ public class CollectOderJob implements Job {
 
             try {
                 collectChannel.put(collectMsg);
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 log.error("collectChannel.put is error ", e);
             }
         } else {

@@ -65,8 +65,8 @@ public abstract class DriverThread implements Runnable {
         while (!isEnd()) {
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException e) {
-                log.error("InterruptedException :" + StringUtil.getStackTrace(e));
+            } catch (Exception e) {
+                log.error("Exception :", e);
             }
         }
         return end;

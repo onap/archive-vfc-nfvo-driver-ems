@@ -266,7 +266,7 @@ public class TaskThread implements Runnable {
 							try {
 								pmResultChannel.put(pmDatas);
 
-							} catch (InterruptedException e) {
+							} catch (Exception e) {
 								pmResultChannel.clear();	
 								log.error("collectResultChannel.put(resultMap) error ", e);
 							}
@@ -360,7 +360,7 @@ public class TaskThread implements Runnable {
 				HashMap<String, String> resultMap = this.resultMap(columnNames, valuelist);
 				try {
 					pmResultChannel.put(resultMap);
-				} catch (InterruptedException e) {
+				} catch (Exception e) {
 					pmResultChannel.clear();	
 					log.error("collectResultChannel.put(resultMap) error ", e);
 				}

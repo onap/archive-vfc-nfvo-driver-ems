@@ -39,8 +39,9 @@ public class CollectManager extends DriverThread {
                 if (emsInfos.size() == 0) {
                     try {
                         Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                    }
+		    } catch (Exception e) {
+			    log.error("Sleep interrupted",e);
+		    }
                 }
 
             }
