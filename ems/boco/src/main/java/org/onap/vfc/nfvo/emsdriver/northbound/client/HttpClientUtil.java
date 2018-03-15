@@ -35,94 +35,62 @@ import java.io.IOException;
  */
 public class HttpClientUtil {
 
-    private static Log log = LogFactory.getLog(HttpClientUtil.class);
+    private static final Log log = LogFactory.getLog(HttpClientUtil.class);
 
     public static String doPost(String url, String json, String charset) {
-        CloseableHttpClient httpClient = null;
-        HttpPost httpPost = null;
         String result = null;
-        try {
-            httpClient = HttpClientFactory.getSSLClientFactory();
-            httpPost = new HttpPost(url);
+        try( 
+            CloseableHttpClient httpClient = HttpClientFactory.getSSLClientFactory()){
+            HttpPost httpPost = new HttpPost(url);
             if (null != json) {
                 StringEntity s = new StringEntity(json);
                 s.setContentEncoding("UTF-8");
                 s.setContentType("application/json"); // set contentType
                 httpPost.setEntity(s);
             }
-            CloseableHttpResponse response = httpClient.execute(httpPost);
-            try {
-                if (response != null) {
+            try(CloseableHttpResponse response = httpClient.execute(httpPost)){
+                if (null != response) {
                     HttpEntity resEntity = response.getEntity();
-                    if (resEntity != null) {
+                    if (null != resEntity) {
                         result = EntityUtils.toString(resEntity, charset);
                     }
                 }
             } catch (Exception e) {
                 log.error("httpClient.execute(httpPost) is fail", e);
-            } finally {
-                if (response != null) {
-                    response.close();
-                }
             }
         } catch (Exception e) {
             log.error("doPost is fail ", e);
-        } finally {
-            if (httpClient != null) {
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                }
-            }
-
-        }
-        return result;
+        } 
+	return result;
     }
 
     public static String doDelete(String url, String charset) {
-        CloseableHttpClient httpClient = null;
-        HttpDelete httpDelete = null;
         String result = null;
-        try {
-            httpClient = HttpClientFactory.getSSLClientFactory();
-            httpDelete = new HttpDelete(url);
+        try (
+            CloseableHttpClient httpClient = HttpClientFactory.getSSLClientFactory()){
+            HttpDelete httpDelete = new HttpDelete(url);
 
-            CloseableHttpResponse response = httpClient.execute(httpDelete);
-
-            try {
-                if (response != null) {
+            try(CloseableHttpResponse response = httpClient.execute(httpDelete)){
+                if (null != response) {
                     HttpEntity resEntity = response.getEntity();
-                    if (resEntity != null) {
+                    if (null != resEntity) {
                         result = EntityUtils.toString(resEntity, charset);
                     }
                 }
             } catch (Exception e) {
-                log.error("", e);
-            } finally {
-                if (response != null) {
-                    response.close();
-                }
-            }
+                log.error("doDelete Exception: ", e);
+            } 
         } catch (Exception e) {
             log.error("doDelete is fail ", e);
-        } finally {
-            if (httpClient != null) {
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                }
-            }
-        }
+        } 
         return result;
     }
 
     public static String doGet(String url, String charset) {
-        CloseableHttpClient httpClient = null;
-        HttpGet httpGet = null;
         String result = null;
-        try {
-            httpClient = HttpClients.createDefault();
-            httpGet = new HttpGet(url);
+        try (
+            CloseableHttpClient httpClient = HttpClients.createDefault()){
+            HttpGet httpGet = new HttpGet(url);
             httpGet.setHeader("Content-Type", "application/json");
             httpGet.setHeader("Accept", "application/json");
             httpGet.setHeader("X-TransactionId", "111");
@@ -131,32 +99,20 @@ public class HttpClientUtil {
             String authenticationEncoding = new String(token.encode(("AAI:AAI").getBytes()));
 
             httpGet.setHeader("Authorization", "Basic " + authenticationEncoding);
-            CloseableHttpResponse response = httpClient.execute(httpGet);
             log.info("1 doGet sucess url =" + url);
-            try {
-                if (response != null) {
+            try (CloseableHttpResponse response = httpClient.execute(httpGet)){
+                if (null != response) {
                     HttpEntity resEntity = response.getEntity();
-                    if (resEntity != null) {
+                    if (null != resEntity) {
                         result = EntityUtils.toString(resEntity, charset);
                     }
                 }
             } catch (Exception e) {
-                log.error("", e);
-            } finally {
-                if (response != null) {
-                    response.close();
-                }
-            }
+                log.error("doGet Exception: ", e);
+            } 
         } catch (Exception e) {
             log.error("doGet is fail ", e);
-        } finally {
-            if (httpClient != null) {
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                }
-            }
-        }
+        } 
         return result;
     }
 }
