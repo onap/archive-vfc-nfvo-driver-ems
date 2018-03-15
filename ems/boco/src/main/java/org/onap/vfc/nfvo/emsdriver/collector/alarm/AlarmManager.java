@@ -34,9 +34,9 @@ public class AlarmManager extends DriverThread {
         log.debug("AlarmManager is start");
         //get alarm CONFIG_PROPERTIES_LOCATION
         List<EMSInfo> emsInfos = configurationInterface.getAllEMSInfo();
-        while (isRun() && emsInfos.size() == 0) {
+        while (isRun() && emsInfos.isEmpty()) {
             emsInfos = configurationInterface.getAllEMSInfo();
-            if (emsInfos.size() == 0) {
+            if (emsInfos.isEmpty()) {
                 try {
                     Thread.sleep(1000);
                     log.debug("The configuration properties from " + ConfigurationManager.CONFIG_PROPERTIES_LOCATION + " is not load");

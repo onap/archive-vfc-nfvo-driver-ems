@@ -29,10 +29,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.lang.NumberFormatException;
 
 
 public class AlarmTaskThread extends Thread {
-    public Log log = LogFactory.getLog(AlarmTaskThread.class);
+    private static final Log log = LogFactory.getLog(AlarmTaskThread.class);
 
     private HeartBeat heartBeat = null;
 
@@ -57,77 +58,76 @@ public class AlarmTaskThread extends Thread {
         this.collectVo = collectVo;
     }
 
+    @Override
     public void run() {
-        alarmChannel = MessageChannelFactory.getMessageChannel(Constant.RESULT_CHANNEL_KEY);
         try {
+        alarmChannel = MessageChannelFactory.getMessageChannel(Constant.RESULT_CHANNEL_KEY);
             this.init();
             while (!this.isStop) {
                 String body;
-                try {
-                    body = this.receive();
-                    try {
-                        alarmChannel.put(body);
-                    } catch (InterruptedException e) {
-                        log.error(StringUtil.getStackTrace(e));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    reinit();
-                }
+		try {
+			body = this.receive();
+			alarmChannel.put(body);
+		} catch (Exception e) {
+			log.error("alarmChannel.put Exception: ",e);
+			reinit();
+		}
             }
         } catch (Exception e) {
-            log.error(StringUtil.getStackTrace(e));
+            log.error("run Exception:",e);
         }
     }
 
 
-    public String receive() throws Exception {
+    public String receive() throws IOException {
+	try{
+        	Msg msg = null;
+	        String retString = null;
 
-        Msg msg = null;
-        String retString = null;
+		while (retString == null && !this.isStop) {
+			msg = MessageUtil.readOneMsg(is);
+			log.debug("msg = " + msg.toString(true));
+			log.info("msg.getMsgType().name = " + msg.getMsgType().name);
+			if ("ackLoginAlarm".equalsIgnoreCase(msg.getMsgType().name)) {
+				log.debug("receive login ack");
+	                boolean suc = this.ackLoginAlarm(msg);
+        	        if (suc) {
 
-        while (retString == null && !this.isStop) {
-
-            msg = MessageUtil.readOneMsg(is);
-            log.debug("msg = " + msg.toString(true));
-            log.info("msg.getMsgType().name = " + msg.getMsgType().name);
-            if ("ackLoginAlarm".equalsIgnoreCase(msg.getMsgType().name)) {
-                log.debug("receive login ack");
-                boolean suc = this.ackLoginAlarm(msg);
-                if (suc) {
-
-                    if (reqId == Integer.MAX_VALUE) {
-                        reqId = 0;
-                    }
-                    reqId++;
-                    Msg msgheart = MessageUtil.putHeartBeatMsg(reqId);
-                    heartBeat = new HeartBeat(socket, msgheart);
-                    heartBeat.setName("CMCC_JT_HeartBeat");
-                    // start heartBeat
-                    heartBeat.start();
-                }
+                	    if (reqId == Integer.MAX_VALUE) reqId=0;
+	                    reqId++;
+        	            Msg msgheart = MessageUtil.putHeartBeatMsg(reqId);
+                	    heartBeat = new HeartBeat(socket, msgheart);
+	                    heartBeat.setName("CMCC_JT_HeartBeat");
+        	            // start heartBeat
+                	    heartBeat.start();
+                	}
                 retString = null;
-            }
+            	}
 
-            if ("ackHeartBeat".equalsIgnoreCase(msg.getMsgType().name)) {
-                log.debug("received heartBeat message:" + msg.getBody());
-                retString = null;
-            }
+            	if ("ackHeartBeat".equalsIgnoreCase(msg.getMsgType().name)) {
+			log.debug("received heartBeat message:" + msg.getBody());
+			retString = null;
+		}
 
 
-            if ("realTimeAlarm".equalsIgnoreCase(msg.getMsgType().name)) {
-                log.debug("received alarm message");
-                retString = msg.getBody();
-            }
+		if ("realTimeAlarm".equalsIgnoreCase(msg.getMsgType().name)) {
+			log.debug("received alarm message");
+			retString = msg.getBody();
+		}
 
-            if (retString == null) {
-                Thread.sleep(100);
-            }
-        }
+		if (retString == null) {
+			Thread.sleep(100);
+		}
+		}//while
         return retString;
-    }
 
-    public void init() throws Exception {
+	}catch(Exception e){
+		log.error("receive Error: ",e);
+		throw new IOException("receive Error: ",e);
+	}
+}
+
+    public void init() throws NumberFormatException, IOException{
         isStop = false;
         //host
         String host = collectVo.getIP();
@@ -138,30 +138,33 @@ public class AlarmTaskThread extends Thread {
         //password
         String password = collectVo.getPassword();
 
-        String read_timeout = collectVo.getRead_timeout();
-        if ((read_timeout != null) && (read_timeout.trim().length() > 0)) {
-            try {
-                this.read_timeout = Integer.parseInt(read_timeout);
-            } catch (NumberFormatException e) {
-                log.error(StringUtil.getStackTrace(e));
-            }
-        }
+	try{
+		if((collectVo.getRead_timeout()).trim().length()>0) this.read_timeout = Integer.parseInt(collectVo.getRead_timeout());
+
+	} catch (NumberFormatException e) {
+		log.error("Unable to parse read_timout: ",e);
+		throw new NumberFormatException("Unable to parse read_timout: " + e); 
+	}
+
         log.info("socket connect host=" + host + ", port=" + port);
         try {
             int portInt = Integer.parseInt(port);
             socket = new Socket(host, portInt);
 
         } catch (UnknownHostException e) {
-            throw new Exception("remote host [" + host + "]connect fail" + StringUtil.getStackTrace(e));
-        } catch (IOException e) {
-            throw new Exception("create socket IOException " + StringUtil.getStackTrace(e));
+	    log.error("remote host [" + host + "]connect fail" + StringUtil.getStackTrace(e));
+            throw new UnknownHostException("remote host [" + host + "]connect fail" + e);
+        } catch (IOException e1) {
+            log.error("create socket IOException ", e1);
+            throw new SocketException("create socket IOException " + e1);
         }
         try {
             socket.setSoTimeout(this.read_timeout);
             socket.setTcpNoDelay(true);
             socket.setKeepAlive(true);
         } catch (SocketException e) {
-            throw new Exception(" SocketException " + StringUtil.getStackTrace(e));
+            log.error(" SocketException " + StringUtil.getStackTrace(e));
+            throw new SocketException(" SocketException " + StringUtil.getStackTrace(e));
         }
         try {
             dos = new BufferedOutputStream(socket.getOutputStream());
@@ -179,36 +182,31 @@ public class AlarmTaskThread extends Thread {
             is = new BufferedInputStream(socket.getInputStream());
 
         } catch (SocketException e) {
-            throw new Exception(StringUtil.getStackTrace(e));
+            log.error("SocketException ",e);
+            throw new SocketException("SocketException " + e);
         }
     }
 
-    private boolean ackLoginAlarm(Msg msg) throws Exception {
-
+    private boolean ackLoginAlarm(Msg msg) throws IOException {
         boolean is_success = false;
-        try {
-            String loginres = msg.getBody();
-            //ackLoginAlarm; result=fail(succ); resDesc=username-error
-            String[] loginbody = loginres.split(";");
-            if (loginbody.length > 1) {
-                for (String str : loginbody) {
-                    if (str.contains("=")) {
-                        String[] paras1 = str.split("=", -1);
-                        if ("result".equalsIgnoreCase(paras1[0].trim())) {
-                            if ("succ".equalsIgnoreCase(paras1[1].trim())) {
-                                is_success = true;
-                            } else {
-                                is_success = false;
-                            }
-                        }
-                    }
-                }
-            } else {
-                log.error("login ack body Incorrect formatbody=" + loginres);
-            }
+	try {
+		String loginres = msg.getBody();
+		String[] loginbody = loginres.split(";");
+		if (loginbody.length > 1) {
+			for (String str : loginbody) {
+				if (str.contains("=")) {
+					String[] paras1 = str.split("=", -1);
+					if ("result".equalsIgnoreCase(paras1[0].trim())) {
+						if("succ".equalsIgnoreCase(paras1[1].trim())) is_success = true; 
+						else is_success = false;
+					}
+				}
+			}
+		} else {
+			log.error("login ack body Incorrect formatbody=" + loginres);
+		}
 
-
-        } catch (Exception e) {
+	} catch (Exception e) {
             log.error("pocess login ack fail" + StringUtil.getStackTrace(e));
         }
         if (is_success) {
@@ -217,7 +215,7 @@ public class AlarmTaskThread extends Thread {
             log.error("login fail receive login ack  " + msg.getBody());
             this.close();
             this.isStop = true;
-            throw new Exception("login fail quit");
+	    throw new IOException("pocess login ack fail");
         }
         return is_success;
     }
@@ -232,6 +230,7 @@ public class AlarmTaskThread extends Thread {
             try {
                 is.close();
             } catch (IOException e) {
+            log.error("Unable to close BufferedInput Stream",e);
             } finally {
                 is = null;
             }
@@ -241,6 +240,7 @@ public class AlarmTaskThread extends Thread {
             try {
                 dos.close();
             } catch (IOException e) {
+            log.error("Unable to close BufferedOutput Stream",e);
             } finally {
                 dos = null;
             }
@@ -250,6 +250,7 @@ public class AlarmTaskThread extends Thread {
             try {
                 socket.close();
             } catch (IOException e) {
+            log.error("Unable to close Socket",e);
             } finally {
                 socket = null;
             }
@@ -264,11 +265,11 @@ public class AlarmTaskThread extends Thread {
             close();
             time++;
             try {
-                Thread.sleep(1000 * 30);
+                Thread.sleep(1000L * 30);
                 init();
                 return;
             } catch (Exception e) {
-                log.error("Number [" + time + "]reconnect [" + collectVo.getIP() + "]fail");
+                log.error("Number [" + time + "]reconnect [" + collectVo.getIP() + "]fail" + e);
             }
         }
     }
