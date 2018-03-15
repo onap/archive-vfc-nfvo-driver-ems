@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_9de351d8",
+        "filename": "ems/boco/src/main/java/org/onap/vfc/nfvo/emsdriver/northbound/client/HttpClientUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 925
+      },
+      "writtenOn": "2018-03-15T06:14:01Z",
+      "side": 1,
+      "message": "For response and httpClient objects, they should be closed in the finally code block.",
+      "range": {
+        "startLine": 51,
+        "startChar": 38,
+        "endLine": 51,
+        "endChar": 46
+      },
+      "revId": "e1e5132fa576bb0a7004ff81088cc798e01843c7",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
