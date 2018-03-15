@@ -27,8 +27,8 @@ import java.util.concurrent.*;
 public class TaskThreadService extends Thread {
 
     private final ExecutorService pool;
-    public Log log = LogFactory.getLog(TaskThreadService.class);
-    private BlockingQueue<CollectMsg> queue = new LinkedBlockingQueue<CollectMsg>();
+    private static final Log log = LogFactory.getLog(TaskThreadService.class);
+    private BlockingQueue<CollectMsg> queue = new LinkedBlockingQueue<>();
     private boolean startFlag = true;
     private long timeStamp = System.currentTimeMillis();
 
@@ -39,7 +39,8 @@ public class TaskThreadService extends Thread {
     public static TaskThreadService getInstance(int poolSize) {
         return new TaskThreadService(poolSize);
     }
-
+    
+    @Override
     public void run() { // run the service
         try {
             while (startFlag) {
