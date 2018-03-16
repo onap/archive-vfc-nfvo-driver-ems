@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.lang.NumberFormatException;
 
 
 public class AlarmTaskThread extends Thread {
@@ -39,7 +38,7 @@ public class AlarmTaskThread extends Thread {
 
     private boolean isStop = false;
     private CollectVo collectVo = null;
-    private int read_timeout = Constant.READ_TIMEOUT_MILLISECOND;
+    private int readTimeout = Constant.READ_TIMEOUT_MILLISECOND;
     private int reqId;
 
     private Socket socket = null;
@@ -93,7 +92,9 @@ public class AlarmTaskThread extends Thread {
 	                boolean suc = this.ackLoginAlarm(msg);
         	        if (suc) {
 
-                	    if (reqId == Integer.MAX_VALUE) reqId=0;
+                	    if (reqId == Integer.MAX_VALUE) 
+				reqId=0;
+
 	                    reqId++;
         	            Msg msgheart = MessageUtil.putHeartBeatMsg(reqId);
                 	    heartBeat = new HeartBeat(socket, msgheart);
@@ -127,7 +128,7 @@ public class AlarmTaskThread extends Thread {
 	}
 }
 
-    public void init() throws NumberFormatException, IOException{
+    public void init() throws IOException{
         isStop = false;
         //host
         String host = collectVo.getIP();
@@ -139,7 +140,8 @@ public class AlarmTaskThread extends Thread {
         String password = collectVo.getPassword();
 
 	try{
-		if((collectVo.getRead_timeout()).trim().length()>0) this.read_timeout = Integer.parseInt(collectVo.getRead_timeout());
+		if((collectVo.getRead_timeout()).trim().length()>0) 
+			this.readTimeout = Integer.parseInt(collectVo.getRead_timeout());
 
 	} catch (NumberFormatException e) {
 		log.error("Unable to parse read_timout: ",e);
@@ -159,7 +161,7 @@ public class AlarmTaskThread extends Thread {
             throw new SocketException("create socket IOException " + e1);
         }
         try {
-            socket.setSoTimeout(this.read_timeout);
+            socket.setSoTimeout(this.readTimeout);
             socket.setTcpNoDelay(true);
             socket.setKeepAlive(true);
         } catch (SocketException e) {
@@ -188,7 +190,7 @@ public class AlarmTaskThread extends Thread {
     }
 
     private boolean ackLoginAlarm(Msg msg) throws IOException {
-        boolean is_success = false;
+        boolean ret = false;
 	try {
 		String loginres = msg.getBody();
 		String[] loginbody = loginres.split(";");
@@ -197,8 +199,9 @@ public class AlarmTaskThread extends Thread {
 				if (str.contains("=")) {
 					String[] paras1 = str.split("=", -1);
 					if ("result".equalsIgnoreCase(paras1[0].trim())) {
-						if("succ".equalsIgnoreCase(paras1[1].trim())) is_success = true; 
-						else is_success = false;
+						if("succ".equalsIgnoreCase(paras1[1].trim())) 
+							ret = true; 
+						else ret = false;
 					}
 				}
 			}
@@ -209,7 +212,7 @@ public class AlarmTaskThread extends Thread {
 	} catch (Exception e) {
             log.error("pocess login ack fail" + StringUtil.getStackTrace(e));
         }
-        if (is_success) {
+        if (ret) {
             log.info("login sucess receive login ack " + msg.getBody());
         } else {
             log.error("login fail receive login ack  " + msg.getBody());
@@ -217,7 +220,7 @@ public class AlarmTaskThread extends Thread {
             this.isStop = true;
 	    throw new IOException("pocess login ack fail");
         }
-        return is_success;
+        return ret;
     }
 
     public void close() {

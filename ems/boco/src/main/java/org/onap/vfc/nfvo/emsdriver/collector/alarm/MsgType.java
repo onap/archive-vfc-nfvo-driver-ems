@@ -53,13 +53,14 @@ public enum MsgType {
     public static MsgType getMsgTypeName(String msgTypeName) {
 
         for (MsgType msgType : MsgType.values()) {
-            if (msgType.name.toLowerCase().equals(msgTypeName.toLowerCase())) {
+            if (msgType.name.equalsIgnoreCase(msgTypeName)) {
                 return msgType;
             }
         }
         return undefined;
     }
 
+    @Override
     public String toString() {
         return this.name;
     }
