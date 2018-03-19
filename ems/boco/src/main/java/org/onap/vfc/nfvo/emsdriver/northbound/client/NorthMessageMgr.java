@@ -124,7 +124,7 @@ public class NorthMessageMgr extends DriverThread {
                     AgentMain.evel_post_event(header);
                     log.info("HeatBeat send!");
                     try {
-                        Thread.sleep(60000);//60 secs
+                        Thread.sleep(60 * 1000L);//60 secs
                     } catch (Exception e) {
                     //    e.printStackTrace();
                     log.error("Unable to sleep the HB thread ", e);
@@ -224,8 +224,6 @@ public class NorthMessageMgr extends DriverThread {
             try {
                 eventTimeD = format.parse(eventTime);
             } catch (ParseException e) {
-                // TODO Auto-generated catch block
-                //e.printStackTrace();
                 log.error("ParseException ", e);
             }
             flt.evel_start_epoch_set(eventTimeD.getTime());
@@ -340,7 +338,7 @@ public class NorthMessageMgr extends DriverThread {
             sm.evel_reporting_entity_id_set(rmUID.substring(0, 9));//
             String Dn = reMap.get("Dn");
             if (Dn != null)
-                sm.evel_reporting_entity_name_set(Dn.substring(0, Dn != null && Dn.indexOf(";") > 0 ? Dn.indexOf(";") : Dn.length()));
+                sm.evel_reporting_entity_name_set(Dn.substring(0, Dn.indexOf(";") > -1 ? Dn.indexOf(";") : Dn.length()));//0 is valid index
             else {
                 // decide  the flow if Dn is null
 

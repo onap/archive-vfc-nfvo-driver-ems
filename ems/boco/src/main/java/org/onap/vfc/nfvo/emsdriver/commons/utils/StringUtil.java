@@ -18,30 +18,25 @@ package org.onap.vfc.nfvo.emsdriver.commons.utils;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 public class StringUtil {
 
+    private static final Log log = LogFactory.getLog(StringUtil.class);
     public static String getStackTrace(Throwable t) {
 
-        StringWriter sw = null;
-        PrintWriter pw = null;
-        try {
-            sw = new StringWriter();
-            pw = new PrintWriter(sw);
+        try( 
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw)){
             t.printStackTrace(pw);
             pw.flush();
             sw.flush();
             return sw.getBuffer().toString();
         } catch (Exception e) {
-
-        } finally {
-            try {
-                if (pw != null) pw.close();
-                if (sw != null) sw.close();
-            } catch (Exception e2) {
-
-            }
-        }
+		log.error("getStackTrace : ",e);
+        } 
         return null;
     }
 

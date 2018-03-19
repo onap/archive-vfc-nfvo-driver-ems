@@ -71,16 +71,13 @@ public class ConfigurationManager extends DriverThread {
     @Override
     public void dispose() {
 
-        //this.log.debug("start loading " + cacheFilePath);
         File file = new File(CONFIG_PROPERTIES_LOCATION);
         if (!file.exists() || !file.isFile()) {
             log.error("cacheFilePath " + CONFIG_PROPERTIES_LOCATION + " not exist or is not File");
             return;
         }
-        InputStream in = null;
-        try {
+        try(InputStream in = new FileInputStream(file)){
             properties = new Properties();
-            in = new FileInputStream(file);
             properties.load(in);
             Map<String, CrontabVo> emsMap = readCorntab();
 
@@ -89,14 +86,7 @@ public class ConfigurationManager extends DriverThread {
             new ReceiveSource().start();
         } catch (Exception e) {
             log.error("read [" + file.getAbsolutePath() + "]Exception :", e);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (Exception e) {
-                }
-            }
-        }
+        } 
     }
 
     public Map<String, CrontabVo> readCorntab() {
@@ -107,11 +97,10 @@ public class ConfigurationManager extends DriverThread {
             log.debug("not exists " + path);
             return null;
         }
-        InputStream is = null;
         Map<String, CrontabVo> tmpcache = new HashMap<String, CrontabVo>();
 
-        try {
-            is = new FileInputStream(cfg);
+        try (
+            InputStream is = new FileInputStream(cfg)){
             Document doc = XmlUtil.getDocument(is);
 
             Element root = doc.getRootElement();
@@ -151,16 +140,7 @@ public class ConfigurationManager extends DriverThread {
 
         } catch (Exception e) {
             log.error("load crontab.xml is error " + StringUtil.getStackTrace(e));
-        } finally {
-            try {
-                if (is != null) {
-                    is.close();
-                    is = null;
-                }
-            } catch (Exception e2) {
-            }
-            cfg = null;
-        }
+        } 
         return tmpcache;
     }
 
@@ -189,15 +169,14 @@ public class ConfigurationManager extends DriverThread {
                         emsInfoCache.putAll(emsInfoMap);
                     }
                     if (emsInfoCache.size() > 0) {
-                        Thread.sleep(30 * 60 * 1000);
+                        Thread.sleep(30 * 60 * 1000L);
                     } else {
-                        Thread.sleep(60 * 1000);
+                        Thread.sleep(60 * 1000L);
                     }
                 } catch (Exception e) {
                     try {
-                        Thread.sleep(60 * 1000);
-                    } catch (InterruptedException e1) {
-                        //e1.printStackTrace();
+                        Thread.sleep(60 * 1000L);
+                    } catch (Exception e1) {
                         log.error("InterruptedException :" + StringUtil.getStackTrace(e1));
                     }
                     log.error("ReceiveSource exception", e);

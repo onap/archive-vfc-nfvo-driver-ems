@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class MessageChannelFactory {
 
-    public static Map<String, MessageChannel> map = new HashMap<String, MessageChannel>();
+    private static Map<String, MessageChannel> map = new HashMap<String, MessageChannel>();
 
     public synchronized static MessageChannel getMessageChannel(String key, Integer size) {
         if (map.get(key) != null) {

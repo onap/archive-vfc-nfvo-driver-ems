@@ -76,7 +76,6 @@ public class FTPSrv implements FTPInterface {
         try {
             this.ftpClient.setSoTimeout(timeout);
         } catch (Exception e) {
-            //e.printStackTrace();
             log.error(" StackTrace :", e);
         }
     }
@@ -91,6 +90,7 @@ public class FTPSrv implements FTPInterface {
                 ftpClient.logout();
                 ftpClient.disconnect();
             } catch (Exception e) {
+		    log.error(" StackTrace :", e);
             }
             ftpClient = null;
         }
@@ -116,9 +116,8 @@ public class FTPSrv implements FTPInterface {
 
     public boolean downloadFile(String remoteFile, String localFile) {
         boolean sucess = false;
-        BufferedOutputStream toLfileOutput = null;
-        try {
-            toLfileOutput = new BufferedOutputStream(new FileOutputStream(localFile));
+        try (
+            BufferedOutputStream toLfileOutput = new BufferedOutputStream(new FileOutputStream(localFile))){
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
             if (ftpClient.retrieveFile(remoteFile, toLfileOutput)) {
                 sucess = true;
@@ -128,13 +127,7 @@ public class FTPSrv implements FTPInterface {
         } catch (Exception ioe) {
             sucess = false;
             log.error("downloadFile remoteFile =" + remoteFile + " is fail ", ioe);
-        } finally {
-            if (toLfileOutput != null)
-                try {
-                    toLfileOutput.close();
-                } catch (IOException e) {
-                }
-        }
+        } 
 
         return sucess;
     }
@@ -166,32 +159,6 @@ public class FTPSrv implements FTPInterface {
         String returnValue = ftpClient.printWorkingDirectory();
         return returnValue;
     }
-
-//	public boolean store(String localFile, String remoteFile) {
-//		
-//		boolean sucess = false;
-//		FileInputStream lfileInput = null;
-//		try {
-//			lfileInput = new FileInputStream(localFile);
-//			ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-//			
-//			if (ftpClient.storeFile(remoteFile, lfileInput)){
-//				sucess = true;
-//			}else{
-//				sucess = false;
-//			}
-//		} catch (Exception ioe) {
-//			sucess = false;
-//			log.error("store localFile = "+localFile+" is fail "+StringUtil.getStackTrace(ioe));
-//		} finally {
-//			if (lfileInput != null)
-//				try {
-//					lfileInput.close();
-//				} catch (IOException e) {
-//				}
-//		}
-//		return sucess;
-//	}
 
 }
 

@@ -106,7 +106,7 @@ public class TaskThread implements Runnable {
 			if (Constant.COLLECT_TYPE_CM.equalsIgnoreCase(collectVo.getType())) {
 				parseResult = processCMXml(tempfile, nename, "CM");
 			} else {
-				if (unfileName.indexOf(".csv") > 0) {
+				if (unfileName.indexOf(".csv") > -1) {//changed to -1 for coding practice as having ".csv" must have some some legal name
 					parseResult = processPMCsv(tempfile);
 				} else {
 					parseResult = processPMXml(tempfile);

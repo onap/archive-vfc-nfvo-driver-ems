@@ -52,8 +52,7 @@ public class UnZip {
      *
      */
     public void deCompress() throws IOException {
-        ZipFile zipFile = new ZipFile(zipFilePath);
-        try {
+        try(ZipFile zipFile = new ZipFile(zipFilePath)){
             Enumeration<ZipEntry> e = zipFile.getEntries();
             for (ZipEntry entry; e.hasMoreElements(); ) {
 		entry = e.nextElement();
@@ -66,10 +65,8 @@ public class UnZip {
             }
         } catch (IOException e) {
             throw e;
-        } finally {
-            zipFile.close();
-        }
-    }
+        }  
+   }
 
     /**
      *
