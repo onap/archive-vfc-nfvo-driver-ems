@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.Gzip;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
 import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
 
 import java.io.File;
@@ -39,7 +40,8 @@ public class TaskThreadTest {
     @Before
     public void setUp() throws IOException {
         taskThread = new TaskThread();
-        taskThread.pmResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_PM_CHANNEL_KEY);
+        MessageChannel pmResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_PM_CHANNEL_KEY);
+        taskThread.setPmResultChannel(pmResultChannel);
         Gzip gzip = new Gzip();
         gzip.compress(csvPath, gzPath);
     }
@@ -65,7 +67,12 @@ public class TaskThreadTest {
         File file = new File(xmlPath);
         boolean re = taskThread.processPMXml(file);
         assertTrue(re);
-        System.out.println(taskThread.pmResultChannel.size());
+        MessageChannel pmResultChannel = taskThread.getPmResultChannel();
+        if(null!=pmResultChannel){
+            System.out.println(pmResultChannel.size());
+        }else{
+        	System.out.println("pmResultChannel is null");
+        }
     }
 
     @Test

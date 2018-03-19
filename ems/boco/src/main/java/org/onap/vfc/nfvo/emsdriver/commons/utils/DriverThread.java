@@ -60,7 +60,6 @@ public abstract class DriverThread implements Runnable {
     }
 
     public boolean stop() {
-
         this.setRun(false);
         while (!isEnd()) {
             try {

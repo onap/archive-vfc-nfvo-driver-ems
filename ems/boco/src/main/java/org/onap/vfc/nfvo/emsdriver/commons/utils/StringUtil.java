@@ -21,7 +21,6 @@ import java.io.StringWriter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 public class StringUtil {
 
     private static final Log log = LogFactory.getLog(StringUtil.class);
@@ -47,7 +46,6 @@ public class StringUtil {
     }
 
     public static boolean isBank(String str) {
-
         if (str == null || str.trim().length() == 0) {
 
             return true;

@@ -26,22 +26,16 @@ import java.util.zip.ZipOutputStream;
 public class Zip {
     protected int compressDirectoryCount = 0;
     protected int compressFileCount = 0;
-
     protected int relativeAddrIdx = 0;
     protected int compressLevel = 6;
     protected String zipFilePath = null;
     protected String compressPath = null;
-
     protected ZipOutputStream zipOutput = null;
 
-    /**
-     *
-     */
     public Zip(String compressPath, String zipFilePath) throws IOException {
         File compressFile = new File(compressPath);
         if (!compressFile.exists())
             throw new IOException("the file or directory '" + compressPath + "' not found!");
-
         this.zipFilePath = zipFilePath;
         this.compressPath = compressFile.getAbsolutePath();
 
@@ -55,12 +49,8 @@ public class Zip {
         relativeAddrIdx = this.compressPath.lastIndexOf(File.separator) + 1;
     }
 
-    /**
-     *
-     */
     public void compress() throws IOException {
         File theFile = new File(zipFilePath);
-
         if (!theFile.exists()) {
             String parentPath = theFile.getParent();
             if (parentPath != null)
@@ -87,8 +77,6 @@ public class Zip {
                     compressDirectory(listFiles[i]);
                 }
         }
-
-
     }
 
     protected void compressFile(String absolutePath) throws IOException {

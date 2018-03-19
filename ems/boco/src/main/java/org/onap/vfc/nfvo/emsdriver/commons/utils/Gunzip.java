@@ -20,9 +20,6 @@ import java.util.zip.GZIPInputStream;
 
 public class Gunzip {
 
-	/**
-	 *
-	 */
 	public void unCompress(String gzFileName, String toFile) throws IOException {
 		try (	FileInputStream gzInput = new FileInputStream(gzFileName);
 			GZIPInputStream	gzIn = new GZIPInputStream(gzInput)){

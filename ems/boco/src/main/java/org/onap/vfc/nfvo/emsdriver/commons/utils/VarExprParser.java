@@ -34,7 +34,7 @@ final public class VarExprParser {
         if (str.indexOf("${") == -1)
             return str;
 
-        // 支持原系统变量
+        // support original system variable
         str = str.replace("${s_year}", "${SCAN_START_TIME,yyyy}");
         str = str.replace("${s_mon}", "${SCAN_START_TIME,MM}");
         str = str.replace("${s_day}", "${SCAN_START_TIME,dd}");
@@ -109,16 +109,13 @@ final public class VarExprParser {
     }
 
     /**
-     * 仅支持该两个变量替换  省得正则匹配慢
-     *
+     * Support two variable substitutions
      * @param result
      * @param scan_start_time
      * @param scan_stop_time
      * @return
      */
-    public static String replaceTimeVar(String result,
-                                        String scan_start_time, String scan_stop_time) {
-
+    public static String replaceTimeVar(String result,String scan_start_time, String scan_stop_time) {
         boolean isReplace = false;
         if (result.indexOf("${SCAN_ST") != -1) {
             isReplace = true;

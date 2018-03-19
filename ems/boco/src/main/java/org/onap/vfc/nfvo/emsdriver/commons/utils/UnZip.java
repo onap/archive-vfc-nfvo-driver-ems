@@ -29,9 +29,6 @@ public class UnZip {
     protected String deCompressPath = null;
     protected String zipFilePath = null;
 
-    /**
-     *
-     */
     public UnZip(String zipFilePath, String toPath) throws IOException {
         File zipFile = new File(
                 new File(zipFilePath).getAbsolutePath());
@@ -48,9 +45,6 @@ public class UnZip {
             deCompressPath = deCompressPath + File.separator;
     }
 
-    /**
-     *
-     */
     public void deCompress() throws IOException {
         try(ZipFile zipFile = new ZipFile(zipFilePath)){
             Enumeration<ZipEntry> e = zipFile.getEntries();
@@ -68,9 +62,6 @@ public class UnZip {
         }  
    }
 
-    /**
-     *
-     */
     protected void deCompressFile(InputStream input, String toPath)
             throws IOException {
         byte byteBuf[] = new byte[2048];

@@ -22,7 +22,6 @@ import java.util.Date;
 
 public class DateUtil {
 
-
     public static long[] getScanScope(Date fireTime, long collectPeriod) {
         Calendar fire = Calendar.getInstance();
         long start = 0L;

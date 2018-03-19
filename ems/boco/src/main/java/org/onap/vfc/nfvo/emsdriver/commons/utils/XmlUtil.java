@@ -27,7 +27,6 @@ import java.io.InputStream;
 public class XmlUtil {
 
     public static Document getDocument(InputStream is) throws XMLStreamException, JDOMException, IOException {
-
         SAXBuilder builder = new SAXBuilder();
         Document doc = builder.build(is);
         return doc;

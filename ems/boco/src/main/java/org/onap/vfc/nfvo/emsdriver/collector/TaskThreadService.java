@@ -25,7 +25,6 @@ import java.util.concurrent.*;
 
 
 public class TaskThreadService extends Thread {
-
     private final ExecutorService pool;
     private static final Log log = LogFactory.getLog(TaskThreadService.class);
     private BlockingQueue<CollectMsg> queue = new LinkedBlockingQueue<>();

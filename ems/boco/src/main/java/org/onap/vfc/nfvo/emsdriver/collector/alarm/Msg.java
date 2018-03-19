@@ -21,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 
 
 public class Msg {
-
     public final static String reqLoginAlarm = "reqLoginAlarm;user=%s;key=%s;type=%s";
     public final static String reqHeartBeat = "reqHeartBeat;reqId=%s";
     public final static String disconnectMsg = "closeConnAlarm";

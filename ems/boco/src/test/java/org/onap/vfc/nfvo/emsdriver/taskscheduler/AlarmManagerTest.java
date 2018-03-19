@@ -19,32 +19,34 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.vfc.nfvo.emsdriver.collector.alarm.AlarmManager;
 import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationImp;
 import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationInterface;
 
-public class CollectManagerTest {
+public class AlarmManagerTest {
 
-	private CollectManager collectManager;
+	private AlarmManager alarmManager;
 	private ConfigurationInterface configurationInterface;
 	
 	
 	@Before
 	public void setUp() throws Exception {
 		configurationInterface = new ConfigurationImp();
-		collectManager = new CollectManager();
-		collectManager.setConfigurationInterface(configurationInterface);
-		collectManager.dispose();
+		
+		alarmManager = new AlarmManager();
+		alarmManager.setConfigurationInterface(configurationInterface);
+		alarmManager.dispose();
 	}
 
 	@Test
 	public void test() {
-		Thread t = new Thread(collectManager);
+		Thread t = new Thread(alarmManager);
 		t.start();
 	}
 
 	@Test
 	public void testGetConfigurationInteface(){
-		ConfigurationInterface confInteface = collectManager.getConfigurationInterface();
+		ConfigurationInterface confInteface = alarmManager.getConfigurationInterface();
 		assertEquals(configurationInterface,confInteface);
 	}
 }
