@@ -23,7 +23,7 @@ import java.io.BufferedOutputStream;
 import java.net.Socket;
 
 public class HeartBeat extends Thread {
-    public Log log = LogFactory.getLog(HeartBeat.class);
+    private static final Log log = LogFactory.getLog(HeartBeat.class);
     private BufferedOutputStream out = null;
     private Socket socket = null;
     private Msg heartStr;
@@ -42,6 +42,7 @@ public class HeartBeat extends Thread {
         this.stop = stop;
     }
 
+    @Override
     public void run() {
         log.info("HeartBeat start heartStr:" + heartStr.toString(false));
         this.stop = false;

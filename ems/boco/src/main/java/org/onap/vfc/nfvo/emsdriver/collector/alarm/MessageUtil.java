@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
 import java.io.*;
@@ -24,78 +25,61 @@ public class MessageUtil {
 
     public static Msg putLoginMsg(String user, String passwd) {
         String body = String.format(Msg.reqLoginAlarm, user, passwd, "msg");
-        Msg msg = new Msg(body, MsgType.reqLoginAlarm);
-
-
-        return msg;
+        return new Msg(body, MsgType.reqLoginAlarm);
 
     }
 
     public static Msg putLoginFtp(String user, String passwd) {
         String body = String.format(Msg.reqLoginAlarm, user, passwd, "ftp");
-        Msg msg = new Msg(body, MsgType.reqLoginAlarm);
-
-
-        return msg;
+	return new Msg(body, MsgType.reqLoginAlarm);
 
     }
 
     public static Msg putSyncMsg(int reqId, int alarmSeq) {
         String body = String.format(Msg.syncAlarmMessageMsg, reqId, alarmSeq);
-        Msg msg = new Msg(body, MsgType.reqSyncAlarmMsg);
-
-
-        return msg;
+        return new Msg(body, MsgType.reqSyncAlarmMsg);
 
     }
 
     public static Msg putHeartBeatMsg(int reqId) {
         String body = String.format(Msg.reqHeartBeat, reqId);
-        Msg msg = new Msg(body, MsgType.reqHeartBeat);
-        return msg;
+        return new Msg(body, MsgType.reqHeartBeat);
 
     }
 
     public static Msg reqSyncAlarmFile(int reqId, String startTime, String endTime) {
         String body = String.format(Msg.syncActiveAlarmFileMsg, reqId, startTime, endTime);
-        Msg msg = new Msg(body, MsgType.reqSyncAlarmFile);
-        return msg;
+        return new Msg(body, MsgType.reqSyncAlarmFile);
     }
 
     public static Msg reqSyncAlarmFileByAlarmSeq(int reqId, int alarmSeq) {
         String body = String.format(Msg.syncAlarmMessageByalarmSeq, reqId, alarmSeq);
-        Msg msg = new Msg(body, MsgType.reqSyncAlarmFile);
-        return msg;
+        return new Msg(body, MsgType.reqSyncAlarmFile);
     }
 
     public static Msg reqSyncAlarmFileByTime(int reqId, String startTime, String endTime) {
         String body = String.format(Msg.syncAlarmFileMsg, reqId, startTime, endTime);
-        Msg msg = new Msg(body, MsgType.reqSyncAlarmFile);
-        return msg;
+        return new Msg(body, MsgType.reqSyncAlarmFile);
     }
 
     public static Msg closeConnAlarmMsg() {
         String body = String.format(Msg.disconnectMsg);
-        Msg msg = new Msg(body, MsgType.closeConnAlarm);
-        return msg;
+        return new Msg(body, MsgType.closeConnAlarm);
     }
 
-    public static Msg readOneMsg(BufferedInputStream is) throws Exception {
+    public static Msg readOneMsg(BufferedInputStream is) throws IOException {
         byte[] inputB = new byte[9];
 
-        ByteArrayInputStream bais = null;
-        DataInputStream ois = null;
-
         Msg msg = new Msg();
-        try {
+        try( 
             DataInputStream dis = new DataInputStream(is);
+            ByteArrayInputStream bais = new ByteArrayInputStream(inputB);
+            DataInputStream ois = new DataInputStream(bais)){
             dis.readFully(inputB);
-            bais = new ByteArrayInputStream(inputB);
-            ois = new DataInputStream(bais);
-            short StartSign = ois.readShort();
-            if (StartSign != Msg.StartSign) {
+            short startSign = ois.readShort();
+            if (startSign != Msg.StartSign) {
                 throw new Exception("start sign is [" + Msg.StartSign
-                        + "],not is [" + StartSign + "]");
+                        + "],not is [" + startSign + "]");
             }
             int msgType = ois.readByte();
             msg.setMsgType(MsgType.getMsgTypeValue(msgType));
@@ -107,26 +91,16 @@ public class MessageUtil {
             dis.readFully(b);
             msg.newBodyfromBytes(b);
         } catch (Exception e) {
-            throw new Exception(e);
-        } finally {
-            if (bais != null) {
-                bais.close();
-            }
-            if (ois != null) {
-                ois.close();
-            }
-        }
+            throw new IOException("readOneMsg",e);
+        } 
 
         return msg;
     }
 
-    public static void writeMsg(Msg msg, BufferedOutputStream dout) throws Exception {
-
-        ByteArrayOutputStream byteOutStream = null;
-        DataOutputStream oos = null;
-        try {
-            byteOutStream = new ByteArrayOutputStream(9);
-            oos = new DataOutputStream(byteOutStream);
+    public static void writeMsg(Msg msg, BufferedOutputStream dout) throws IOException {
+        try( 
+            ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream(9);
+            DataOutputStream oos = new DataOutputStream(byteOutStream)){
             oos.writeShort(Msg.StartSign);
             oos.writeByte(msg.getMsgType().value);
             oos.writeInt(Msg.creatMsgTimeStamp());
@@ -137,15 +111,8 @@ public class MessageUtil {
             dout.write(msg.getBodyBytes());
             dout.flush();
         } catch (Exception e) {
-            throw new Exception(e);
-        } finally {
-            if (oos != null) {
-                oos.close();
-            }
-            if (byteOutStream != null) {
-                byteOutStream.close();
-            }
-        }
+            throw new IOException("writeMsg",e);
+        } 
 
     }
 
