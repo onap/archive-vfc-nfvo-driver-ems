@@ -49,7 +49,6 @@ public class FTPSrv implements FTPInterface {
         ftpClientConfig.setServerTimeZoneId(TimeZone.getDefault().getID());
         this.ftpClient.setControlEncoding("GBK");
         this.ftpClient.configure(ftpClientConfig);
-//		ftpClient.setParserFactory(new ExtendsDefaultFTPFileEntryParserFactory());
 
         if (encode != null && encode.length() > 0) {
             ftpClient.setControlEncoding(encode);
@@ -138,7 +137,7 @@ public class FTPSrv implements FTPInterface {
         String currdir = null;
         try {
             currdir = ftpClient.printWorkingDirectory();
-            if (currdir.endsWith("/") == false) {
+            if (!currdir.endsWith("/")) {
                 currdir = currdir + "/";
             }
             FTPFile[] rfileList = null;
@@ -156,8 +155,7 @@ public class FTPSrv implements FTPInterface {
 
     @Override
     public String pwd() throws IOException {
-        String returnValue = ftpClient.printWorkingDirectory();
-        return returnValue;
+        return ftpClient.printWorkingDirectory();
     }
 
 }
