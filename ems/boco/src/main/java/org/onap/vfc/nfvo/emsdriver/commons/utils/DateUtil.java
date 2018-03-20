@@ -24,8 +24,8 @@ public class DateUtil {
 
     public static long[] getScanScope(Date fireTime, long collectPeriod) {
         Calendar fire = Calendar.getInstance();
-        long start = 0L;
-        long end = 0L;
+        long start ;
+        long end ;
         fire.setTime(fireTime);
         fire.set(Calendar.SECOND, 0);
         fire.set(Calendar.MILLISECOND, 0);
@@ -50,7 +50,7 @@ public class DateUtil {
             if (collectPeriod > 0) {
                 end = fire.getTimeInMillis() - (fire.getTimeInMillis() + 8 * 60 * 60 * 1000) % (collectPeriod * 1000);
             } else {
-                return null;
+                return new long[0];
             }
             start = end - collectPeriod * 1000;
         }
@@ -58,7 +58,7 @@ public class DateUtil {
         return new long[]{start, end};
     }
 
-    public static String TimeString(String timeString) {
+    public static String getTimeString(String timeString) {
         if (timeString == null) {
             return "";
         } else {
@@ -71,13 +71,18 @@ public class DateUtil {
     }
 
     public static String addTime(String srcTimeString, String period) throws ParseException {
-        String finaldate = TimeString(srcTimeString);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = sdf.parse(finaldate);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MINUTE, Integer.valueOf(period));
-        return sdf.format(calendar.getTime());
+	try{
+        	String finaldate = getTimeString(srcTimeString);
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        	Date date = sdf.parse(finaldate);
+	        Calendar calendar = Calendar.getInstance();
+        	calendar.setTime(date);
+	        calendar.add(Calendar.MINUTE, Integer.valueOf(period));
+        	return sdf.format(calendar.getTime());
+	}catch( ParseException e){
+		throw e;
+	}
+	
     }
 
 }

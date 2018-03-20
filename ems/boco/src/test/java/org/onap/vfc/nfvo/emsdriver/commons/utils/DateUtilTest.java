@@ -62,9 +62,9 @@ public class DateUtilTest {
 	
 	@Test
 	public void testTimeString() {
-		String timeString = DateUtil.TimeString(null);
-		String timeString1 = DateUtil.TimeString("20180206T");
-		String timeString2 = DateUtil.TimeString("20180206T+12");
+		String timeString = DateUtil.getTimeString(null);
+		String timeString1 = DateUtil.getTimeString("20180206T");
+		String timeString2 = DateUtil.getTimeString("20180206T+12");
 		assertNotNull(timeString);
 		assertNotNull(timeString1);
 		assertNotNull(timeString2);
