@@ -77,7 +77,7 @@ public class MessageUtil {
             dis.readFully(inputB);
             short startSign = ois.readShort();
             if (startSign != Msg.StartSign) {
-                throw new Exception("start sign is [" + Msg.StartSign
+                throw new IOException("start sign is [" + Msg.StartSign
                         + "],not is [" + startSign + "]");
             }
             int msgType = ois.readByte();
@@ -86,7 +86,7 @@ public class MessageUtil {
             msg.setTimeStamp(timeStamp);
             int bodylength = ois.readShort();
             msg.setLenOfBody(bodylength);
-            byte b[] = new byte[bodylength];
+            byte[] b = new byte[bodylength];
             dis.readFully(b);
             msg.newBodyfromBytes(b);
         } catch (Exception e) {

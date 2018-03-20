@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 public class TaskThread implements Runnable {
 
 	private static final Log log = LogFactory.getLog(TaskThread.class);
-	private MessageChannel pmResultChannel; //This should also be private. Need to change in TastThreadTest 
+	private MessageChannel pmResultChannel; 
 	private MessageChannel cmResultChannel;
 	private CollectMsg data;
 
@@ -929,7 +929,7 @@ public class TaskThread implements Runnable {
 		return pmResultChannel;
 	}
 
-	public void setPmResultChannel(MessageChannel pmResultChannel) {
-		this.pmResultChannel = pmResultChannel;
+	public void setPmResultChannel(MessageChannel pmResChannel) {
+		this.pmResultChannel = pmResChannel;
 	}
 }
