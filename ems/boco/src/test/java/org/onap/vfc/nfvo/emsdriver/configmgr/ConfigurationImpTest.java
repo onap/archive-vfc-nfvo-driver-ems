@@ -94,7 +94,7 @@ public class ConfigurationImpTest {
                         collectVo.setPort(collect.getChildText("port"));
                         collectVo.setUser(collect.getChildText("user"));
                         collectVo.setPassword(collect.getChildText("password"));
-                        collectVo.setRead_timeout(collect.getChildText("readtimeout"));
+                        collectVo.setReadTimeout(collect.getChildText("readtimeout"));
                     } else {
                         String crontab = collect.getAttributeValue("crontab");
                         if (!StringUtil.isBank(type) && !StringUtil.isBank(crontab)) {

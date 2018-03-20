@@ -26,7 +26,7 @@ public class CollectVo {
 
     private String crontab;
 
-    private String IP;
+    private String ip;
 
     private String port;
 
@@ -46,7 +46,7 @@ public class CollectVo {
 
     private boolean iscollect = false;
 
-    private String read_timeout;
+    private String readTimeout;
 
 
     /**
@@ -95,14 +95,14 @@ public class CollectVo {
      * @return the iP
      */
     public String getIP() {
-        return IP;
+        return ip;
     }
 
     /**
      * @param ip the iP to set
      */
-    public void setIP(String ip) {
-        IP = ip;
+    public void setIP(String inIP) {
+        ip = inIP;
     }
 
     /**
@@ -221,11 +221,11 @@ public class CollectVo {
     @Override
     public String toString() {
         return "CollectVo [emsName=" + emsName + ", type=" + type
-                + ", crontab=" + crontab + ", IP=" + IP + ", port=" + port
+                + ", crontab=" + crontab + ", IP=" + ip + ", port=" + port
                 + ", user=" + user + ", password=" + password + ", remotepath="
                 + remotepath + ", match=" + match + ", passive=" + passive
                 + ", ftptype=" + ftptype + ", granularity=" + granularity
-                + ", iscollect=" + iscollect + ", read_timeout=" + read_timeout
+                + ", iscollect=" + iscollect + ", readTimeout=" + readTimeout
                 + "]";
     }
 
@@ -244,17 +244,17 @@ public class CollectVo {
     }
 
     /**
-     * @return the read_timeout
+     * @return the readTimeout
      */
-    public String getRead_timeout() {
-        return read_timeout;
+    public String getReadTimeout() {
+        return readTimeout;
     }
 
     /**
      * @param read_timeout the read_timeout to set
      */
-    public void setRead_timeout(String read_timeout) {
-        this.read_timeout = read_timeout;
+    public void setReadTimeout(String inReadTimeout) {
+        this.readTimeout = inReadTimeout;
     }
 
 

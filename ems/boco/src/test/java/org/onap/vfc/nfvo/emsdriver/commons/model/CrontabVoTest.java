@@ -35,7 +35,7 @@ public class CrontabVoTest {
 		crontabVo.setGranularity("crontab");
 		crontabVo.setIscollect(true);
 		crontabVo.setMatch("crontab");
-		crontabVo.setRead_timeout("10000");
+		crontabVo.setReadTimeout("10000");
 		crontabVo.setType("qw");
 		assertNotNull(crontabVo.toString());
 	}

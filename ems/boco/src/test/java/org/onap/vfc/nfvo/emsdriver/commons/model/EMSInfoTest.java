@@ -35,7 +35,7 @@ public class EMSInfoTest {
     @Test
     public void testEMSInfo() {
         EMSInfo.setName("emsName");
-        Map<String, CollectVo> collectMap = new HashMap<String, CollectVo>();
+        Map<String, CollectVo> collectMap = new HashMap<>();
         CollectVo collectVo = new CollectVo();
         collectVo.setEmsName("emsName");
         collectMap.put("pm", collectVo);

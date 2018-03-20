@@ -140,8 +140,8 @@ public class AlarmTaskThread extends Thread {
         String password = collectVo.getPassword();
 
 	try{
-		if((collectVo.getRead_timeout()).trim().length()>0) 
-			this.readTimeout = Integer.parseInt(collectVo.getRead_timeout());
+		if((collectVo.getReadTimeout()).trim().length()>0) 
+			this.readTimeout = Integer.parseInt(collectVo.getReadTimeout());
 
 	} catch (NumberFormatException e) {
 		log.error("Unable to parse read_timout: ",e);

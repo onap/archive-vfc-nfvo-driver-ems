@@ -28,7 +28,7 @@ public class CrontabVo {
 
     private boolean iscollect = false;
 
-    private String read_timeout;
+    private String readTimeout;
 
     /**
      * @return the type
@@ -103,22 +103,22 @@ public class CrontabVo {
     /**
      * @return the read_timeout
      */
-    public String getRead_timeout() {
-        return read_timeout;
+    public String getReadTimeout() {
+        return readTimeout;
     }
 
     /**
      * @param read_timeout the read_timeout to set
      */
-    public void setRead_timeout(String read_timeout) {
-        this.read_timeout = read_timeout;
+    public void setReadTimeout(String inReadTimeout) {
+        this.readTimeout = inReadTimeout;
     }
 
     @Override
     public String toString() {
         return "CrontabVo [type=" + type + ", crontab=" + crontab + ", match="
                 + match + ", granularity=" + granularity + ", iscollect="
-                + iscollect + ", read_timeout=" + read_timeout + "]";
+                + iscollect + ", read_timeout=" + readTimeout + "]";
     }
 
 

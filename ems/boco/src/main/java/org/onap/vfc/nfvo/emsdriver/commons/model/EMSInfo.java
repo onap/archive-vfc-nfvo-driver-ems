@@ -23,7 +23,7 @@ public class EMSInfo {
     private String name;
 
 
-    private Map<String, CollectVo> collectMap = new HashMap<String, CollectVo>();
+    private Map<String, CollectVo> collectMap = new HashMap<>();
 
     /**
      * @return the name
@@ -40,8 +40,7 @@ public class EMSInfo {
     }
 
     public CollectVo getCollectVoByType(String type) {
-        CollectVo collectVo = this.collectMap.get(type);
-        return collectVo;
+        return this.collectMap.get(type);
     }
 
     public void putCollectMap(String type, CollectVo collectVo) {

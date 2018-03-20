@@ -124,7 +124,7 @@ public class ConfigurationManager extends DriverThread {
                         continue;
                     }
 
-                    crontabVo.setRead_timeout(child.getChildText("readtimeout"));
+                    crontabVo.setReadTimeout(child.getChildText("readtimeout"));
                 } else {
                     String crontab = child.getAttributeValue("crontab");
                     if (!StringUtil.isBank(type) && !StringUtil.isBank(crontab)) {
@@ -251,7 +251,7 @@ public class ConfigurationManager extends DriverThread {
                         collectVo.setPort(collect.getString("port"));
                         collectVo.setUser(collect.getString("user-name"));
                         collectVo.setPassword(collect.getString("password"));
-                        collectVo.setRead_timeout(crontabVo.getRead_timeout());
+                        collectVo.setReadTimeout(crontabVo.getReadTimeout());
                     } else {
                         log.error("emsCrontab.get(system_type) result crontabVo is null system_type=[" + system_type + "]");
                     }
