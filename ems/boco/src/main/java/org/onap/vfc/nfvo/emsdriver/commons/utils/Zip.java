@@ -68,7 +68,7 @@ public class Zip {
         if (directoryPath.isFile()) {
             compressFile(directoryPath.getAbsolutePath());
         } else {
-            File listFiles[] = directoryPath.listFiles();
+            File[] listFiles = directoryPath.listFiles();
             for (int i = 0; i < listFiles.length; i++)
                 if (listFiles[i].isFile()) {
                     compressFile(listFiles[i].getAbsolutePath());
@@ -80,21 +80,16 @@ public class Zip {
     }
 
     protected void compressFile(String absolutePath) throws IOException {
-	    try{
-		    compressFileCount++;
-		    byte byteBuf[] = new byte[2048];
-		    zipOutput.putNextEntry(new ZipEntry(absolutePath.substring(relativeAddrIdx)));
-		    FileInputStream input = new FileInputStream(absolutePath);
-		    try{
-			    for (int count = 0; (count = input.read(byteBuf, 0, byteBuf.length)) != -1; )
-				    zipOutput.write(byteBuf, 0, count);
-		    }finally{
-			    input.close();
-			    zipOutput.closeEntry();
-		    }
-	    }catch(IOException e){
-		    throw e;	
-	    }		
+	    compressFileCount++;
+	    byte[] byteBuf = new byte[2048];
+	    zipOutput.putNextEntry(new ZipEntry(absolutePath.substring(relativeAddrIdx)));
+
+	    try( FileInputStream input = new FileInputStream(absolutePath)){
+		    for (int count = 0; (count = input.read(byteBuf, 0, byteBuf.length)) != -1; )
+			    zipOutput.write(byteBuf, 0, count);
+	    }finally{
+		    zipOutput.closeEntry();
+	    }
     }
 
     public void setCompressLevel(int level) {

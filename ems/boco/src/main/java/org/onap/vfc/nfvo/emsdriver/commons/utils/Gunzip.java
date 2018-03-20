@@ -29,7 +29,7 @@ public class Gunzip {
 				moveBytes(gzIn, fileOutput, -1, -1, 1024);
 			} 
 		}catch(IOException e){
-		throw e;
+			throw new IOException ("Gunzip", e);
 		}
 
 	}
@@ -44,10 +44,10 @@ public class Gunzip {
 	}
 
 	public long moveBytes(InputStream input, OutputStream output, long off, long len, int bufsize) throws IOException {
-		long skipped=0;
-		if (off > 0)
+		/*	long skipped=0;
+			if (off > 0)
 			skipped = input.skip(off); // check if skipped is same as off
-
+		*/
 		long totalNum = 0;
 		byte[] buf = new byte[bufsize];
 
@@ -65,7 +65,6 @@ public class Gunzip {
 			output.write(buf, 0, readNum);
 			totalNum += readNum;
 		}
-		buf = null;
 		return totalNum;
 	}
 

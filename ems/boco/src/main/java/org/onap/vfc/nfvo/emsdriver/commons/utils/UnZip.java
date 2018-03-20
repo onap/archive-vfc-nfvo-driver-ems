@@ -58,26 +58,22 @@ public class UnZip {
                 }
             }
         } catch (IOException e) {
-            throw e;
+            throw new IOException("deCompress: ",e);
         }  
    }
 
     protected void deCompressFile(InputStream input, String toPath)
             throws IOException {
-        byte byteBuf[] = new byte[2048];
+        byte[] byteBuf = new byte[2048];
         String path = new File(toPath).getParent();
         if (!new File(path).exists()) {
             new File(path).mkdirs();
         }
-        FileOutputStream output = new FileOutputStream(toPath, false);
-        try {
+        try(FileOutputStream output = new FileOutputStream(toPath, false)){
             for (int count = 0; (count = input.read(byteBuf, 0, byteBuf.length)) != -1; )
                 output.write(byteBuf, 0, count);
         } catch (IOException e) {
-            throw e;
-        } finally {
-            output.close();
-            input.close();
-        }
+            throw new IOException ("deCompressFile: ", e);
+        } 
     }
 }
