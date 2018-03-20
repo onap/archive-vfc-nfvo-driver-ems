@@ -55,16 +55,16 @@ public class AlarmSocketServer {
                 if (len > 0) {
                     String restlu = new String(b, 0, len);
                     if (restlu.contains("reqLoginAlarm")) {
-                        Msg msg = new Msg("ackLoginAlarm;result=succ;resDesc= ", MsgType.ackLoginAlarm);
+                        Msg msg = new Msg("ackLoginAlarm;result=succ;resDesc= ", MsgType.ACK_LOGIN_ALARM);
 
                         MessageUtil.writeMsg(msg, dos);
                     }
                     if (restlu.contains("reqHeartBeat")) {
-                        Msg msg = new Msg("ackHeartBeat;result=succ;resDesc= ", MsgType.ackHeartBeat);
+                        Msg msg = new Msg("ackHeartBeat;result=succ;resDesc= ", MsgType.ACK_HEARTBEAT);
 
                         MessageUtil.writeMsg(msg, dos);
                     }
-                    Msg msg = new Msg("realTimeAlarm;result=succ;resDesc= ", MsgType.realTimeAlarm);
+                    Msg msg = new Msg("realTimeAlarm;result=succ;resDesc= ", MsgType.REALTIME_ALARM);
 
                     MessageUtil.writeMsg(msg, dos);
 

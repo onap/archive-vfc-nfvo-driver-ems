@@ -21,14 +21,14 @@ import java.io.UnsupportedEncodingException;
 
 
 public class Msg {
-    public final static String reqLoginAlarm = "reqLoginAlarm;user=%s;key=%s;type=%s";
-    public final static String reqHeartBeat = "reqHeartBeat;reqId=%s";
-    public final static String disconnectMsg = "closeConnAlarm";
-    public final static String syncAlarmMessageMsg = "reqSyncAlarmMsg;reqID=%s;alarmSeq=%s";
-    public final static String syncAlarmMessageByalarmSeq = "reqSyncAlarmFile;reqID=%s;alarmSeq=%s;syncSource=1";
-    public final static String syncActiveAlarmFileMsg = "reqSyncAlarmFile;reqID=%s;startTime=%s;endTime=%s;syncSource=0";
-    public final static String syncAlarmFileMsg = "reqSyncAlarmFile;reqID=%s;startTime=%s;endTime=%s;syncSource=1";
-    public final static short StartSign = (short) 0xffff;
+    public static final String REQ_LOGIN_ALARM = "reqLoginAlarm;user=%s;key=%s;type=%s";
+    public static final String REQ_HEARTBEAT = "reqHeartBeat;reqId=%s";
+    public static final String DISCONNECT_MSG= "closeConnAlarm";
+    public static final String SYNC_ALARM_MESSAGE = "reqSyncAlarmMsg;reqID=%s;alarmSeq=%s";
+    public static final String SYNC_ALARM_MESSAGE_BY_ALARM_SEQ = "reqSyncAlarmFile;reqID=%s;alarmSeq=%s;syncSource=1";
+    public static final String SYNC_ACTIVE_ALARM_FILE_MSG = "reqSyncAlarmFile;reqID=%s;startTime=%s;endTime=%s;syncSource=0";
+    public static final String SYNC_ALARM_FILE_MSG = "reqSyncAlarmFile;reqID=%s;startTime=%s;endTime=%s;syncSource=1";
+    public static final short START_SIGN = (short) 0xffff;
     private MsgType msgType;
     private int timeStamp = 0;
     private int lenOfBody = 0;
@@ -46,7 +46,7 @@ public class Msg {
         return (int) System.currentTimeMillis() / 1000;
     }
 
-    public void newBodyfromBytes(byte b[]) throws UnsupportedEncodingException {
+    public void newBodyfromBytes(byte[] b) throws UnsupportedEncodingException {
         this.body = new String(b, Constant.ENCODING_UTF8);
     }
 
@@ -92,7 +92,7 @@ public class Msg {
 
     public String toString(boolean isRead) {
         StringBuilder sb = new StringBuilder();
-        sb.append("StartSign[").append(StartSign).append("]msgType[").append(msgType.value).append("]timeStamp[");
+        sb.append("START_SIGN[").append(START_SIGN).append("]msgType[").append(msgType.value).append("]timeStamp[");
         if (isRead) {
             sb.append(timeStamp).append("]lenOfBody[").append(lenOfBody);
         } else {

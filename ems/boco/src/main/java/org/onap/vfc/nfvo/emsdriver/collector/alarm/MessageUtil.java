@@ -23,47 +23,47 @@ public class MessageUtil {
     public static final int MSG_BUF_SIZE = 8096;
 
     public static Msg putLoginMsg(String user, String passwd) {
-        String body = String.format(Msg.reqLoginAlarm, user, passwd, "msg");
-        return new Msg(body, MsgType.reqLoginAlarm);
+        String body = String.format(Msg.REQ_LOGIN_ALARM, user, passwd, "msg");
+        return new Msg(body, MsgType.REQ_LOGIN_ALARM);
 
     }
 
     public static Msg putLoginFtp(String user, String passwd) {
-        String body = String.format(Msg.reqLoginAlarm, user, passwd, "ftp");
-	return new Msg(body, MsgType.reqLoginAlarm);
+        String body = String.format(Msg.REQ_LOGIN_ALARM, user, passwd, "ftp");
+	return new Msg(body, MsgType.REQ_LOGIN_ALARM);
 
     }
 
     public static Msg putSyncMsg(int reqId, int alarmSeq) {
-        String body = String.format(Msg.syncAlarmMessageMsg, reqId, alarmSeq);
-        return new Msg(body, MsgType.reqSyncAlarmMsg);
+        String body = String.format(Msg.SYNC_ALARM_MESSAGE, reqId, alarmSeq);
+        return new Msg(body, MsgType.REQ_SYNC_ALARM_MSG);
 
     }
 
     public static Msg putHeartBeatMsg(int reqId) {
-        String body = String.format(Msg.reqHeartBeat, reqId);
-        return new Msg(body, MsgType.reqHeartBeat);
+        String body = String.format(Msg.REQ_HEARTBEAT, reqId);
+        return new Msg(body, MsgType.REQ_HEARTBEAT);
 
     }
 
     public static Msg reqSyncAlarmFile(int reqId, String startTime, String endTime) {
-        String body = String.format(Msg.syncActiveAlarmFileMsg, reqId, startTime, endTime);
-        return new Msg(body, MsgType.reqSyncAlarmFile);
+        String body = String.format(Msg.SYNC_ACTIVE_ALARM_FILE_MSG, reqId, startTime, endTime);
+        return new Msg(body, MsgType.REQ_SYNC_ALARM_FILE);
     }
 
     public static Msg reqSyncAlarmFileByAlarmSeq(int reqId, int alarmSeq) {
-        String body = String.format(Msg.syncAlarmMessageByalarmSeq, reqId, alarmSeq);
-        return new Msg(body, MsgType.reqSyncAlarmFile);
+        String body = String.format(Msg.SYNC_ALARM_MESSAGE_BY_ALARM_SEQ, reqId, alarmSeq);
+        return new Msg(body, MsgType.REQ_SYNC_ALARM_FILE);
     }
 
     public static Msg reqSyncAlarmFileByTime(int reqId, String startTime, String endTime) {
-        String body = String.format(Msg.syncAlarmFileMsg, reqId, startTime, endTime);
-        return new Msg(body, MsgType.reqSyncAlarmFile);
+        String body = String.format(Msg.SYNC_ALARM_FILE_MSG, reqId, startTime, endTime);
+        return new Msg(body, MsgType.REQ_SYNC_ALARM_FILE);
     }
 
     public static Msg closeConnAlarmMsg() {
-        String body = String.format(Msg.disconnectMsg);
-        return new Msg(body, MsgType.closeConnAlarm);
+        String body = String.format(Msg.DISCONNECT_MSG);
+        return new Msg(body, MsgType.CLOSE_CONN_ALARM);
     }
 
     public static Msg readOneMsg(BufferedInputStream is) throws IOException {
@@ -76,8 +76,8 @@ public class MessageUtil {
             DataInputStream ois = new DataInputStream(bais)){
             dis.readFully(inputB);
             short startSign = ois.readShort();
-            if (startSign != Msg.StartSign) {
-                throw new IOException("start sign is [" + Msg.StartSign
+            if (startSign != Msg.START_SIGN) {
+                throw new IOException("start sign is [" + Msg.START_SIGN
                         + "],not is [" + startSign + "]");
             }
             int msgType = ois.readByte();
@@ -100,7 +100,7 @@ public class MessageUtil {
         try( 
             ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream(9);
             DataOutputStream oos = new DataOutputStream(byteOutStream)){
-            oos.writeShort(Msg.StartSign);
+            oos.writeShort(Msg.START_SIGN);
             oos.writeByte(msg.getMsgType().value);
             oos.writeInt(Msg.creatMsgTimeStamp());
             oos.writeShort(msg.getBodyLenNow());

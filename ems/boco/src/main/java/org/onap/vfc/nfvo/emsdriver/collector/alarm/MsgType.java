@@ -17,27 +17,27 @@ package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
 public enum MsgType {
 
-    reqLoginAlarm("reqLoginAlarm", 1, "all"),
-    ackLoginAlarm("ackLoginAlarm", 2, "all"),
-    reqSyncAlarmMsg("reqSyncAlarmMsg", 3, "msg"),
-    ackSyncAlarmMsg("ackSyncAlarmMsg", 4, "msg"),
-    reqSyncAlarmFile("reqSyncAlarmFile", 5, "file"),
-    ackSyncAlarmFile("ackSyncAlarmFile", 6, "file"),
-    ackSyncAlarmFileResult("ackSyncAlarmFileResult", 7, "file"),
-    reqHeartBeat("reqHeartBeat", 8, "all"),
-    ackHeartBeat("ackHeartBeat", 9, "all"),
-    closeConnAlarm("closeConnAlarm", 10, "all"),
-    realTimeAlarm("realTimeAlarm", 0, "all"),
-    undefined("undefined", -1, "all");
+    REQ_LOGIN_ALARM("reqLoginAlarm", 1, "all"),
+    ACK_LOGIN_ALARM("ackLoginAlarm", 2, "all"),
+    REQ_SYNC_ALARM_MSG("reqSyncAlarmMsg", 3, "msg"),
+    ACK_SYNC_ALARM_MSG("ackSyncAlarmMsg", 4, "msg"),
+    REQ_SYNC_ALARM_FILE("reqSyncAlarmFile", 5, "file"),
+    ACK_SYNC_ALARM_FILE("ackSyncAlarmFile", 6, "file"),
+    ACK_SYNC_ALARM_FILE_RESULT("ackSyncAlarmFileResult", 7, "file"),
+    REQ_HEARTBEAT("reqHeartBeat", 8, "all"),
+    ACK_HEARTBEAT("ackHeartBeat", 9, "all"),
+    CLOSE_CONN_ALARM("closeConnAlarm", 10, "all"),
+    REALTIME_ALARM("realTimeAlarm", 0, "all"),
+    UNDEFINED("undefined", -1, "all");
 
     public int value = -1;
-    public String name = null;
-    public String type = null;
+    public String name;
+    public String type;
 
-    MsgType(String name, int value, String type) {
-        this.name = name;
-        this.value = value;
-        this.type = type;
+    MsgType(String inName, int inValue, String inType) {
+        this.name = inName;
+        this.value = inValue;
+        this.type = inType;
     }
 
     public static MsgType getMsgTypeValue(int msgTypeValue) {
@@ -47,7 +47,7 @@ public enum MsgType {
                 return msgType;
             }
         }
-        return undefined;
+        return UNDEFINED;
     }
 
     public static MsgType getMsgTypeName(String msgTypeName) {
@@ -57,7 +57,7 @@ public enum MsgType {
                 return msgType;
             }
         }
-        return undefined;
+        return UNDEFINED;
     }
 
     @Override
