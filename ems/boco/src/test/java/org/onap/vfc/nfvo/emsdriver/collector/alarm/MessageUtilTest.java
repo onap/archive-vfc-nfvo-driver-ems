@@ -15,9 +15,16 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertNotNull;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.junit.Test;
 
 public class MessageUtilTest {
 
@@ -62,6 +69,52 @@ public class MessageUtilTest {
 
         assertNotNull(msg);
     }
+    
+    @Test
+    public void putloginMsg() {
+    	String user = "test";
+    	String passwd = "test";
+    	Msg msg = MessageUtil.putLoginMsg(user, passwd);
+    	assertNotNull(msg);	
+    }
 
-
+    @Test
+    public void putHeartBeatMsg() {
+    	Msg msg = MessageUtil.putHeartBeatMsg(1);
+    	assertNotNull(msg);	
+    }
+    
+    @Test
+    public void readOneMsg(){
+    	try {
+    	String fileName = System.getProperty("user.dir") + "/data/" + "bbb.txt";
+    	FileInputStream fis = new FileInputStream(fileName);
+        BufferedInputStream bis=new BufferedInputStream(fis);
+    	Msg msg = MessageUtil.readOneMsg(bis);
+    	assertNotNull(msg);	    	
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+		   System.out.println("File is not found");
+       } catch (IOException e){
+    	   System.out.println("There is IOException");
+       }
+    }
+    
+    
+    
+    @Test
+    public void writeMsg(){
+        try {
+    	String msgBody = "Heartbeat";
+    	Msg msg = new Msg(msgBody,MsgType.ACK_HEARTBEAT);
+    	String fileName = System.getProperty("user.dir") + "/data/" + "aaa.txt";
+    	FileOutputStream fos=new FileOutputStream(fileName);
+        BufferedOutputStream bos=new BufferedOutputStream(fos);
+        MessageUtil.writeMsg(msg, bos);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("There is IOException");
+		}
+        
+    }
 }

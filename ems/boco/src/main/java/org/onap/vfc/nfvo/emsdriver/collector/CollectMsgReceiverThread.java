@@ -35,7 +35,6 @@ public class CollectMsgReceiverThread extends DriverThread {
     @Override
     public void dispose() {
         collectChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);
-
         taskService = TaskThreadService.getInstance(threadMaxNum);
         taskService.start();
 
