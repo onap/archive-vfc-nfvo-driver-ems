@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_2e12e558",
+        "filename": "ems/boco/src/test/java/org/onap/vfc/nfvo/emsdriver/collector/alarm/AlarmTaskThreadTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 3541
+      },
+      "writtenOn": "2018-03-21T08:28:40Z",
+      "side": 1,
+      "message": "what does it test?",
+      "revId": "844b0ab933e484c3c3367ad89481c7dc1f6a6565",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_8e0d393a",
+        "filename": "ems/boco/src/test/java/org/onap/vfc/nfvo/emsdriver/collector/alarm/AlarmTaskThreadTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 3541
+      },
+      "writtenOn": "2018-03-21T08:28:40Z",
+      "side": 1,
+      "message": "reformat file to make indents equal",
+      "revId": "844b0ab933e484c3c3367ad89481c7dc1f6a6565",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
