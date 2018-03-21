@@ -30,8 +30,7 @@ public class MessageUtil {
 
     public static Msg putLoginFtp(String user, String passwd) {
         String body = String.format(Msg.REQ_LOGIN_ALARM, user, passwd, "ftp");
-	return new Msg(body, MsgType.REQ_LOGIN_ALARM);
-
+        return new Msg(body, MsgType.REQ_LOGIN_ALARM);
     }
 
     public static Msg putSyncMsg(int reqId, int alarmSeq) {
@@ -68,7 +67,6 @@ public class MessageUtil {
 
     public static Msg readOneMsg(BufferedInputStream is) throws IOException {
         byte[] inputB = new byte[9];
-
         Msg msg = new Msg();
         try( 
             DataInputStream dis = new DataInputStream(is);
@@ -92,7 +90,6 @@ public class MessageUtil {
         } catch (Exception e) {
             throw new IOException("readOneMsg",e);
         } 
-
         return msg;
     }
 
@@ -104,9 +101,7 @@ public class MessageUtil {
             oos.writeByte(msg.getMsgType().value);
             oos.writeInt(Msg.creatMsgTimeStamp());
             oos.writeShort(msg.getBodyLenNow());
-
             dout.write(byteOutStream.toByteArray());
-
             dout.write(msg.getBodyBytes());
             dout.flush();
         } catch (Exception e) {

@@ -15,13 +15,13 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
+import org.junit.Test;
+import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 
 public class AlarmTaskThreadTest {
 
@@ -75,4 +75,18 @@ public class AlarmTaskThreadTest {
         assertNotNull(alarm);
     }
 
+    @Test
+    public void runAlarmTaskThread(){
+    	try {
+        	taskThread.run();
+			Thread.sleep(3000);
+	    	taskThread.setStop(true);
+	    	server.stop();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    }
+  
 }

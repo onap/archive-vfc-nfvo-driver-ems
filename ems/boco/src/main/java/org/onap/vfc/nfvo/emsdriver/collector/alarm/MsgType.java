@@ -41,7 +41,6 @@ public enum MsgType {
     }
 
     public static MsgType getMsgTypeValue(int msgTypeValue) {
-
         for (MsgType msgType : MsgType.values()) {
             if (msgType.value == msgTypeValue) {
                 return msgType;
