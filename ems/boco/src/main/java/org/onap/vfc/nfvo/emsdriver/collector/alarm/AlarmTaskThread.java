@@ -60,7 +60,7 @@ public class AlarmTaskThread extends Thread {
     @Override
     public void run() {
         try {
-        alarmChannel = MessageChannelFactory.getMessageChannel(Constant.RESULT_CHANNEL_KEY);
+        	alarmChannel = MessageChannelFactory.getMessageChannel(Constant.RESULT_CHANNEL_KEY);
             this.init();
             while (!this.isStop) {
                 String body;
@@ -79,10 +79,9 @@ public class AlarmTaskThread extends Thread {
 
 
     public String receive() throws IOException {
-	try{
+    	try{
         	Msg msg = null;
 	        String retString = null;
-
 		while (retString == null && !this.isStop) {
 			msg = MessageUtil.readOneMsg(is);
 			log.debug("msg = " + msg.toString(true));
@@ -91,10 +90,8 @@ public class AlarmTaskThread extends Thread {
 				log.debug("receive login ack");
 	                boolean suc = this.ackLoginAlarm(msg);
         	        if (suc) {
-
                 	    if (reqId == Integer.MAX_VALUE) 
-				reqId=0;
-
+                	    reqId=0;
 	                    reqId++;
         	            Msg msgheart = MessageUtil.putHeartBeatMsg(reqId);
                 	    heartBeat = new HeartBeat(socket, msgheart);
@@ -115,7 +112,6 @@ public class AlarmTaskThread extends Thread {
 			log.debug("received alarm message");
 			retString = msg.getBody();
 		}
-
 		if (retString == null) {
 			Thread.sleep(100);
 		}
@@ -224,11 +220,9 @@ public class AlarmTaskThread extends Thread {
     }
 
     public void close() {
-
         if (heartBeat != null) {
             heartBeat.setStop(true);
         }
-
         if (is != null) {
             try {
                 is.close();
@@ -238,7 +232,6 @@ public class AlarmTaskThread extends Thread {
                 is = null;
             }
         }
-
         if (dos != null) {
             try {
                 dos.close();
@@ -248,7 +241,6 @@ public class AlarmTaskThread extends Thread {
                 dos = null;
             }
         }
-
         if (socket != null) {
             try {
                 socket.close();
