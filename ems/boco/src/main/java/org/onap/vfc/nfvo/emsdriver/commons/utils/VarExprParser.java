@@ -25,12 +25,12 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-final public class VarExprParser {
+    public  final class VarExprParser {
     private static Log log = LogFactory.getFactory().getInstance(VarExprParser.class);
     private static Pattern varPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})",
             Pattern.CASE_INSENSITIVE);
 
-    final static public String replaceVar(String str, long scan_start_time, long scan_stop_time) {
+    public static final String replaceVar(String str, long scanStartTime, long scanStopTime) {
         if (str.indexOf("${") == -1)
             return str;
 
@@ -46,16 +46,16 @@ final public class VarExprParser {
         str = str.replace("${e_hour}", "${SCAN_STOP_TIME,HH}");
         str = str.replace("${e_min}", "${SCAN_STOP_TIME,mm}");
 
-        String expr = null, varName = null, value = null;
+        String expr, varName, value ;
         Matcher matcher = varPattern.matcher(str);
         while (matcher.find()) {
             value = null;
             expr = matcher.group(1);
             varName = matcher.group(2);
             if (expr.indexOf("${SCAN_START_TIME") != -1) {
-                value = getTime(scan_start_time, varName, "yyyy-MM-dd HH:mm:ss");
+                value = getTime(scanStartTime, varName, "yyyy-MM-dd HH:mm:ss");
             } else if (expr.indexOf("${SCAN_STOP_TIME") != -1) {
-                value = getTime(scan_stop_time, varName, "yyyy-MM-dd HH:mm:ss");
+                value = getTime(scanStopTime, varName, "yyyy-MM-dd HH:mm:ss");
             }
             if (value == null) {
                 log.warn(" expr [" + str + "] var["
@@ -64,8 +64,6 @@ final public class VarExprParser {
             }
             str = str.replace(expr, value);
         }
-        expr = value = null;
-        matcher = null;
         return str;
     }
 
@@ -111,11 +109,11 @@ final public class VarExprParser {
     /**
      * Support two variable substitutions
      * @param result
-     * @param scan_start_time
-     * @param scan_stop_time
+     * @param scanStartTime
+     * @param scanStopTime
      * @return
      */
-    public static String replaceTimeVar(String result,String scan_start_time, String scan_stop_time) {
+    public static String replaceTimeVar(String result,String scanStartTime, String scanStopTime) {
         boolean isReplace = false;
         if (result.indexOf("${SCAN_ST") != -1) {
             isReplace = true;
@@ -123,11 +121,11 @@ final public class VarExprParser {
         if (isReplace) {
             if (result.indexOf("${SCAN_START_TIME}") != -1) {
 
-                result = StringUtils.replace(result, "${SCAN_START_TIME}", scan_start_time);
+                result = StringUtils.replace(result, "${SCAN_START_TIME}", scanStartTime);
             }
             if (result.indexOf("${SCAN_STOP_TIME") != -1) {
 
-                result = StringUtils.replace(result, "${SCAN_STOP_TIME}", scan_stop_time);
+                result = StringUtils.replace(result, "${SCAN_STOP_TIME}", scanStopTime);
             }
         }
         return result;

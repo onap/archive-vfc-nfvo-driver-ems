@@ -71,18 +71,13 @@ public class DateUtil {
     }
 
     public static String addTime(String srcTimeString, String period) throws ParseException {
-	try{
-        	String finaldate = getTimeString(srcTimeString);
-	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        	Date date = sdf.parse(finaldate);
-	        Calendar calendar = Calendar.getInstance();
-        	calendar.setTime(date);
-	        calendar.add(Calendar.MINUTE, Integer.valueOf(period));
-        	return sdf.format(calendar.getTime());
-	}catch( ParseException e){
-		throw e;
-	}
-	
+	    String finaldate = getTimeString(srcTimeString);
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    Date date = sdf.parse(finaldate);
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(date);
+	    calendar.add(Calendar.MINUTE, Integer.valueOf(period));
+	    return sdf.format(calendar.getTime());
     }
 
 }

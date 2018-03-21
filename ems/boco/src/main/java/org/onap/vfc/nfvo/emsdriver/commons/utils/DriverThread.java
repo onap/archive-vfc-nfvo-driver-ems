@@ -44,7 +44,7 @@ public abstract class DriverThread implements Runnable {
 
     public abstract void dispose();
 
-    final public void run() {
+    public final void run() {
         t = Thread.currentThread();
         if (name != null)
             t.setName(name);
@@ -52,7 +52,6 @@ public abstract class DriverThread implements Runnable {
         try {
             dispose();
         } catch (Exception e) {
-            //e.printStackTrace();
 	    log.error(" printStackTrace :", e);
         }
         this.setEnd(true);
