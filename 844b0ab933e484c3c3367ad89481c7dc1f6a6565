@@ -33,6 +33,63 @@
       "revId": "844b0ab933e484c3c3367ad89481c7dc1f6a6565",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_ce2a617e",
+        "filename": "ems/boco/src/test/java/org/onap/vfc/nfvo/emsdriver/collector/alarm/HeartBeatTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 3541
+      },
+      "writtenOn": "2018-03-21T08:56:57Z",
+      "side": 1,
+      "message": "fix indents",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 1
+      },
+      "revId": "844b0ab933e484c3c3367ad89481c7dc1f6a6565",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_6e1f8d5c",
+        "filename": "ems/boco/src/test/java/org/onap/vfc/nfvo/emsdriver/collector/alarm/HeartBeatTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 3541
+      },
+      "writtenOn": "2018-03-21T08:56:57Z",
+      "side": 1,
+      "message": "does this test ever fail?",
+      "revId": "844b0ab933e484c3c3367ad89481c7dc1f6a6565",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_2e3985d8",
+        "filename": "ems/boco/src/test/java/org/onap/vfc/nfvo/emsdriver/collector/alarm/MsgTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 3541
+      },
+      "writtenOn": "2018-03-21T08:56:57Z",
+      "side": 1,
+      "message": "is testing getters/setters necessary",
+      "revId": "844b0ab933e484c3c3367ad89481c7dc1f6a6565",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
