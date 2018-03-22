@@ -27,15 +27,17 @@ public class AlarmTaskThreadTest {
 
 	private AlarmTaskThread taskThread;
 	private AlarmSocketServer server;
+	private Thread severThread;
 
 	@Before
 	public void setUp() throws IOException {
-		new Thread() {
+		severThread = new Thread(new Runnable(){
 			public void run() {
 				server = new AlarmSocketServer();
 				server.socketServer();
 			}
-		}.start();
+		});
+		severThread.start();
 		CollectVo collectVo = new CollectVo();
 		collectVo.setIP("127.0.0.1");
 		collectVo.setPort("12345");
@@ -73,16 +75,12 @@ public class AlarmTaskThreadTest {
 
 	@Test
 	public void runAlarmTaskThread() {
-		try {
-			taskThread.run();
-			Thread.sleep(10000);
-			taskThread.setStop(true);
+			taskThread.start();
+			//Thread.sleep(3000);
 			server.stop();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+			severThread.stop();
+			taskThread.setStop(true);
+			taskThread.close();
 	}
 
 }

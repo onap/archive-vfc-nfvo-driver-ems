@@ -43,7 +43,7 @@ public class HeartBeatTest {
 			Socket socket = new Socket("127.0.0.1",12345);
 			Msg msg = MessageUtil.putHeartBeatMsg(1);
 			HeartBeat heartBeat = new HeartBeat(socket,msg);
-			heartBeat.run();
+			heartBeat.start();
 			Thread.sleep(10);
 			heartBeat.setStop(true);
 			server.stop();
