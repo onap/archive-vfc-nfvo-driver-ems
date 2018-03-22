@@ -15,8 +15,6 @@
  */
 package org.onap.vfc.nfvo.emsdriver.taskscheduler;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
@@ -38,6 +36,12 @@ public class QuartzManagerTest {
 		QuartzManager.shutdownJobs();
 		QuartzManager.removeJob("QuartzManager");
 		
+	}
+	
+	@Test
+	public void modifyJobTime(){
+		QuartzManager.addJob("QuartzManager", "org.onap.vfc.nfvo.emsdriver.taskscheduler", "*/5 * * * * ?", collectVo);
+		QuartzManager.modifyJobTime("QuartzManager", "*/10 * * * * ?", collectVo);
 	}
 
 }

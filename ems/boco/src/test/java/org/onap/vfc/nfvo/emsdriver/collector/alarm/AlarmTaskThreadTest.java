@@ -25,68 +25,64 @@ import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 
 public class AlarmTaskThreadTest {
 
-    private AlarmTaskThread taskThread;
-    private AlarmSocketServer server;
+	private AlarmTaskThread taskThread;
+	private AlarmSocketServer server;
 
-    @Before
-    public void setUp() throws IOException {
-        new Thread() {
-            public void run() {
-                server = new AlarmSocketServer();
-                server.socketServer();
-            }
-        }.start();
+	@Before
+	public void setUp() throws IOException {
+		new Thread() {
+			public void run() {
+				server = new AlarmSocketServer();
+				server.socketServer();
+			}
+		}.start();
+		CollectVo collectVo = new CollectVo();
+		collectVo.setIP("127.0.0.1");
+		collectVo.setPort("12345");
+		collectVo.setUser("user");
+		collectVo.setPassword("12345");
+		collectVo.setReadTimeout("10000");
+		taskThread = new AlarmTaskThread(collectVo);
+	}
 
-        CollectVo collectVo = new CollectVo();
-        collectVo.setIP("127.0.0.1");
-        collectVo.setPort("12345");
-        collectVo.setUser("user");
-        collectVo.setPassword("12345");
-        taskThread = new AlarmTaskThread(collectVo);
-    }
+	@Test
+	public void build120Alarm() {
+		String alarm = "{\"alarmSeq\":495,\"alarmTitle\":\"LTE cell outage\",\"alarmStatus\":1,\"alarmType\":\"processingErrorAlarm\"}";
+		try {
+			new Thread() {
+				public void run() {
+					try {
+						Thread.sleep(3000);
+						server.stop();
+						taskThread.setStop(true);
+						taskThread.close();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}.start();
+			taskThread.init();
+			taskThread.receive();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertNotNull(alarm);
+	}
 
-    @Test
-    public void build120Alarm() {
-        String alarm = "{\"alarmSeq\":495,\"alarmTitle\":\"LTE cell outage\",\"alarmStatus\":1,\"alarmType\":\"processingErrorAlarm\"}";
-        try {
-            new Thread() {
-                public void run() {
-                    try {
-                        Thread.sleep(3000);
-
-                        server.stop();
-                        taskThread.setStop(true);
-                        taskThread.close();
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
-
-            taskThread.init();
-            taskThread.receive();
-
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        assertNotNull(alarm);
-    }
-
-    @Test
-    public void runAlarmTaskThread(){
-    	try {
-        	taskThread.run();
-			Thread.sleep(3000);
-	    	taskThread.setStop(true);
-	    	server.stop();
+	@Test
+	public void runAlarmTaskThread() {
+		try {
+			taskThread.run();
+			Thread.sleep(10000);
+			taskThread.setStop(true);
+			server.stop();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-    }
-  
+	}
+
 }

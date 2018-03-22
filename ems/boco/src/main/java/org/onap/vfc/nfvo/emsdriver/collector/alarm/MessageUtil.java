@@ -68,8 +68,8 @@ public class MessageUtil {
     public static Msg readOneMsg(BufferedInputStream is) throws IOException {
         byte[] inputB = new byte[9];
         Msg msg = new Msg();
+        DataInputStream dis = new DataInputStream(is);
         try( 
-            DataInputStream dis = new DataInputStream(is);
             ByteArrayInputStream bais = new ByteArrayInputStream(inputB);
             DataInputStream ois = new DataInputStream(bais)){
             dis.readFully(inputB);
@@ -87,6 +87,7 @@ public class MessageUtil {
             byte[] b = new byte[bodylength];
             dis.readFully(b);
             msg.newBodyfromBytes(b);
+          
         } catch (Exception e) {
             throw new IOException("readOneMsg",e);
         } 

@@ -33,9 +33,14 @@ public class CollectManagerTest {
 		configurationInterface = new ConfigurationImp();
 		collectManager = new CollectManager();
 		collectManager.setConfigurationInterface(configurationInterface);
-		collectManager.dispose();
+		//collectManager.dispose();
 	}
 
+	@Test
+	public void testDispose(){
+		collectManager.dispose();
+		
+	}
 	@Test
 	public void test() {
 		Thread t = new Thread(collectManager);

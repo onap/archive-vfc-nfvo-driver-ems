@@ -104,7 +104,7 @@ public class TaskThread implements Runnable {
 			String nename = ma.group(1);
 			boolean parseResult = false;
 			if (Constant.COLLECT_TYPE_CM.equalsIgnoreCase(collectVo.getType())) {
-				parseResult = processCMXml(tempfile, nename, "CM");
+				//parseResult = processCMXml(tempfile, nename, "CM");//The logic is not exist now, but need to add in the future
 			} else {
 				if (unfileName.indexOf(".csv") > -1) {//changed to -1 for coding practice as having ".csv" must have some some legal name
 					parseResult = processPMCsv(tempfile);
@@ -373,7 +373,7 @@ public class TaskThread implements Runnable {
 
 	}
 
-	private boolean processCMXml(File tempfile, String nename, String type) {
+/*	private boolean processCMXml(File tempfile, String nename, String type) {
 
 		String csvpath = localPath + nename + "/" + type + "/";
 		File csvpathfile = new File(csvpath);
@@ -499,7 +499,7 @@ public class TaskThread implements Runnable {
 				return false;
 		}
 		return true;
-	}
+	}*/
 
 	private void setMessage(String message) {
 		try {

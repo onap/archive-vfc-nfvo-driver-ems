@@ -38,7 +38,7 @@ public class HeartBeatTest {
     }	
 	
     @Test
-	public void runHeartBeatThread(){
+	public void testHeartBeatThread(){
 		try {
 			Socket socket = new Socket("127.0.0.1",12345);
 			Msg msg = MessageUtil.putHeartBeatMsg(1);

@@ -115,6 +115,7 @@ public class AlarmTaskThread extends Thread {
 		if (retString == null) {
 			Thread.sleep(100);
 		}
+		
 		}//while
         return retString;
 

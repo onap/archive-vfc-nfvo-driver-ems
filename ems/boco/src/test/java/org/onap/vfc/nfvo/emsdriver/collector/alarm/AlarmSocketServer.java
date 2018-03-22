@@ -58,21 +58,18 @@ public class AlarmSocketServer {
                         Msg msg = new Msg("ackLoginAlarm;result=succ;resDesc= ", MsgType.ACK_LOGIN_ALARM);
 
                         MessageUtil.writeMsg(msg, dos);
-                    }
-                    if (restlu.contains("reqHeartBeat")) {
+                    } else if (restlu.contains("reqHeartBeat")) {
                         Msg msg = new Msg("ackHeartBeat;result=succ;resDesc= ", MsgType.ACK_HEARTBEAT);
 
                         MessageUtil.writeMsg(msg, dos);
-                    }
-                    Msg msg = new Msg("realTimeAlarm;result=succ;resDesc= ", MsgType.REALTIME_ALARM);
-
-                    MessageUtil.writeMsg(msg, dos);
-
-
-                } else {
-                    System.out.println("len:" + len);
+                    } 
+                    	Msg msg = new Msg("realTimeAlarm;result=succ;resDesc= ", MsgType.REALTIME_ALARM);
+                    	MessageUtil.writeMsg(msg, dos);
+                    
+                }else {
+                    //System.out.println("len:" + len);
                     Thread.sleep(10);
-                }
+                    }
 
             }
         } catch (Exception e) {
