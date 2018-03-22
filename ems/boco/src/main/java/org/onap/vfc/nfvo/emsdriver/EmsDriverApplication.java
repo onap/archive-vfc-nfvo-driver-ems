@@ -109,7 +109,7 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
         String basePath = simpleServerFactory.getApplicationContextPath();
         String rootPath = simpleServerFactory.getJerseyRootPath().get();
         rootPath = rootPath.substring(0, rootPath.indexOf("/*"));
-        basePath = basePath.equals("/") ? rootPath : (new StringBuilder()).append(basePath).append(rootPath).toString();
+        basePath ="/".equals(basePath) ? rootPath : (new StringBuilder()).append(basePath).append(rootPath).toString();
         config.setBasePath(basePath);
         config.setScan(true);
     }
@@ -125,14 +125,14 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
         } catch (UnknownHostException e) {
             log.error("Unable to get host ip: ", e);
         }
-        if (ip.equals("")) {
+        if ("".equals(ip)) {
             ip = connector.getBindHost();
         }
         serviceNode.setIp(ip);
         serviceNode.setPort(String.valueOf(connector.getPort()));
         serviceNode.setTtl(0);
 
-        List<ServiceNodeVo> nodeList = new ArrayList<ServiceNodeVo>();
+        List<ServiceNodeVo> nodeList = new ArrayList<>();
         nodeList.add(serviceNode);
         registerVo.setServiceName("emsdriver");
         registerVo.setUrl("/api/emsdriver/v1");

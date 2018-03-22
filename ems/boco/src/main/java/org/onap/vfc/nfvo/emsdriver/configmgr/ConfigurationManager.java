@@ -1,5 +1,6 @@
-/*
- * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
+/**
+ * Copyright 2017 BOCO Corporation 
+ * Copyright 2018 CMCC Technologies Co. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,20 +40,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 public class ConfigurationManager extends DriverThread {
-    public final static String CONFIG_PROPERTIES_LOCATION = Constant.SYS_CFG + "config.properties";
-    protected static Log log = LogFactory.getLog(ConfigurationManager.class);
+    public static final String CONFIG_PROPERTIES_LOCATION = Constant.SYS_CFG + "config.properties";
+    protected static final Log log = LogFactory.getLog(ConfigurationManager.class);
     /**
      * ESM Cache
      */
     @VisibleForTesting
-    static Map<String, EMSInfo> emsInfoCache = new ConcurrentHashMap<String, EMSInfo>();
+    static Map<String, EMSInfo> emsInfoCache = new ConcurrentHashMap<>();
     @VisibleForTesting
     static Properties properties = null;
-    private static Map<String, CrontabVo> emsCrontab = new ConcurrentHashMap<String, CrontabVo>();
-    private static List<String> emsIdList = new ArrayList<String>();
+    private static Map<String, CrontabVo> emsCrontab = new ConcurrentHashMap<>();
+    private static List<String> emsIdList = new ArrayList<>();
 
     public static synchronized List<EMSInfo> getAllEMSInfos() {
-        List<EMSInfo> list = new ArrayList<EMSInfo>();
+        List<EMSInfo> list = new ArrayList<>();
         for (EMSInfo emsinfo : emsInfoCache.values()) {
             list.add(emsinfo);
         }
@@ -60,8 +61,7 @@ public class ConfigurationManager extends DriverThread {
     }
 
     public static synchronized EMSInfo getEMSInfoByName(String emsName) {
-        EMSInfo emsInfo = emsInfoCache.get(emsName);
-        return emsInfo;
+        return emsInfoCache.get(emsName);
     }
 
     public static synchronized Properties getProperties() {
@@ -97,7 +97,7 @@ public class ConfigurationManager extends DriverThread {
             log.debug("not exists " + path);
             return null;
         }
-        Map<String, CrontabVo> tmpcache = new HashMap<String, CrontabVo>();
+        Map<String, CrontabVo> tmpcache = new HashMap<>();
 
         try (
             InputStream is = new FileInputStream(cfg)){
@@ -146,7 +146,8 @@ public class ConfigurationManager extends DriverThread {
 
     class ReceiveSource extends Thread {
         long timeStamp = System.currentTimeMillis();
-
+	
+ 	@Override
         public void run() {
             while (true) {
 
@@ -185,7 +186,7 @@ public class ConfigurationManager extends DriverThread {
         }
 
         private Map<String, EMSInfo> getEmsInfo(String emsId) {
-            Map<String, EMSInfo> tmpcache = new ConcurrentHashMap<String, EMSInfo>();
+            Map<String, EMSInfo> tmpcache = new ConcurrentHashMap<>();
             String msbAddress = properties.getProperty("msbAddress");
             String emstUrl = properties.getProperty("esr_emsUrl");
             //set emsId to url
@@ -195,21 +196,21 @@ public class ConfigurationManager extends DriverThread {
             log.debug(getemstUrl + " result=" + emsResult);
             JSONObject reagobj = JSONObject.parseObject(emsResult);
 
-            JSONObject esr_system_info_list = reagobj.getJSONObject("esr-system-info-list");
-            JSONArray esr_system_info = esr_system_info_list.getJSONArray("esr-system-info");
-            Iterator<Object> it = esr_system_info.iterator();
+            JSONObject esrSystemInfoList = reagobj.getJSONObject("esr-system-info-list");
+            JSONArray esrSystemInfo = esrSystemInfoList.getJSONArray("esr-system-info");
+            Iterator<Object> it = esrSystemInfo.iterator();
             EMSInfo emsInfo = new EMSInfo();
             emsInfo.setName(emsId);
             tmpcache.put(emsId, emsInfo);
             while (it.hasNext()) {
                 Object obj = it.next();
                 JSONObject collect = (JSONObject) obj;
-                String system_type = (String) collect.get("system-type");
+                String systemType = (String) collect.get("system-type");
                 CollectVo collectVo = new CollectVo();
-                if (Constant.COLLECT_TYPE_CM.equalsIgnoreCase(system_type)) {
-                    CrontabVo crontabVo = emsCrontab.get(system_type);
+                if (Constant.COLLECT_TYPE_CM.equalsIgnoreCase(systemType)) {
+                    CrontabVo crontabVo = emsCrontab.get(systemType);
                     if (crontabVo != null) {
-                        collectVo.setType(system_type);
+                        collectVo.setType(systemType);
                         collectVo.setCrontab(crontabVo.getCrontab());
                         collectVo.setIP(collect.getString("ip-address"));
                         collectVo.setPort(collect.getString("port"));
@@ -221,14 +222,14 @@ public class ConfigurationManager extends DriverThread {
                         collectVo.setPassive(collect.getString("passive"));
                         collectVo.setGranularity(crontabVo.getGranularity());
                     } else {
-                        log.error("emsCrontab.get(system_type) result crontabVo is null system_type=[" + system_type + "] emsCrontabMap=" + emsCrontab);
+                        log.error("emsCrontab.get(systemType) result crontabVo is null systemType=[" + systemType + "] emsCrontabMap=" + emsCrontab);
                     }
 
 
-                } else if (Constant.COLLECT_TYPE_PM.equalsIgnoreCase(system_type)) {
-                    CrontabVo crontabVo = emsCrontab.get(system_type);
+                } else if (Constant.COLLECT_TYPE_PM.equalsIgnoreCase(systemType)) {
+                    CrontabVo crontabVo = emsCrontab.get(systemType);
                     if (crontabVo != null) {
-                        collectVo.setType(system_type);
+                        collectVo.setType(systemType);
                         collectVo.setCrontab(crontabVo.getCrontab());
                         collectVo.setIP(collect.getString("ip-address"));
                         collectVo.setPort(collect.getString("port"));
@@ -240,34 +241,34 @@ public class ConfigurationManager extends DriverThread {
                         collectVo.setPassive(collect.getString("passive"));
                         collectVo.setGranularity(crontabVo.getGranularity());
                     } else {
-                        log.error("emsCrontab.get(system_type) result crontabVo is null system_type=[" + system_type + "]");
+                        log.error("emsCrontab.get(systemType) result crontabVo is null systemType=[" + systemType + "]");
                     }
-                } else if (Constant.COLLECT_TYPE_ALARM.equalsIgnoreCase(system_type)) {
-                    CrontabVo crontabVo = emsCrontab.get(system_type);
+                } else if (Constant.COLLECT_TYPE_ALARM.equalsIgnoreCase(systemType)) {
+                    CrontabVo crontabVo = emsCrontab.get(systemType);
                     if (crontabVo != null) {
                         collectVo.setIscollect(crontabVo.isIscollect());
-                        collectVo.setType(system_type);
+                        collectVo.setType(systemType);
                         collectVo.setIP(collect.getString("ip-address"));
                         collectVo.setPort(collect.getString("port"));
                         collectVo.setUser(collect.getString("user-name"));
                         collectVo.setPassword(collect.getString("password"));
                         collectVo.setReadTimeout(crontabVo.getReadTimeout());
                     } else {
-                        log.error("emsCrontab.get(system_type) result crontabVo is null system_type=[" + system_type + "]");
+                        log.error("emsCrontab.get(systemType) result crontabVo is null systemType=[" + systemType + "]");
                     }
 
 
                 } else {
-                    log.error("ems system-type =" + system_type + " ");
+                    log.error("ems system-type =" + systemType + " ");
                 }
 
-                emsInfo.putCollectMap(system_type, collectVo);
+                emsInfo.putCollectMap(systemType, collectVo);
             }
             return tmpcache;
         }
 
         private List<String> getEmsIdList() {
-            List<String> emsIds = new ArrayList<String>();
+            List<String> emsIds = new ArrayList<>();
             //http
             String msbAddress = properties.getProperty("msbAddress");
             String url = properties.getProperty("esr_ems_listUrl");
@@ -276,8 +277,8 @@ public class ConfigurationManager extends DriverThread {
             String result = HttpClientUtil.doGet(getemsListUrl, Constant.ENCODING_UTF8);
             log.debug(getemsListUrl + " result=" + result);
             JSONObject reagobj = JSONObject.parseObject(result);
-            JSONArray esr_emsIds = reagobj.getJSONArray("esr-ems");
-            Iterator<Object> it = esr_emsIds.iterator();
+            JSONArray esrEmsIds = reagobj.getJSONArray("esr-ems");
+            Iterator<Object> it = esrEmsIds.iterator();
             while (it.hasNext()) {
                 Object obj = it.next();
                 JSONObject emsId = (JSONObject) obj;

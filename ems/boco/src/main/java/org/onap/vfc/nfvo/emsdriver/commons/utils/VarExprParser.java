@@ -46,7 +46,9 @@ import java.util.regex.Pattern;
         str = str.replace("${e_hour}", "${SCAN_STOP_TIME,HH}");
         str = str.replace("${e_min}", "${SCAN_STOP_TIME,mm}");
 
-        String expr, varName, value ;
+        String expr;
+	String varName;
+	String value ;
         Matcher matcher = varPattern.matcher(str);
         while (matcher.find()) {
             value = null;

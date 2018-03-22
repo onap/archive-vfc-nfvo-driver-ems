@@ -667,7 +667,7 @@ public class TaskThread implements Runnable {
 	}
 
 	public List<File> decompressed(String fileName) {
-		List<File> filelist = new ArrayList<File>();
+		List<File> filelist = new ArrayList<>();
 
 		if (fileName.indexOf(".gz") > 1) {
 			try {
@@ -712,15 +712,13 @@ public class TaskThread implements Runnable {
 			unzip.deCompress();
 			file = new File(orgFile);
 		}
-		File[] files = file.listFiles();
-
-		return files;
+		return file.listFiles();
 
 	}
 
 	private List<String> ftpDownload(CollectVo collectVo) {
 
-		List<String> fileList = new ArrayList<String>();
+		List<String> fileList = new ArrayList<>();
 		// IP
 		String ip = collectVo.getIP();
 		// port
@@ -747,11 +745,11 @@ public class TaskThread implements Runnable {
 
 		// download
 		String dir = collectVo.getRemotepath();
-		List<String> searchExprList = new ArrayList<String>();
-		String[] FPath = dir.split(";");
-		for (int i = 0; i < FPath.length; i++) {
+		List<String> searchExprList = new ArrayList<>();
+		String[] fPath = dir.split(";");
+		for (int i = 0; i < fPath.length; i++) {
 			int oldSize = searchExprList.size();
-			String conpath = FPath[i] + collectVo.getMatch();
+			String conpath = fPath[i] + collectVo.getMatch();
 			HashMap<String, String> varMap = new HashMap<>();
 			long collectPeriod = 900;
 			try {
@@ -774,10 +772,10 @@ public class TaskThread implements Runnable {
 			log.error(" collect fail ", e1);
 			return fileList;
 		}
-		List<AFtpRemoteFile> remoteFiles = new ArrayList<AFtpRemoteFile>();
+		List<AFtpRemoteFile> remoteFiles = new ArrayList<>();
 		for (String expr : searchExprList) {
 			ftpClient.chdir(nowdir);
-			String keys[] = parseExprKeys(expr);
+			String[] keys = parseExprKeys(expr);
 			String ftpRegular = keys[1];
 			String ftpDir = keys[0];
 
@@ -879,7 +877,7 @@ public class TaskThread implements Runnable {
 
 	public List<String> getPathNoRegular(List<String> searchExprList, FTPInterface ftpCache) throws IOException {
 		boolean isregular = false;
-		List<String> regularList = new ArrayList<String>();
+		List<String> regularList = new ArrayList<>();
 		for (String regular : searchExprList) {
 			Pattern lpattern = null;
 			try {
@@ -919,7 +917,7 @@ public class TaskThread implements Runnable {
 				regularList.add(regular);
 			}
 		}
-		if (isregular == true) {
+		if (isregular) {
 			getPathNoRegular(regularList, ftpCache);
 		}
 		return regularList;
