@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,8 +30,7 @@ public class ConfigurationImp implements ConfigurationInterface {
 
     @Override
     public List<EMSInfo> getAllEMSInfo() {
-        List<EMSInfo> emsInfos = ConfigurationManager.getAllEMSInfos();
-        return emsInfos;
+        return ConfigurationManager.getAllEMSInfos();
     }
 
     @Override
@@ -49,8 +48,7 @@ public class ConfigurationImp implements ConfigurationInterface {
 
     @Override
     public Properties getProperties() {
-        Properties p = ConfigurationManager.getProperties();
-        return p;
+        return ConfigurationManager.getProperties();
     }
 
 

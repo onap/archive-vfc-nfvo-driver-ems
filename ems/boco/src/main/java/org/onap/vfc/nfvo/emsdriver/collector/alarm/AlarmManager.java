@@ -45,13 +45,13 @@ public class AlarmManager extends DriverThread {
                 }
             }
         }
-        List<CollectVo> collectVos = new ArrayList<CollectVo>();
+        List<CollectVo> collectVos = new ArrayList<>();
         for (EMSInfo emsInfo : emsInfos) {
             //alarm
-            CollectVo CollectVo = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_ALARM);
-            if (CollectVo != null) {
-                CollectVo.setEmsName(emsInfo.getName());
-                collectVos.add(CollectVo);
+            CollectVo collectVo = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_ALARM);
+            if (collectVo != null) {
+                collectVo.setEmsName(emsInfo.getName());
+                collectVos.add(collectVo);
             } else {
                 log.error("emsInfo.getCollectVoByType(EMS_RESOUCE) result CollectVo = null emsInfo =" + emsInfo);
             }
