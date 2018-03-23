@@ -28,7 +28,7 @@
     </bean>
     <bean id="collectMsgReceiverThread" class="org.onap.vfc.nfvo.emsdriver.collector.CollectMsgReceiverThread">
 		<property name="run" value="true" />
-		<property name="thread_max_num" value="100" />
+		<property name="threadMaxNum" value="100" />
     </bean>
     
     <bean id="configurationImp" class="org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationImp">

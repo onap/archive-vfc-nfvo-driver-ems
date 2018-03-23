@@ -88,7 +88,7 @@ fi
 # JAVA_OPTS="$JAVA_OPTS -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=$port,server=y,suspend=n"
 echo @JAVA_OPTS@ $JAVA_OPTS
 
-class_path="$RUNHOME/:$RUNHOME/boco-driver.jar:$RUNHOME/3rdParty/evel_javalib2-0.0.1-SNAPSHOT.jar"
+class_path="$RUNHOME/:$RUNHOME/boco-driver.jar:$RUNHOME/3rdParty/evel_javalib2-0.0.1.jar"
 echo @class_path@ $class_path
 # Start
 "$JAVA" $JAVA_OPTS -classpath "$class_path" org.onap.vfc.nfvo.emsdriver.EmsDriverApplication server "$RUNHOME/conf/emsdriver.yml"

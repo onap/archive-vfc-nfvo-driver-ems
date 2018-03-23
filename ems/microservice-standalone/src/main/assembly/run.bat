@@ -47,7 +47,7 @@ set date_time_string=%date_time_string:|=-%
 
 set jvm_opts=%jvm_opts% -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=%RUNHOME%logs\dump-dac-%date_time_string%.hprof
 
-set class_path=%RUNHOME%;%RUNHOME%boco-driver.jar;%RUNHOME%/3rdParty/evel_javalib2-0.0.1-SNAPSHOT.jar
+set class_path=%RUNHOME%;%RUNHOME%boco-driver.jar;%RUNHOME%/3rdParty/evel_javalib2-0.0.1.jar
 echo ### jvm_opts: %jvm_opts%
 echo ### class_path: %class_path%
 
