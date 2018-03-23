@@ -52,7 +52,7 @@ public class NorthMessageMgr extends DriverThread {
         log.info("NorthMessageMgr Thread start threadStop=" + threadStop);
         try {
             Properties properties = configurationInterface.getProperties();
-            String event_api_url = properties.getProperty("event_api_url");
+            String eventApiUrl = properties.getProperty("event_api_url");
             String port = properties.getProperty("port");
             String path = properties.getProperty("path");
             String topic = properties.getProperty("topic");
@@ -66,11 +66,11 @@ public class NorthMessageMgr extends DriverThread {
             }
 
             //login north
-            event_api_url = "http://" + event_api_url;
-            log.info("AgentMain.evel_initialize start event_api_url=[" + event_api_url + "]port=[" + port + "]path=[" + path + "]"
+            eventApiUrl = "http://" + eventApiUrl;
+            log.info("AgentMain.evel_initialize start event_api_url=[" + eventApiUrl + "]port=[" + port + "]path=[" + path + "]"
                     + "topic=[" + topic + "]username=[" + username + /*"]password=[" + password +*/ "]level=[" + level + "]");
             try {
-                EVEL_ERR_CODES evecode = AgentMain.evel_initialize(event_api_url, Integer.parseInt(port),
+                EVEL_ERR_CODES evecode = AgentMain.evel_initialize(eventApiUrl, Integer.parseInt(port),
                         path, topic,
                         username,
                         password,
@@ -78,9 +78,7 @@ public class NorthMessageMgr extends DriverThread {
                 log.info("AgentMain.evel_initialize sucess EVEL_ERR_CODES=" + evecode);
             } catch (Exception e) {
                 log.error("AgentMain.evel_initialize fail ", e);
-            }/* catch (Error e1) {
-                log.error("AgentMain.evel_initialize Error ", e1);
-            }*/
+            }
         } catch (Exception e2) {
             log.error("NorthMessageMgr start fail ", e2);
         }
@@ -112,7 +110,7 @@ public class NorthMessageMgr extends DriverThread {
     }
 
     class HeatBeatTread extends Thread {
-
+	@Override
         public void run() {
 
             while (!threadStop) {
@@ -126,7 +124,6 @@ public class NorthMessageMgr extends DriverThread {
                     try {
                         Thread.sleep(60 * 1000L);//60 secs
                     } catch (Exception e) {
-                    //    e.printStackTrace();
                     log.error("Unable to sleep the HB thread ", e);
                     }
                 } catch (Exception e) {
@@ -139,6 +136,7 @@ public class NorthMessageMgr extends DriverThread {
     class AlarmMessageRecv extends Thread {
         long timeStamp = System.currentTimeMillis();
 
+	@Override
         public void run() {
             while (!threadStop) {
 
@@ -249,6 +247,7 @@ public class NorthMessageMgr extends DriverThread {
     class ResultMessageRecv extends Thread {
         long timeStamp = System.currentTimeMillis();
 
+	@Override
         public void run() {
             while (!threadStop) {
 
@@ -282,6 +281,7 @@ public class NorthMessageMgr extends DriverThread {
     class CollectMessageRecv extends Thread {
         long timeStamp = System.currentTimeMillis();
 
+	@Override
         public void run() {
             log.info("CollectMessageRecv Thread is start threadStop=" + threadStop);
             while (!threadStop) {
@@ -314,17 +314,15 @@ public class NorthMessageMgr extends DriverThread {
 
                 } catch (Exception e) {
                     log.error("CollectMessageRecv exception", e);
-                } /*catch (Error e) {
-                    log.error("CollectMessageRecv Error", e);
-                }*/
-            }
+                }
+             }
         }
 
         private EvelScalingMeasurement resultEvelScalingMeasurement(Map<String, String> reMap) {
             String evname = "Mfvs_" + reMap.get("ElementType") + reMap.get("ObjectType");
             String evid = reMap.get("StartTime") + reMap.get("ObjectType") + reMap.get("rmUID");
-            int Period = Integer.parseInt(reMap.get("Period") != null ? reMap.get("Period") : "15");
-            EvelScalingMeasurement sm = new EvelScalingMeasurement(Period, evname, evid);
+            int period = Integer.parseInt(reMap.get("Period") != null ? reMap.get("Period") : "15");
+            EvelScalingMeasurement sm = new EvelScalingMeasurement(period, evname, evid);
 
             for (String key : reMap.keySet()) {
                 sm.evel_measurement_custom_measurement_add(reMap.get("ElementType"), key, reMap.get(key));
@@ -336,9 +334,9 @@ public class NorthMessageMgr extends DriverThread {
             sm.evel_header_type_set("applicationVnf");
             String rmUID = reMap.get("rmUID");
             sm.evel_reporting_entity_id_set(rmUID.substring(0, 9));//
-            String Dn = reMap.get("Dn");
-            if (Dn != null)
-                sm.evel_reporting_entity_name_set(Dn.substring(0, Dn.indexOf(";") > -1 ? Dn.indexOf(";") : Dn.length()));//0 is valid index
+            String dn = reMap.get("Dn");
+            if (dn != null)
+                sm.evel_reporting_entity_name_set(dn.substring(0, dn.indexOf(";") > -1 ? dn.indexOf(";") : dn.length()));//0 is valid index
             else {
                 // decide  the flow if Dn is null
 

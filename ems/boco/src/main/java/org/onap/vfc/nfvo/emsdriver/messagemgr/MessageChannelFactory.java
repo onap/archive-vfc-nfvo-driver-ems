@@ -20,9 +20,9 @@ import java.util.Map;
 
 public class MessageChannelFactory {
 
-    private static Map<String, MessageChannel> map = new HashMap<String, MessageChannel>();
+    private static Map<String, MessageChannel> map = new HashMap<>();
 
-    public synchronized static MessageChannel getMessageChannel(String key, Integer size) {
+    public static synchronized MessageChannel getMessageChannel(String key, Integer size) {
         if (map.get(key) != null) {
             return map.get(key);
         }
@@ -37,7 +37,7 @@ public class MessageChannelFactory {
         return mc;
     }
 
-    public synchronized static MessageChannel getMessageChannel(String key) {
+    public static synchronized MessageChannel getMessageChannel(String key) {
         if (map.get(key) != null) {
             return map.get(key);
         }
@@ -47,7 +47,7 @@ public class MessageChannelFactory {
         return mc;
     }
 
-    public synchronized static boolean destroyMessageChannel(String key) {
+    public static synchronized  boolean destroyMessageChannel(String key) {
         if (map.get(key) != null) {
             map.remove(key);
             return true;
@@ -55,7 +55,7 @@ public class MessageChannelFactory {
         return false;
     }
 
-    public synchronized static void clean() {
+    public static synchronized void clean() {
         map.clear();
     }
 }

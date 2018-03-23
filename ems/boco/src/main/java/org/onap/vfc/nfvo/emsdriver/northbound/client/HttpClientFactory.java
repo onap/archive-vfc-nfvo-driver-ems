@@ -42,9 +42,8 @@ public class HttpClientFactory {
             }
         }).build();
         SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
-        CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+        return HttpClients.custom().setSSLSocketFactory(sslsf).build();
 
-        return httpclient;
     }
 
 }

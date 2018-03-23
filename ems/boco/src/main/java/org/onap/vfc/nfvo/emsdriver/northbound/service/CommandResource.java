@@ -25,18 +25,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 @Path("/ems-driver")
 @Produces(MediaType.APPLICATION_JSON)
 @Api(tags = {"ems-driver TestResource"})
 public class CommandResource {
 
+    private Log log = LogFactory.getLog(CommandResource.class);
 
     @GET
     @Timed
     @ApiOperation(value = "get ems-driver Info")
     public String executeCommand(@QueryParam("command") String command) {
-
-        System.out.println("receiver command = " + command);
+	log.info("receiver command = " + command);
         return command;
     }
 

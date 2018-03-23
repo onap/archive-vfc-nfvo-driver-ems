@@ -31,8 +31,7 @@ public class MsbRestServiceProxy {
         String url = MsbConfiguration.getMsbAddress() + Constant.MSBAPIROOTDOMAIN;
         String registerObj = JSON.toJSONString(registerInfo);
 
-        String registerResponse = HttpClientUtil.doPost(url, registerObj, Constant.ENCODING_UTF8);
-        return registerResponse;
+        return HttpClientUtil.doPost(url, registerObj, Constant.ENCODING_UTF8);
     }
 
     public static void unRegiserService(String serviceName, String version, String ip, String port) {
@@ -41,7 +40,7 @@ public class MsbRestServiceProxy {
     }
 
     public static List<String> queryService(String serviceName, String version) {
-        List<String> ipList = new ArrayList<String>();
+        List<String> ipList = new ArrayList<>();
         String url = MsbConfiguration.getMsbAddress() + Constant.MSBAPIROOTDOMAIN + "/" + serviceName + "/version/" + version;
         String response = HttpClientUtil.doGet(url, Constant.ENCODING_UTF8);
         if (response != null && !"".equals(response)) {

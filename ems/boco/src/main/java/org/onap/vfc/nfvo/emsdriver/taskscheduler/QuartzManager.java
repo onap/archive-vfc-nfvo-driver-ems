@@ -29,8 +29,8 @@ public class QuartzManager {
 
     private static Log log = LogFactory.getFactory().getInstance(QuartzManager.class);
     private static SchedulerFactory gSchedulerFactory = new StdSchedulerFactory();
-    private static String JOB_GROUP_NAME = "EXTJWEB_JOBGROUP_NAME";
-    private static String TRIGGER_GROUP_NAME = "EXTJWEB_TRIGGERGROUP_NAME";
+    private static String jobGroupName = "EXTJWEB_JOBGROUP_NAME";
+    private static String triggerGroupName = "EXTJWEB_TRIGGERGROUP_NAME";
 
     /**
      * @param jobName
@@ -43,9 +43,9 @@ public class QuartzManager {
         boolean sucess = false;
         try {
             Scheduler sched = gSchedulerFactory.getScheduler();
-            JobDetail jobDetail = new JobDetail(jobName, JOB_GROUP_NAME, Class.forName(jobClass));
+            JobDetail jobDetail = new JobDetail(jobName, jobGroupName, Class.forName(jobClass));
 
-            CronTrigger trigger = new CronTrigger(jobName, TRIGGER_GROUP_NAME);
+            CronTrigger trigger = new CronTrigger(jobName, triggerGroupName);
             trigger.setCronExpression(time);
 
             jobDetail.getJobDataMap().put("collectVo", collectVo);
@@ -73,13 +73,13 @@ public class QuartzManager {
         boolean sucess = false;
         try {
             Scheduler sched = gSchedulerFactory.getScheduler();
-            CronTrigger trigger = (CronTrigger) sched.getTrigger(jobName, TRIGGER_GROUP_NAME);
+            CronTrigger trigger = (CronTrigger) sched.getTrigger(jobName, triggerGroupName);
             if (trigger == null) {
                 return false;
             }
             String oldTime = trigger.getCronExpression();
             if (!oldTime.equalsIgnoreCase(time)) {
-                JobDetail jobDetail = sched.getJobDetail(jobName, JOB_GROUP_NAME);
+                JobDetail jobDetail = sched.getJobDetail(jobName, jobGroupName);
 
                 Class<Job> objJobClass = jobDetail.getJobClass();
                 String jobClass = objJobClass.getName();
@@ -105,9 +105,9 @@ public class QuartzManager {
         boolean sucess = false;
         try {
             Scheduler sched = gSchedulerFactory.getScheduler();
-            sched.pauseTrigger(jobName, TRIGGER_GROUP_NAME);
-            sched.unscheduleJob(jobName, TRIGGER_GROUP_NAME);
-            sched.deleteJob(jobName, JOB_GROUP_NAME);
+            sched.pauseTrigger(jobName, triggerGroupName);
+            sched.unscheduleJob(jobName, triggerGroupName);
+            sched.deleteJob(jobName, jobGroupName);
             sucess = true;
         } catch (Exception e) {
             sucess = false;

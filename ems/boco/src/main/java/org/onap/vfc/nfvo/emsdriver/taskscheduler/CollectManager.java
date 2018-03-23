@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2017 BOCO Corporation.  CMCC Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,10 +33,10 @@ public class CollectManager extends DriverThread {
     public void dispose() {
         if (configurationInterface != null) {
             List<EMSInfo> emsInfos = configurationInterface.getAllEMSInfo();
-            while (isRun() && emsInfos.size() == 0) {
+            while (isRun() && emsInfos.isEmpty()) {
 
                 emsInfos = configurationInterface.getAllEMSInfo();
-                if (emsInfos.size() == 0) {
+                if (emsInfos.isEmpty()) {
                     try {
                         Thread.sleep(1000);
 		    } catch (Exception e) {
@@ -46,24 +46,24 @@ public class CollectManager extends DriverThread {
 
             }
 
-            List<CollectVo> collectVos = new ArrayList<CollectVo>();
+            List<CollectVo> collectVos = new ArrayList<>();
             for (EMSInfo emsInfo : emsInfos) {
                 //cm
-                CollectVo CollectVoCm = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_CM);
-                if (CollectVoCm != null) {
-                    CollectVoCm.setEmsName(emsInfo.getName());
-                    collectVos.add(CollectVoCm);
+                CollectVo collectVoCm = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_CM);
+                if (collectVoCm != null) {
+                    collectVoCm.setEmsName(emsInfo.getName());
+                    collectVos.add(collectVoCm);
                 }
 
                 //pm
-                CollectVo CollectVoPm = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_PM);
-                if (CollectVoPm != null) {
-                    CollectVoPm.setEmsName(emsInfo.getName());
-                    collectVos.add(CollectVoPm);
+                CollectVo collectVoPm = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_PM);
+                if (collectVoPm != null) {
+                    collectVoPm.setEmsName(emsInfo.getName());
+                    collectVos.add(collectVoPm);
                 }
 
             }
-            if (collectVos.size() > 0) {
+            if (!collectVos.isEmpty()) {
                 this.addCollectJob(collectVos);
                 log.info("1 addCollectJob is OK ");
             } else {
@@ -79,8 +79,7 @@ public class CollectManager extends DriverThread {
         for (CollectVo collectVo : collectVos) {
             try {
                 String jobName = collectVo.getEmsName() + "_" + collectVo.getType() + collectVo.getIP();
-                Job job = new CollectOderJob();
-                String jobClass = job.getClass().getName();
+                String jobClass = CollectOderJob.class.getName();
                 String time = collectVo.getCrontab();
                 if (time != null && !"".equals(time)) {
                     QuartzManager.addJob(jobName, jobClass, time, collectVo);

@@ -18,6 +18,7 @@ package org.onap.vfc.nfvo.emsdriver.messagemgr;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.io.IOException;
 
 
 public class MessageChannel {
@@ -26,17 +27,17 @@ public class MessageChannel {
 
     public MessageChannel(int size) {
         if (size > 0) {
-            queue = new LinkedBlockingQueue<Object>(size);
+            queue = new LinkedBlockingQueue<>(size);
         } else {
-            queue = new LinkedBlockingQueue<Object>();
+            queue = new LinkedBlockingQueue<>();
         }
     }
 
     public MessageChannel() {
-        queue = new LinkedBlockingQueue<Object>();
+        queue = new LinkedBlockingQueue<>();
     }
 
-    public void put(Object msg) throws InterruptedException {
+    public void put(Object msg) throws IOException {
         while (!queue.offer(msg)) {
             queue.poll();
         }
