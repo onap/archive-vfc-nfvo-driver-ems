@@ -43,13 +43,11 @@ public class TaskThreadService extends Thread {
     public void run() { // run the service
         try {
             while (startFlag) {
-
                 try {
                     if (System.currentTimeMillis() - timeStamp > Constant.ONEMINUTE) {
                         timeStamp = System.currentTimeMillis();
                         log.debug("task queue size " + queue.size());
                     }
-
                     CollectMsg data = receive();
                     if (data == null) {
                         continue;
@@ -89,7 +87,6 @@ public class TaskThreadService extends Thread {
             log.error("queue.put is error" + StringUtil.getStackTrace(e));
         }
     }
-
 
     public int size() {
         return queue.size();

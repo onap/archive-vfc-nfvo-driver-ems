@@ -27,59 +27,61 @@ import java.util.List;
 
 public class AlarmManager extends DriverThread {
 
-    private ConfigurationInterface configurationInterface;
+	private ConfigurationInterface configurationInterface;
 
-    @Override
-    public void dispose() {
-        log.debug("AlarmManager is start");
-        //get alarm CONFIG_PROPERTIES_LOCATION
-        List<EMSInfo> emsInfos = configurationInterface.getAllEMSInfo();
-        while (isRun() && emsInfos.isEmpty()) {
-            emsInfos = configurationInterface.getAllEMSInfo();
-            if (emsInfos.isEmpty()) {
-                try {
-                    Thread.sleep(1000);
-                    log.debug("The configuration properties from " + ConfigurationManager.CONFIG_PROPERTIES_LOCATION + " is not load");
-                } catch (Exception e) {
-			log.error("Exception",e);
-                }
-            }
-        }
-        List<CollectVo> collectVos = new ArrayList<>();
-        for (EMSInfo emsInfo : emsInfos) {
-            //alarm
-            CollectVo collectVo = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_ALARM);
-            if (collectVo != null) {
-                collectVo.setEmsName(emsInfo.getName());
-                collectVos.add(collectVo);
-            } else {
-                log.error("emsInfo.getCollectVoByType(EMS_RESOUCE) result CollectVo = null emsInfo =" + emsInfo);
-            }
-        }
+	@Override
+	public void dispose() {
+		log.debug("AlarmManager is start");
+		// get alarm CONFIG_PROPERTIES_LOCATION
+		List<EMSInfo> emsInfos = configurationInterface.getAllEMSInfo();
+		while (isRun() && emsInfos.isEmpty()) {
+			emsInfos = configurationInterface.getAllEMSInfo();
+			if (emsInfos.isEmpty()) {
+				try {
+					Thread.sleep(1000);
+					log.debug("The configuration properties from "
+							+ ConfigurationManager.CONFIG_PROPERTIES_LOCATION
+							+ " is not load");
+				} catch (Exception e) {
+					log.error("Exception", e);
+				}
+			}
+		}
+		List<CollectVo> collectVos = new ArrayList<>();
+		for (EMSInfo emsInfo : emsInfos) {
+			// alarm
+			CollectVo collectVo = emsInfo.getCollectVoByType(Constant.COLLECT_TYPE_ALARM);
+			if (collectVo != null) {
+				collectVo.setEmsName(emsInfo.getName());
+				collectVos.add(collectVo);
+			} else {
+				log.error("emsInfo.getCollectVoByType(EMS_RESOUCE) result CollectVo = null emsInfo ="
+						+ emsInfo);
+			}
+		}
 
-        for (CollectVo collectVo : collectVos) {
-            AlarmTaskThread alarm = new AlarmTaskThread(collectVo);
-            alarm.setName(collectVo.getIP() + collectVo.getPort());
-            alarm.start();
-            log.info("AlarmTaskThread is start");
-        }
+		for (CollectVo collectVo : collectVos) {
+			AlarmTaskThread alarm = new AlarmTaskThread(collectVo);
+			alarm.setName(collectVo.getIP() + collectVo.getPort());
+			alarm.start();
+			log.info("AlarmTaskThread is start");
+		}
 
-    }
+	}
 
-    /**
-     * @return the configurationInterface
-     */
-    public ConfigurationInterface getConfigurationInterface() {
-        return configurationInterface;
-    }
+	/**
+	 * @return the configurationInterface
+	 */
+	public ConfigurationInterface getConfigurationInterface() {
+		return configurationInterface;
+	}
 
-    /**
-     * @param configurationInterface the configurationInterface to set
-     */
-    public void setConfigurationInterface(
-            ConfigurationInterface configurationInterface) {
-        this.configurationInterface = configurationInterface;
-    }
-
+	/**
+	 * @param configurationInterface  the configurationInterface to set
+	 */
+	public void setConfigurationInterface(
+			ConfigurationInterface configurationInterface) {
+		this.configurationInterface = configurationInterface;
+	}
 
 }

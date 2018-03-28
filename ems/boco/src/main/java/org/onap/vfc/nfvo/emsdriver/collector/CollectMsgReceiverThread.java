@@ -23,74 +23,69 @@ import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
 
 public class CollectMsgReceiverThread extends DriverThread {
 
-    private long timeStamp = System.currentTimeMillis();
+	private long timeStamp = System.currentTimeMillis();
 
-    private MessageChannel collectChannel;
+	private MessageChannel collectChannel;
 
-    private TaskThreadService taskService;
+	private TaskThreadService taskService;
 
-    private int threadMaxNum = 100;
+	private int threadMaxNum = 100;
 
+	@Override
+	public void dispose() {
+		collectChannel = MessageChannelFactory
+				.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);
+		taskService = TaskThreadService.getInstance(threadMaxNum);
+		taskService.start();
 
-    @Override
-    public void dispose() {
-        collectChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);
-        taskService = TaskThreadService.getInstance(threadMaxNum);
-        taskService.start();
+		while (isRun()) {
 
-        while (isRun()) {
+			try {
+				if (System.currentTimeMillis() - timeStamp > Constant.ONEMINUTE) {
+					timeStamp = System.currentTimeMillis();
+					log.debug("COLLECT_CHANNEL Msg size :"
+							+ collectChannel.size());
+				}
+				Object obj = collectChannel.poll();
+				if (obj == null) {
+					Thread.sleep(10);
+					continue;
+				}
+				if (obj instanceof CollectMsg) {
+					CollectMsg collectMsg = (CollectMsg) obj;
+					taskService.add(collectMsg);
+					log.debug("receive a CollectMsg id = " + collectMsg.getId());
+				} else {
+					log.error("receive Objcet not CollectMsg " + obj);
+				}
 
-            try {
-                if (System.currentTimeMillis() - timeStamp > Constant.ONEMINUTE) {
-                    timeStamp = System.currentTimeMillis();
+			} catch (Exception e) {
+				log.error("dispatch alarm exception", e);
 
-                    log.debug("COLLECT_CHANNEL Msg size :" + collectChannel.size());
-                }
+			}
+		}
 
-                Object obj = collectChannel.poll();
-                if (obj == null) {
-                    Thread.sleep(10);
-                    continue;
-                }
-                if (obj instanceof CollectMsg) {
-                    CollectMsg collectMsg = (CollectMsg) obj;
-                    taskService.add(collectMsg);
-                    log.debug("receive a CollectMsg id = " + collectMsg.getId());
-                } else {
-                    log.error("receive Objcet not CollectMsg " + obj);
-                }
+	}
 
-            } catch (Exception e) {
-                log.error("dispatch alarm exception", e);
+	/**
+	 * @return the threadMaxNum
+	 */
+	public int getThreadMaxNum() {
+		return threadMaxNum;
+	}
 
-            }
-        }
+	/**
+	 * @param threadMaxNum  the threadMaxNum to set
+	 */
+	public void setThreadMaxNum(int threadMaxNum) {
+		this.threadMaxNum = threadMaxNum;
+	}
 
-    }
-
-
-    /**
-     * @return the threadMaxNum
-     */
-    public int getThreadMaxNum() {
-        return threadMaxNum;
-    }
-
-
-    /**
-     * @param threadMaxNum the threadMaxNum to set
-     */
-    public void setThreadMaxNum(int threadMaxNum) {
-        this.threadMaxNum = threadMaxNum;
-    }
-
-
-    /**
-     * @return the taskService
-     */
-    public TaskThreadService getTaskService() {
-        return taskService;
-    }
-
+	/**
+	 * @return the taskService
+	 */
+	public TaskThreadService getTaskService() {
+		return taskService;
+	}
 
 }
