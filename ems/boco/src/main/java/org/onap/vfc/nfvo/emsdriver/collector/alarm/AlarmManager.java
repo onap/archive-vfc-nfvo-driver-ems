@@ -15,6 +15,9 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.onap.vfc.nfvo.emsdriver.collector.CollectMsgReceiverThread;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
@@ -26,12 +29,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlarmManager extends DriverThread {
-
+	protected static final Log logger = LogFactory.getLog(AlarmManager.class);
 	private ConfigurationInterface configurationInterface;
 
 	@Override
 	public void dispose() {
-		log.debug("AlarmManager is start");
+		logger.debug("AlarmManager is start");
 		// get alarm CONFIG_PROPERTIES_LOCATION
 		List<EMSInfo> emsInfos = configurationInterface.getAllEMSInfo();
 		while (isRun() && emsInfos.isEmpty()) {
@@ -39,11 +42,11 @@ public class AlarmManager extends DriverThread {
 			if (emsInfos.isEmpty()) {
 				try {
 					Thread.sleep(1000);
-					log.debug("The configuration properties from "
+					logger.debug("The configuration properties from "
 							+ ConfigurationManager.CONFIG_PROPERTIES_LOCATION
 							+ " is not load");
 				} catch (Exception e) {
-					log.error("Exception", e);
+					logger.error("Exception", e);
 				}
 			}
 		}
@@ -55,7 +58,7 @@ public class AlarmManager extends DriverThread {
 				collectVo.setEmsName(emsInfo.getName());
 				collectVos.add(collectVo);
 			} else {
-				log.error("emsInfo.getCollectVoByType(EMS_RESOUCE) result CollectVo = null emsInfo ="
+				logger.error("emsInfo.getCollectVoByType(EMS_RESOUCE) result CollectVo = null emsInfo ="
 						+ emsInfo);
 			}
 		}
@@ -64,7 +67,7 @@ public class AlarmManager extends DriverThread {
 			AlarmTaskThread alarm = new AlarmTaskThread(collectVo);
 			alarm.setName(collectVo.getIP() + collectVo.getPort());
 			alarm.start();
-			log.info("AlarmTaskThread is start");
+			logger.info("AlarmTaskThread is start");
 		}
 
 	}

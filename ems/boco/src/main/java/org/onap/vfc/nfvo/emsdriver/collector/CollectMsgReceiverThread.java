@@ -15,13 +15,17 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
+import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationManager;
 import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
 import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
 
 public class CollectMsgReceiverThread extends DriverThread {
+	protected static final Log logger = LogFactory.getLog(CollectMsgReceiverThread.class);
 
 	private long timeStamp = System.currentTimeMillis();
 
@@ -43,7 +47,7 @@ public class CollectMsgReceiverThread extends DriverThread {
 			try {
 				if (System.currentTimeMillis() - timeStamp > Constant.ONEMINUTE) {
 					timeStamp = System.currentTimeMillis();
-					log.debug("COLLECT_CHANNEL Msg size :"
+					logger.debug("COLLECT_CHANNEL Msg size :"
 							+ collectChannel.size());
 				}
 				Object obj = collectChannel.poll();
@@ -54,13 +58,13 @@ public class CollectMsgReceiverThread extends DriverThread {
 				if (obj instanceof CollectMsg) {
 					CollectMsg collectMsg = (CollectMsg) obj;
 					taskService.add(collectMsg);
-					log.debug("receive a CollectMsg id = " + collectMsg.getId());
+					logger.debug("receive a CollectMsg id = " + collectMsg.getId());
 				} else {
-					log.error("receive Objcet not CollectMsg " + obj);
+					logger.error("receive Objcet not CollectMsg " + obj);
 				}
 
 			} catch (Exception e) {
-				log.error("dispatch alarm exception", e);
+				logger.error("dispatch alarm exception", e);
 
 			}
 		}
