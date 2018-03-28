@@ -30,9 +30,9 @@ public enum MsgType {
     REALTIME_ALARM("realTimeAlarm", 0, "all"),
     UNDEFINED("undefined", -1, "all");
 
-    public int value = -1;
-    public String name;
-    public String type;
+    private int value = -1;
+    private String name;
+    private String type;
 
     MsgType(String inName, int inValue, String inType) {
         this.name = inName;

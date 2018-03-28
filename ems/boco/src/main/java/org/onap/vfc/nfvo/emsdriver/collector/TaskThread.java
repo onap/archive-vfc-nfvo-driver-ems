@@ -140,14 +140,15 @@ public class TaskThread implements Runnable {
 			int event = -1;
 			while (reader.hasNext()) {
 				try {
+					String fileHeaderConstant = "FileHeader";
 					event = reader.next();
 					switch (event) {
 					case XMLStreamConstants.START_ELEMENT:
 						localName = reader.getLocalName();
-						if ("FileHeader".equalsIgnoreCase(localName)) {
+						if (fileHeaderConstant.equalsIgnoreCase(localName)) {
 							fileHeaderStart = true;
 						}
-						if (fileHeaderStart&& !"FileHeader".equalsIgnoreCase(localName)) {
+						if (fileHeaderStart&& !fileHeaderConstant.equalsIgnoreCase(localName)) {
 							commonNameAndValue.put(localName, reader.getElementText().trim());
 						}
 						if ("Measurements".equalsIgnoreCase(localName)) {
@@ -162,7 +163,7 @@ public class TaskThread implements Runnable {
 							}
 							if ("PmName".equalsIgnoreCase(localName)) {
 								pmNameFlag = true;
-								pmNames = new LinkedHashMap<Integer, String>();
+								pmNames = new LinkedHashMap<>();
 
 							}
 							if (pmNameFlag && "N".equalsIgnoreCase(localName)) {
@@ -173,7 +174,7 @@ public class TaskThread implements Runnable {
 							}
 							if ("PmData".equalsIgnoreCase(localName)) {
 								pmDataFlag = true;
-								pmDatas = new LinkedHashMap<String, String>();
+								pmDatas = new LinkedHashMap<>();
 							}
 
 							if (pmDataFlag) {
@@ -262,7 +263,7 @@ public class TaskThread implements Runnable {
 							measurementStart = false;
 						}
 
-						if ("FileHeader".equalsIgnoreCase(endLocalName)) {
+						if (fileHeaderConstant.equalsIgnoreCase(endLocalName)) {
 							fileHeaderStart = false;
 						}
 						break;
@@ -555,19 +556,19 @@ public class TaskThread implements Runnable {
 	}
 
 	private void ftpStore(String[] fileKeys, String ip, String port,
-			String ftp_user, String ftp_password, String ftp_passive,
-			String ftp_type, String remoteFile) {
+			String ftpUser, String ftpPassword, String ftpPassive,
+			String ftpType, String remoteFile) {
 		String zipFilePath = fileKeys[0];
 
 		FTPInterface ftpClient;
 		ftpClient = new FTPSrv();
 		// login
 		try {
-			ftpClient.login(ip, Integer.parseInt(port), ftp_user, ftp_password,
-					"GBK", Boolean.parseBoolean(ftp_passive), 5 * 60 * 1000);
+			ftpClient.login(ip, Integer.parseInt(port), ftpUser, ftpPassword,
+					"GBK", Boolean.parseBoolean(ftpPassive), 5 * 60 * 1000);
 		} catch (Exception e) {
 			log.error("login fail,ip=[" + ip + "] port=[" + port + "] user=["
-					+ ftp_user + /* "]pwd=[" + ftp_password + */"]"
+					+ ftpUser + "]pwd=[" + ftpPassword + "]"
 					+ StringUtil.getStackTrace(e));
 			return;
 		}
@@ -674,7 +675,7 @@ public class TaskThread implements Runnable {
 	public List<File> decompressed(String fileName) {
 		List<File> filelist = new ArrayList<>();
 
-		if (fileName.indexOf(".gz") > 1) {
+		if (fileName.indexOf(".gz") > -1) {
 			try {
 				File decompressFile = deGz(fileName);
 				filelist.add(decompressFile);
@@ -682,7 +683,7 @@ public class TaskThread implements Runnable {
 			} catch (IOException e) {
 				log.error("decompressed is fail " + StringUtil.getStackTrace(e));
 			}
-		} else if (fileName.indexOf(".zip") > 1) {
+		} else if (fileName.indexOf(".zip") > -1) {
 			try {
 				File[] files = deZip(new File(fileName));
 				new File(fileName).delete();
