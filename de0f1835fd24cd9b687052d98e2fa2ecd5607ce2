@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_fd1d0c63",
+        "filename": "ems/boco/src/main/java/org/onap/vfc/nfvo/emsdriver/EmsDriverConfiguration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1337
+      },
+      "writtenOn": "2018-04-17T11:53:48Z",
+      "side": 1,
+      "message": "Suggest to remove the spare spaces in this file.",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 4
+      },
+      "revId": "de0f1835fd24cd9b687052d98e2fa2ecd5607ce2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_1d2318a8",
+        "filename": "ems/microservice-standalone/src/main/assembly/conf/emsdriver.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1337
+      },
+      "writtenOn": "2018-04-17T11:53:48Z",
+      "side": 1,
+      "message": "Should this variable have a default value?",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 10
+      },
+      "revId": "de0f1835fd24cd9b687052d98e2fa2ecd5607ce2",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
