@@ -28,8 +28,10 @@ public class EmsDriverConfiguration extends Configuration {
 
     @NotEmpty
     private String defaultName = "EmsDriver-Stranger";
+    
+    private String serviceIp;
 
-    @JsonProperty
+	@JsonProperty
     public String getMsbAddress() {
         return msbAddress;
     }
@@ -58,4 +60,14 @@ public class EmsDriverConfiguration extends Configuration {
     public void setDefaultName(String name) {
         this.defaultName = name;
     }
+    
+    @JsonProperty    
+    public String getServiceIp() {
+		return serviceIp;
+	}
+    
+    @JsonProperty
+	public void setServiceIp(String serviceIp) {
+		this.serviceIp = serviceIp;
+	}
 }
