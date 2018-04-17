@@ -15,15 +15,15 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 
 import java.io.BufferedOutputStream;
 import java.net.Socket;
 
 public class HeartBeat extends Thread {
-    private static final Log log = LogFactory.getLog(HeartBeat.class);
+    private static final Logger log = LoggerFactory.getLogger(HeartBeat.class);
     private BufferedOutputStream out = null;
     private Socket socket = null;
     private Msg heartStr;

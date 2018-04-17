@@ -16,8 +16,8 @@
 package org.onap.vfc.nfvo.emsdriver.northbound.client;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -34,7 +34,7 @@ import org.apache.http.util.EntityUtils;
  */
 public class HttpClientUtil {
 
-    private static final Log log = LogFactory.getLog(HttpClientUtil.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpClientUtil.class);
 
     public static String doPost(String url, String json, String charset) {
         String result = null;

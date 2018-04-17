@@ -24,8 +24,9 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.log4j.PropertyConfigurator;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
 import org.onap.vfc.nfvo.emsdriver.northbound.service.CommandResource;
@@ -43,15 +44,25 @@ import java.util.List;
 
 public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 
-    protected static Log log = LogFactory.getLog(EmsDriverApplication.class);
+    protected static Logger log = LoggerFactory.getLogger(EmsDriverApplication.class);
+    public static String LOGCONFIG_PROPERTIES_LOCATION = Constant.SYS_CFG + "log4j.properties";
     private ApplicationContext context = null;
 
     public static void main(String[] args) throws Exception {
+    	logConfig();
         log.info("EmsDriverApplication start");
         new EmsDriverApplication().run(args);
         log.info("EmsDriverApplication start sucess");
     }
 
+    @Override
+    protected void bootstrapLogging() {
+    }
+    
+    public static void logConfig(){
+    	PropertyConfigurator.configure(LOGCONFIG_PROPERTIES_LOCATION);
+    }
+    
     @Override
     public String getName() {
         return "ems-driver";

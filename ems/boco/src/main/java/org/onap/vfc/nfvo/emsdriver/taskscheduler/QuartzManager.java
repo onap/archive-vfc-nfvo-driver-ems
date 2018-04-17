@@ -16,8 +16,8 @@
 package org.onap.vfc.nfvo.emsdriver.taskscheduler;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
@@ -27,7 +27,7 @@ import java.text.ParseException;
 public class QuartzManager {
 
 
-    private static Log log = LogFactory.getFactory().getInstance(QuartzManager.class);
+    private static Logger log = LoggerFactory.getLogger(QuartzManager.class);
     private static SchedulerFactory gSchedulerFactory = new StdSchedulerFactory();
     private static String jobGroupName = "EXTJWEB_JOBGROUP_NAME";
     private static String triggerGroupName = "EXTJWEB_TRIGGERGROUP_NAME";

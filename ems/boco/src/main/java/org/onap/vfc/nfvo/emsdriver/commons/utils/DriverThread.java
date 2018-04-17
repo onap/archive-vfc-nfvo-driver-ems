@@ -15,11 +15,11 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.utils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class DriverThread implements Runnable {
-    protected Log log = LogFactory.getLog(this.getClass());
+    protected Logger log = LoggerFactory.getLogger(this.getClass());
     private String name = null;
     private Thread t = null;
     private boolean run = false;

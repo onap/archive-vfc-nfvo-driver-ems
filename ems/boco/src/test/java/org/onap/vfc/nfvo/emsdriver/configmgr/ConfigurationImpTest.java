@@ -15,8 +15,8 @@
  */
 package org.onap.vfc.nfvo.emsdriver.configmgr;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.junit.Before;
@@ -38,7 +38,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ConfigurationImpTest {
     //normally an unit test should not log
-    protected static Log log = LogFactory.getLog(ConfigurationImpTest.class);
+    protected static Logger log = LoggerFactory.getLogger(ConfigurationImpTest.class);
     private ConfigurationManager configurationManager;
     private ConfigurationImp configurationImp;
 

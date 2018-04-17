@@ -16,8 +16,8 @@
 package org.onap.vfc.nfvo.emsdriver.collector;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.ftp.AFtpRemoteFile;
 import org.onap.vfc.nfvo.emsdriver.commons.ftp.FTPInterface;
@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
 
 public class TaskThread implements Runnable {
 
-	private static final Log log = LogFactory.getLog(TaskThread.class);
+	private static final Logger log = LoggerFactory.getLogger(TaskThread.class);
 	private MessageChannel pmResultChannel;
 	private MessageChannel cmResultChannel;
 	private CollectMsg data;

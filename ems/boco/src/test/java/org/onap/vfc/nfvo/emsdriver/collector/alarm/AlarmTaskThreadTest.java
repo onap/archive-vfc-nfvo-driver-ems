@@ -77,7 +77,9 @@ public class AlarmTaskThreadTest {
 	public void runAlarmTaskThread() {
 			taskThread.start();
 			//Thread.sleep(3000);
-			server.stop();
+		    if(server!=null){
+				server.stop();
+		    }
 			severThread.stop();
 			taskThread.setStop(true);
 			taskThread.close();

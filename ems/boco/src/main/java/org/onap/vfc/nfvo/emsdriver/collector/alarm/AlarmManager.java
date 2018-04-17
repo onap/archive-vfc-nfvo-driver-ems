@@ -15,8 +15,8 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.onap.vfc.nfvo.emsdriver.collector.CollectMsgReceiverThread;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlarmManager extends DriverThread {
-	protected static final Log logger = LogFactory.getLog(AlarmManager.class);
+	protected static final Logger logger = LoggerFactory.getLogger(AlarmManager.class);
 	private ConfigurationInterface configurationInterface;
 
 	@Override

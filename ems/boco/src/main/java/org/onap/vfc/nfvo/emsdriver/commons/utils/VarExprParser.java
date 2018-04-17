@@ -16,8 +16,8 @@
 package org.onap.vfc.nfvo.emsdriver.commons.utils;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,7 +26,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
     public  final class VarExprParser {
-    private static Log log = LogFactory.getFactory().getInstance(VarExprParser.class);
+    private static Logger log = LoggerFactory.getLogger(VarExprParser.class);
+    
     private static Pattern varPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})",
             Pattern.CASE_INSENSITIVE);
 

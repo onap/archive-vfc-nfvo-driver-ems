@@ -15,8 +15,8 @@
  */
 package org.onap.vfc.nfvo.emsdriver.commons.ftp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.net.ftp.*;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.StringUtil;
 
@@ -27,7 +27,7 @@ import java.util.TimeZone;
 
 
 public class FTPSrv implements FTPInterface {
-    private Log log = LogFactory.getLog(FTPSrv.class);
+    private Logger log = LoggerFactory.getLogger(FTPSrv.class);
     private FTPClient ftpClient = null;
 
 

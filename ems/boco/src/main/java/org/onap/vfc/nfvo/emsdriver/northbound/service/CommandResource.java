@@ -25,15 +25,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("/ems-driver")
 @Produces(MediaType.APPLICATION_JSON)
 @Api(tags = {"ems-driver TestResource"})
 public class CommandResource {
 
-    private Log log = LogFactory.getLog(CommandResource.class);
+    private Logger log = LoggerFactory.getLogger(CommandResource.class);
 
     @GET
     @Timed

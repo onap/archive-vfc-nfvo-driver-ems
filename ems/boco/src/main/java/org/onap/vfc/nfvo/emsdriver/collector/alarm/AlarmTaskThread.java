@@ -15,8 +15,8 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.StringUtil;
@@ -31,7 +31,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class AlarmTaskThread extends Thread {
-	private static final Log log = LogFactory.getLog(AlarmTaskThread.class);
+	private static final Logger log = LoggerFactory.getLogger(AlarmTaskThread.class);
 
 	private HeartBeat heartBeat = null;
 	private boolean isStop = false;

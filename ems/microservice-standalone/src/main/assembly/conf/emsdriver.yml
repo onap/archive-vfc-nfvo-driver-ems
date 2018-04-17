@@ -28,38 +28,11 @@ server:
   connector:
     type: http
     port: 8206
+  requestLog:
+    type: external
 
-# Logging settings.
 logging:
-
-  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
-  level: INFO
-
-  # Logger-specific levels.
-  loggers:
-
-    # Sets the level for 'org.onap.vfc.nfvo.emsdriver' to INFO.
-    org.onap.vfc.nfvo.emsdriver.EmsDriverApplication: INFO
-
-  appenders:
-    - type: console
-      threshold: WARN
-      timeZone: PRC
-      logFormat: "%-4level [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{5} - %X{code} %msg %n"
-    - type: file
-      threshold: INFO
-      logFormat: "%-4level [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{5} - %X{code} %msg %n"
-      currentLogFilename: ./logs/emsdriver.log
-      archivedLogFilenamePattern: ./logs/emsdriver-%d{yyyyMMdd}-%d{HHmm}-%d{ssSSS}.log.gz
-      archivedFileCount: 7
-      timeZone: PRC
-    - type: file
-      threshold: ERROR
-      logFormat: "%-4level [%d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] %logger{5} - %X{code} %msg %n"
-      currentLogFilename: ./logs/error.log
-      archivedLogFilenamePattern: ./logs/error-%d{yyyyMMdd}-%d{HHmm}-%d{ssSSS}.log.gz
-      archivedFileCount: 7
-      timeZone: PRC
+  type: external
 
 
 

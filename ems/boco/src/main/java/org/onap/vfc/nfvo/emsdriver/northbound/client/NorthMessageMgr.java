@@ -15,7 +15,23 @@
  */
 package org.onap.vfc.nfvo.emsdriver.northbound.client;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.log4j.Level;
+import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
+import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
+import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationInterface;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
+import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
+
 import com.alibaba.fastjson.JSONObject;
+
 import evel_javalibrary.att.com.AgentMain;
 import evel_javalibrary.att.com.AgentMain.EVEL_ERR_CODES;
 import evel_javalibrary.att.com.EvelFault;
@@ -25,24 +41,8 @@ import evel_javalibrary.att.com.EvelFault.EVEL_VF_STATUSES;
 import evel_javalibrary.att.com.EvelHeader;
 import evel_javalibrary.att.com.EvelScalingMeasurement;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Level;
-import org.onap.vfc.nfvo.emsdriver.collector.alarm.AlarmManager;
-import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
-import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
-import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationInterface;
-import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
-import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.Properties;
-
 public class NorthMessageMgr extends DriverThread {
-	protected static final Log logger = LogFactory.getLog(NorthMessageMgr.class);
+	protected static final Logger logger = LoggerFactory.getLogger(NorthMessageMgr.class);
     private MessageChannel alarmChannel = MessageChannelFactory.getMessageChannel(Constant.RESULT_CHANNEL_KEY);
     private MessageChannel collectResultPMChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_PM_CHANNEL_KEY);
     private MessageChannel collectResultChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_RESULT_CHANNEL_KEY);
@@ -62,6 +62,9 @@ public class NorthMessageMgr extends DriverThread {
             String topic = properties.getProperty("topic");
             String username = properties.getProperty("username");
             String password = properties.getProperty("password");
+            String keystore_path ="" ;
+            String jks_password = "";
+            String key_password = "";
             String levelStr = properties.getProperty("level");
             if ("debug".equals(levelStr)) {
                 level = Level.DEBUG;
@@ -78,6 +81,9 @@ public class NorthMessageMgr extends DriverThread {
                         path, topic,
                         username,
                         password,
+                        keystore_path,
+                        jks_password,
+                        key_password,
                         level);
                 logger.info("AgentMain.evel_initialize sucess EVEL_ERR_CODES=" + evecode);
             } catch (Exception e) {

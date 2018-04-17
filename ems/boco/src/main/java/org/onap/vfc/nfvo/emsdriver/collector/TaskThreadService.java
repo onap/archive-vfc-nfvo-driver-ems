@@ -15,8 +15,8 @@
  */
 package org.onap.vfc.nfvo.emsdriver.collector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.StringUtil;
@@ -26,7 +26,7 @@ import java.util.concurrent.*;
 
 public class TaskThreadService extends Thread {
     private final ExecutorService pool;
-    private static final Log log = LogFactory.getLog(TaskThreadService.class);
+    private static final Logger log = LoggerFactory.getLogger(TaskThreadService.class);
     private BlockingQueue<CollectMsg> queue = new LinkedBlockingQueue<>();
     private boolean startFlag = true;
     private long timeStamp = System.currentTimeMillis();

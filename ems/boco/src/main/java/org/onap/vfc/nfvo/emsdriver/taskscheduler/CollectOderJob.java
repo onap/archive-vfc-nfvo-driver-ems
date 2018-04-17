@@ -15,8 +15,8 @@
  */
 package org.onap.vfc.nfvo.emsdriver.taskscheduler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
@@ -30,7 +30,7 @@ import org.quartz.JobExecutionException;
 
 public class CollectOderJob implements Job {
 
-    private Log log = LogFactory.getLog(DriverThread.class);
+    private Logger log = LoggerFactory.getLogger(DriverThread.class);
     private MessageChannel collectChannel = MessageChannelFactory.getMessageChannel(Constant.COLLECT_CHANNEL_KEY);
 
     public void execute(JobExecutionContext context) throws JobExecutionException {

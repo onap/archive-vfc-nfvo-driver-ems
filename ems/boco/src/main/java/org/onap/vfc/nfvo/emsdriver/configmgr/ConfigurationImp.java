@@ -15,8 +15,8 @@
  */
 package org.onap.vfc.nfvo.emsdriver.configmgr;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
 
@@ -26,7 +26,7 @@ import java.util.Properties;
 
 public class ConfigurationImp implements ConfigurationInterface {
 
-    private Log log = LogFactory.getLog(ConfigurationImp.class);
+    private Logger log = LoggerFactory.getLogger(ConfigurationImp.class);
 
     @Override
     public List<EMSInfo> getAllEMSInfo() {

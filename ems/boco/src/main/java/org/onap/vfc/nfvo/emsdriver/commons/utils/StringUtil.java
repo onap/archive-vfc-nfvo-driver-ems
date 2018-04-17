@@ -18,12 +18,12 @@ package org.onap.vfc.nfvo.emsdriver.commons.utils;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StringUtil {
 
-    private static final Log log = LogFactory.getLog(StringUtil.class);
+    private static final Logger log = LoggerFactory.getLogger(StringUtil.class);
     public static String getStackTrace(Throwable t) {
 
         try( 
