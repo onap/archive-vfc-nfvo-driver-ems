@@ -82,7 +82,7 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
         MsbConfiguration.setMsbAddress(configuration.getMsbAddress());
         //MSB register
         String registerFlag = configuration.getAutoServiceRegister();
-        if ("false".equalsIgnoreCase(registerFlag)) {
+        if ("true".equalsIgnoreCase(registerFlag)) {
             this.msbRegisteEmsDriverService(configuration);
         }
         //Start workThread
@@ -130,7 +130,7 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
         HttpConnectorFactory connector = (HttpConnectorFactory) simpleServerFactory.getConnector();
         MsbRegisterVo registerVo = new MsbRegisterVo();
         ServiceNodeVo serviceNode = new ServiceNodeVo();
-        String ip = "";
+/*        String ip = "";
         try {
             ip = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
@@ -138,8 +138,8 @@ public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
         }
         if ("".equals(ip)) {
             ip = connector.getBindHost();
-        }
-        serviceNode.setIp(ip);
+        }*/
+        serviceNode.setIp(configuration.getServiceIp());
         serviceNode.setPort(String.valueOf(connector.getPort()));
         serviceNode.setTtl(0);
 
