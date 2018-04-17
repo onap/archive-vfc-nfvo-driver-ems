@@ -10,6 +10,9 @@ PASSWORD=`echo $VES_AUTHINFO | cut -d: -f 2`
 
 sed -i "s|msbAddress.*|msbAddress: $MSB_IP:$MSB_PORT|" emsdriver/conf/emsdriver.yml
 sed -i "s|\"ip\": \".*\"|\"ip\": \"$SERVICE_IP\"|" emsdriver/conf/emsdriver.yml
+if [ $SERVICE_IP ]; then
+   sed -i "s|serviceIp.*|serviceIp: $SERVICE_IP|" emsdriver/conf/emsdriver.yml
+fi
 sed -i "s|msbAddress=.*|msbAddress=$MSB_IP:$MSB_PORT|" emsdriver/conf/config.properties
 sed -i "s|event_api_url=.*|event_api_url=$VES_IP|" emsdriver/conf/config.properties
 sed -i "s|port=.*|port=$VES_PORT|" emsdriver/conf/config.properties
