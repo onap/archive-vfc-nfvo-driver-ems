@@ -234,8 +234,9 @@ public class NorthMessageMgr extends DriverThread {
             } catch (ParseException e) {
             	logger.error("ParseException ", e);
             }
-            flt.evel_start_epoch_set(eventTimeD.getTime());
-            flt.evel_last_epoch_set(eventTimeD.getTime());
+            //2018-05-21 liangxuning 修改lastEpochMicrosec和startEpochMicrosec精确到微秒
+            flt.evel_start_epoch_set(eventTimeD.getTime()*1000);
+            flt.evel_last_epoch_set(eventTimeD.getTime()*1000);
 
             flt.evel_fault_category_set(reagobj.getString("alarmType"));
             flt.evel_fault_interface_set(reagobj.getString("objectName"));
