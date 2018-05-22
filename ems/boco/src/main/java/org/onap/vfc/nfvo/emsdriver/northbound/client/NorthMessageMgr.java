@@ -339,7 +339,7 @@ public class NorthMessageMgr extends DriverThread {
                 sm.evel_measurement_custom_measurement_add(reMap.get("ElementType"), key, reMap.get(key));
 
             }
-
+            
             sm.evel_nfcnamingcode_set("");
             sm.evel_nfnamingcode_set("");
             sm.evel_header_type_set("applicationVnf");
@@ -352,6 +352,18 @@ public class NorthMessageMgr extends DriverThread {
                 // decide  the flow if Dn is null
 
             }
+            String StartTime = reMap.get("StartTime");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date StartTimeD = new Date();
+            try {
+            	StartTimeD = format.parse(StartTime);
+            } catch (ParseException e) {
+            	logger.error("ParseException ", e);
+            }
+            //2018-05-21 liangxuning 修改lastEpochMicrosec和startEpochMicrosec精确到微秒
+            sm.evel_start_epoch_set(StartTimeD.getTime()*1000);
+            sm.evel_last_epoch_set(StartTimeD.getTime()*1000);
+            
             sm.evel_header_set_sourceid(true, reMap.get("rmUID"));
             sm.evel_header_set_source_name(reMap.get("rmUID"));
 
