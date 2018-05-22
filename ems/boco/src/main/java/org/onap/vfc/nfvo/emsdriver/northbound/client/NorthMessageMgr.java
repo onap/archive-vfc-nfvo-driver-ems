@@ -353,6 +353,7 @@ public class NorthMessageMgr extends DriverThread {
 
             }
             String StartTime = reMap.get("StartTime");
+            logger.info("StartTime: " + StartTime);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date StartTimeD = new Date();
             try {
