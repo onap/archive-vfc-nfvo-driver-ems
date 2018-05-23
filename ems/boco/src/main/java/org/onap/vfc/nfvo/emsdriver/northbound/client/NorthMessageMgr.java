@@ -315,6 +315,7 @@ public class NorthMessageMgr extends DriverThread {
                         EvelScalingMeasurement evelScalingMeasurement = this.resultEvelScalingMeasurement(reMap);
                         logger.debug("evelScalingMeasurement=" + evelScalingMeasurement);
                         //send
+                        logger.info("AgentMain.testlog");
                         logger.info("AgentMain.evel_post_event start");
                         AgentMain.evel_post_event(evelScalingMeasurement);
                         logger.info("AgentMain.evel_post_event sucess");
@@ -352,7 +353,9 @@ public class NorthMessageMgr extends DriverThread {
                 // decide  the flow if Dn is null
 
             }
+            String TimeStamp = reMap.get("TimeStamp");
             String StartTime = reMap.get("StartTime");
+            logger.info("TimeStamp: " + TimeStamp);
             logger.info("StartTime: " + StartTime);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date StartTimeD = new Date();
