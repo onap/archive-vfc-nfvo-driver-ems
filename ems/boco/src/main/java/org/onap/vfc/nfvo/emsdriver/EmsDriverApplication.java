@@ -44,8 +44,8 @@ import java.util.List;
 
 public class EmsDriverApplication extends Application<EmsDriverConfiguration> {
 
-    protected static Logger log = LoggerFactory.getLogger(EmsDriverApplication.class);
-    public static String LOGCONFIG_PROPERTIES_LOCATION = Constant.SYS_CFG + "log4j.properties";
+    protected static final Logger log = LoggerFactory.getLogger(EmsDriverApplication.class);
+    public static final String LOGCONFIG_PROPERTIES_LOCATION = Constant.SYS_CFG + "log4j.properties";
     private ApplicationContext context = null;
 
     public static void main(String[] args) throws Exception {
