@@ -51,6 +51,7 @@ public class TaskThread implements Runnable {
 	private String resultPath = Constant.SYS_DATA_RESULT;
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 	private SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static final PORT_STRING = "] port=[";
 
 	public TaskThread(CollectMsg data) {
 		this.data = data;
@@ -567,7 +568,7 @@ public class TaskThread implements Runnable {
 			ftpClient.login(ip, Integer.parseInt(port), ftpUser, ftpPassword,
 					"GBK", Boolean.parseBoolean(ftpPassive), 5 * 60 * 1000);
 		} catch (Exception e) {
-			log.error("login fail,ip=[" + ip + "] port=[" + port + "] user=["
+			log.error("login fail,ip=[" + ip + PORT_STRING + port + "] user=["
 					+ ftpUser + "]pwd=[" + ftpPassword + "]"
 					+ StringUtil.getStackTrace(e));
 			return;
@@ -740,12 +741,12 @@ public class TaskThread implements Runnable {
 
 		// login
 		try {
-			log.info("ftp login ,ip=[" + ip + "] port=[" + port + "] user=["
+			log.info("ftp login ,ip=[" + ip + PORT_STRING + port + "] user=["
 					+ user + /* "]password=[" + password + */"]");
 			ftpClient.login(ip, Integer.parseInt(port), user, password, "GBK",
 					Boolean.parseBoolean(passivemode), 5 * 60 * 1000);
 		} catch (Exception e) {
-			log.error("login fail,ip=[" + ip + "] port=[" + port + "] user=["
+			log.error("login fail,ip=[" + ip + PORT_STRING + port + "] user=["
 					+ user + /* "]password=[" + password + */"]"
 					+ StringUtil.getStackTrace(e));
 			return fileList;
