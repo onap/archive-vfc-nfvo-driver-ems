@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectMsg;
 import org.onap.vfc.nfvo.emsdriver.commons.utils.DriverThread;
-import org.onap.vfc.nfvo.emsdriver.configmgr.ConfigurationManager;
 import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannel;
 import org.onap.vfc.nfvo.emsdriver.messagemgr.MessageChannelFactory;
 
