@@ -50,6 +50,7 @@ public class NorthMessageMgr extends DriverThread {
 
     private boolean threadStop = false;
     private Level level = Level.DEBUG;
+    private final String RMUID = "rmUID";
 
     @Override
     public void dispose() {
@@ -331,7 +332,7 @@ public class NorthMessageMgr extends DriverThread {
 
         private EvelScalingMeasurement resultEvelScalingMeasurement(Map<String, String> reMap) {
             String evname = "Mfvs_" + reMap.get("ElementType") + reMap.get("ObjectType");
-            String evid = reMap.get("StartTime") + reMap.get("ObjectType") + reMap.get("rmUID");
+            String evid = reMap.get("StartTime") + reMap.get("ObjectType") + reMap.get(RMUID);
             int period = Integer.parseInt(reMap.get("Period") != null ? reMap.get("Period") : "15");
             EvelScalingMeasurement sm = new EvelScalingMeasurement(period, evname, evid);
 
@@ -343,7 +344,7 @@ public class NorthMessageMgr extends DriverThread {
             sm.evel_nfcnamingcode_set("");
             sm.evel_nfnamingcode_set("");
             sm.evel_header_type_set("applicationVnf");
-            String rmUID = reMap.get("rmUID");
+            String rmUID = reMap.get(RMUID);
             sm.evel_reporting_entity_id_set(rmUID.substring(0, 9));//
             String dn = reMap.get("Dn");
             if (dn != null)
@@ -365,8 +366,8 @@ public class NorthMessageMgr extends DriverThread {
             sm.evel_start_epoch_set(StartTimeD.getTime()*1000);
             sm.evel_last_epoch_set(StartTimeD.getTime()*1000);
             
-            sm.evel_header_set_sourceid(true, reMap.get("rmUID"));
-            sm.evel_header_set_source_name(reMap.get("rmUID"));
+            sm.evel_header_set_sourceid(true, reMap.get(RMUID));
+            sm.evel_header_set_source_name(reMap.get(RMUID));
 
             sm.evel_header_set_priority(EvelHeader.PRIORITIES.EVEL_PRIORITY_NORMAL);
             return sm;
