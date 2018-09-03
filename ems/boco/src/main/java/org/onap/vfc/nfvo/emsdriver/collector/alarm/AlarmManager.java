@@ -17,7 +17,6 @@ package org.onap.vfc.nfvo.emsdriver.collector.alarm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.onap.vfc.nfvo.emsdriver.collector.CollectMsgReceiverThread;
 import org.onap.vfc.nfvo.emsdriver.commons.constant.Constant;
 import org.onap.vfc.nfvo.emsdriver.commons.model.CollectVo;
 import org.onap.vfc.nfvo.emsdriver.commons.model.EMSInfo;
