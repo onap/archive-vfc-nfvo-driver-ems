@@ -35,6 +35,7 @@ import org.apache.http.util.EntityUtils;
 public class HttpClientUtil {
 
     private static final Logger log = LoggerFactory.getLogger(HttpClientUtil.class);
+    public static final String APPLICATION_JSON = "application/json";
 
     public static String doPost(String url, String json, String charset) {
         String result = null;
@@ -44,7 +45,7 @@ public class HttpClientUtil {
             if (null != json) {
                 StringEntity s = new StringEntity(json);
                 s.setContentEncoding("UTF-8");
-                s.setContentType("application/json"); // set contentType
+                s.setContentType(APPLICATION_JSON); // set contentType
                 httpPost.setEntity(s);
             }
             try(CloseableHttpResponse response = httpClient.execute(httpPost)){
@@ -90,8 +91,8 @@ public class HttpClientUtil {
         try (
             CloseableHttpClient httpClient = HttpClients.createDefault()){
             HttpGet httpGet = new HttpGet(url);
-            httpGet.setHeader("Content-Type", "application/json");
-            httpGet.setHeader("Accept", "application/json");
+            httpGet.setHeader("Content-Type", APPLICATION_JSON);
+            httpGet.setHeader("Accept", APPLICATION_JSON);
             httpGet.setHeader("X-TransactionId", "111");
             httpGet.setHeader("X-FromAppId", "ems-driver");
             Base64 token = new Base64();
