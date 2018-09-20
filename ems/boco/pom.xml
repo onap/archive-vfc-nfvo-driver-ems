@@ -151,7 +151,7 @@
 	<dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-context</artifactId>
-		<version>4.3.6.RELEASE</version>
+		<version>4.3.18.RELEASE</version>
 	</dependency>
     <dependency>
 		<groupId>org.quartz-scheduler</groupId>
@@ -229,13 +229,13 @@
         <artifactId>swagger-jersey2-jaxrs</artifactId>
         <version>${swagger.version}</version>
     </dependency>
-     <!--dependency>
+     <!-- <dependency>
 		    <groupId>evel_javalib2</groupId>
 		    <artifactId>evel_javalib2</artifactId>
 		    <version>0.0.1</version>
 		    <scope>system</scope> 
 			<systemPath>${basedir}/3rdParty/evel_javalib2-0.0.1.jar</systemPath> 
-	</dependency-->
+	</dependency> -->
     <dependency>
 		    <groupId>org.onap.vnfsdk.ves-agent</groupId>
 		    <artifactId>evel_javalib2</artifactId>
@@ -278,7 +278,7 @@
   	<dependency>
 	    <groupId>org.eclipse.jetty</groupId>
 	    <artifactId>jetty-server</artifactId>
-	    <version>9.4.8.v20171121</version>
+	    <version>9.4.11.v20180605</version>
 	</dependency>
 	<dependency>
 	    <groupId>commons-collections</groupId>
@@ -293,12 +293,12 @@
 	<dependency>
 	    <groupId>org.bouncycastle</groupId>
 	    <artifactId>bcprov-jdk15on</artifactId>
-	    <version>1.59</version>
+	    <version>1.60</version>
 	</dependency>
 	<dependency>
 	    <groupId>xerces</groupId>
 	    <artifactId>xercesImpl</artifactId>
-	    <version>2.11.0.SP5</version>
+	    <version>2.12.0</version>
 	</dependency>
 	<dependency>
 	    <groupId>com.googlecode.libphonenumber</groupId>
@@ -313,7 +313,17 @@
 	<dependency>
 		<groupId>com.google.guava</groupId>
 	    <artifactId>guava</artifactId>
-	    <version>23.5-jre</version>
+	    <version>23.6.1-jre</version>
+	</dependency>
+	<dependency>
+	    <groupId>com.fasterxml.jackson.dataformat</groupId>
+	    <artifactId>jackson-dataformat-xml</artifactId>
+	    <version>2.9.4</version>
+	</dependency>
+	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	    <version>2.9.6</version>
 	</dependency>
   </dependencies>
 </project>
