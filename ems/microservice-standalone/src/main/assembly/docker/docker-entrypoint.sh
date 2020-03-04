@@ -14,7 +14,7 @@ echo "MSB_ADDR=$MSB_ADDR"
 
 # Wait for MSB initialization
 echo "Wait for MSB initialization"
-for i in {1..20}; do
+for i in {1..5}; do
     curl -sS -m 1 $MSB_PROTO://$MSB_ADDR/msb -k > /dev/null
     res=$?
     if [ $res -ne 0 ]; then
