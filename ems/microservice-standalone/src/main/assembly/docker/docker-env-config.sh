@@ -22,11 +22,9 @@ install_sf(){
 add_user(){
 
 	useradd onap
-	yum -y install sudo
-	chmod u+x /etc/sudoers
-	sed -i '/Same thing without a password/a\onap    ALL=(ALL:ALL) NOPASSWD:ALL' /etc/sudoers
-	chmod u-x /etc/sudoers
 	chown onap:onap -R /service
+	chmod g+s /service
+	setfacl -d --set u:onap:rwx /service
 }
 
 clean_sf_cache(){
