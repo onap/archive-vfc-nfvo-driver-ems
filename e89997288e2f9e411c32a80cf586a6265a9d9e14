@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bd68f120_f9c459bc",
+        "filename": "ems/microservice-standalone/src/main/assembly/docker/docker-env-config.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 2319
+      },
+      "writtenOn": "2020-03-05T09:02:25Z",
+      "side": 1,
+      "message": "trailing",
+      "revId": "e89997288e2f9e411c32a80cf586a6265a9d9e14",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
